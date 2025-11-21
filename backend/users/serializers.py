@@ -33,12 +33,13 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class AuthenticationSerializer(TokenObtainPairSerializer):
-    username_field = 'email'
+    username_field = 'username'
 
-    email = serializers.EmailField(write_only=True)
+    username = serializers.EmailField(write_only=True)
     password = serializers.CharField(write_only=True)
 
+
     def validate(self, attrs):
-        # Use email for authentication
-        attrs['username'] = attrs.get('email')
+        if not User.objects.filter(username=attrs.get("username")).exists():
+            raise serializers.ValidationError("User doesn't exist. Please sign up first.")
         return super().validate(attrs)

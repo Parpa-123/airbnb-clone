@@ -24,16 +24,17 @@ interface SigninType extends LoginType {
 
 const Header: React.FC = () => {
   const [acc, setAcc] = useState<string | null>(null);
-  const [isLoginOpen, setLoginOpen] = useState<boolean>(false);
-  const [isSignupOpen, setSignupOpen] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [isDropDownOpen, setDropDown] = useState<boolean>(false);
+  const [isLoginOpen, setLoginOpen] = useState(false);
+  const [isSignupOpen, setSignupOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [isDropDownOpen, setDropDown] = useState(false);
 
   // SIGNUP HANDLER
   const handSignin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
+
     const conf_password = String(formData.get("conf_password") || "");
 
     const signData: SigninType = {
@@ -50,19 +51,55 @@ const Header: React.FC = () => {
     try {
       setLoading(true);
 
-      const res = await axiosInstance.post("/create/", signData);
+      // Create account
+      await axiosInstance.post("/create/", signData);
+
+      // Auto-login (username-based)
+      const res = await axiosInstance.post("/token/", {
+        username: signData.username,
+        password: signData.password,
+      });
+
+      localStorage.setItem("accessToken", res.data.access);
+      localStorage.setItem("refreshToken", res.data.refresh);
 
       toast.success(`Welcome ${signData.username}`);
       setAcc(signData.username);
       setSignupOpen(false);
-
     } catch (error: any) {
       const errMsg =
         error?.response?.data?.username?.[0] ||
         error?.response?.data?.email?.[0] ||
         "Signup failed";
-
       toast.error(errMsg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // LOGIN HANDLER
+  const handleLoginForm = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+
+    const loginData: LoginType = {
+      username: String(formData.get("login_username")),
+      password: String(formData.get("login_password")),
+    };
+
+    try {
+      setLoading(true);
+      const res = await axiosInstance.post("/token/", loginData);
+
+      localStorage.setItem("accessToken", res.data.access);
+      localStorage.setItem("refreshToken", res.data.refresh);
+
+      setAcc(loginData.username);
+      setLoginOpen(false);
+      toast.success("Logged in!");
+
+    } catch (error: any) {
+      toast.error(error?.response?.data?.detail || "Login failed");
     } finally {
       setLoading(false);
     }
@@ -109,21 +146,7 @@ const Header: React.FC = () => {
 
               <hr className="my-2" />
 
-              <DropdownMenu.Item className="p-2 rounded-md cursor-pointer hover:bg-gray-100 text-gray-700">
-                <div className="flex justify-between items-center">
-                  <div className="flex flex-col">
-                    <span className="font-medium">Become a Host</span>
-                    <span className="text-xs text-gray-500">
-                      Lorem ipsum dolor sit amet.
-                    </span>
-                  </div>
-                  <FaUser />
-                </div>
-              </DropdownMenu.Item>
-
-              <hr className="my-2" />
-
-              {/* LOGIN + SIGNUP (Only when not logged in) */}
+              {/* LOGIN & SIGNUP */}
               {!acc && (
                 <>
                   <DropdownMenu.Item
@@ -148,11 +171,12 @@ const Header: React.FC = () => {
                 </>
               )}
 
-              {/* LOGOUT (Only when logged in) */}
+              {/* LOGOUT */}
               {acc && (
                 <DropdownMenu.Item
                   onSelect={() => {
                     setAcc(null);
+                    localStorage.clear();
                     toast.info("Logged out");
                   }}
                   className="p-2 rounded-md cursor-pointer hover:bg-gray-100 text-gray-700"
@@ -160,71 +184,27 @@ const Header: React.FC = () => {
                   Logout ({acc})
                 </DropdownMenu.Item>
               )}
-
             </DropdownMenu.Content>
           </DropdownMenu.Portal>
         </DropdownMenu.Root>
 
-        {/* SIGNUP DIALOG */}
+        {/* SIGNUP POPUP */}
         <Dialog.Root open={isSignupOpen} onOpenChange={setSignupOpen}>
           <Dialog.Portal>
             <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
             <Dialog.Content className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-xl w-[90%] max-w-sm border border-gray-200">
-              <Dialog.Title className="text-lg font-semibold mb-2">
-                Sign Up
+              <Dialog.Title className="text-lg font-semibold mb-3">
+                Create Account
               </Dialog.Title>
 
-              <form className="flex flex-col gap-4 mt-4" onSubmit={handSignin}>
-                
-                {/* Username */}
-                <div className="flex flex-col">
-                  <label className="text-sm text-gray-700">Username</label>
-                  <input
-                    name="username"
-                    type="text"
-                    required
-                    className="border border-gray-300 p-2 rounded-md"
-                  />
-                </div>
+              <form className="flex flex-col gap-4" onSubmit={handSignin}>
+                <input name="username" type="text" placeholder="Username" required className="border border-gray-300 p-2 rounded-md" />
+                <input name="email" type="email" placeholder="Email" required className="border border-gray-300 p-2 rounded-md" />
+                <input name="password" type="password" placeholder="Password" required className="border border-gray-300 p-2 rounded-md" />
+                <input name="conf_password" type="password" placeholder="Confirm Password" required className="border border-gray-300 p-2 rounded-md" />
 
-                {/* Email */}
-                <div className="flex flex-col">
-                  <label className="text-sm text-gray-700">Email</label>
-                  <input
-                    name="email"
-                    type="email"
-                    required
-                    className="border border-gray-300 p-2 rounded-md"
-                  />
-                </div>
-
-                {/* Password */}
-                <div className="flex flex-col">
-                  <label className="text-sm text-gray-700">Password</label>
-                  <input
-                    name="password"
-                    type="password"
-                    required
-                    className="border border-gray-300 p-2 rounded-md"
-                  />
-                </div>
-
-                {/* Confirm Password */}
-                <div className="flex flex-col">
-                  <label className="text-sm text-gray-700">Confirm Password</label>
-                  <input
-                    name="conf_password"
-                    type="password"
-                    required
-                    className="border border-gray-300 p-2 rounded-md"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  className="bg-black text-white py-2 rounded-md hover:bg-gray-800 transition flex justify-center"
-                >
-                  {loading ? <FaSpinner className="animate-spin" /> : "Create Account"}
+                <button type="submit" className="bg-black text-white py-2 rounded-md hover:bg-gray-800 transition flex justify-center">
+                  {loading ? <FaSpinner className="animate-spin" /> : "Sign Up"}
                 </button>
               </form>
 
@@ -236,6 +216,35 @@ const Header: React.FC = () => {
             </Dialog.Content>
           </Dialog.Portal>
         </Dialog.Root>
+
+
+        {/* LOGIN POPUP */}
+        <Dialog.Root open={isLoginOpen} onOpenChange={setLoginOpen}>
+          <Dialog.Portal>
+            <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
+            <Dialog.Content className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-xl w-[90%] max-w-sm border border-gray-200">
+              <Dialog.Title className="text-lg font-semibold mb-3">
+                Log In
+              </Dialog.Title>
+
+              <form className="flex flex-col gap-4" onSubmit={handleLoginForm}>
+                <input name="login_username" type="text" placeholder="Username" required className="border border-gray-300 p-2 rounded-md" />
+                <input name="login_password" type="password" placeholder="Password" required className="border border-gray-300 p-2 rounded-md" />
+
+                <button type="submit" className="bg-black text-white py-2 rounded-md hover:bg-gray-800 transition flex justify-center">
+                  {loading ? <FaSpinner className="animate-spin" /> : "Log In"}
+                </button>
+              </form>
+
+              <Dialog.Close asChild>
+                <button className="absolute top-4 right-4">
+                  <FaTimes className="text-xl text-gray-700 hover:text-black cursor-pointer" />
+                </button>
+              </Dialog.Close>
+            </Dialog.Content>
+          </Dialog.Portal>
+        </Dialog.Root>
+
       </div>
     </nav>
   );

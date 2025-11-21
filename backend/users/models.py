@@ -39,7 +39,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     avatar = models.ImageField(null=True, blank=True)
     phone = PhoneNumberField()
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = []
 
     objects = UserManager()
