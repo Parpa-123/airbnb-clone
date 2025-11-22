@@ -15,14 +15,32 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['email', 'username', 'password']
         extra_kwargs = {
-            'password': {'write_only': True, 'min_length': 5}
+            'password': {'write_only': True, 'min_length': 8}
         }
 
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
 
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['email', 'username', 'phone', 'avatar','password']
+        read_only_fields = ['username', 'email']
+        extra_kwargs = {
+            'password' : {'write_only':True,'min_length':8},
+            'avatar' : {'required':False},
+            'phone' : {'required':False},
+        }
+
+    def validate(self, attrs):
+        phone = attrs.get("phone")
+        if phone and not phone.isdigit():
+            raise serializers.ValidationError("Phone number must contain only digits.")
+        return attrs
+    
     def update(self, instance, validated_data):
         password = validated_data.pop('password', None)
+        
         user = super().update(instance, validated_data)
 
         if password:
@@ -35,8 +53,9 @@ class UserSerializer(serializers.ModelSerializer):
 class AuthenticationSerializer(TokenObtainPairSerializer):
     username_field = 'username'
 
-    username = serializers.EmailField(write_only=True)
+    username = serializers.CharField(write_only=True)
     password = serializers.CharField(write_only=True)
+    
 
 
     def validate(self, attrs):

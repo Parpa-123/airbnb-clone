@@ -1,5 +1,5 @@
 from rest_framework import generics, authentication, permissions
-from .serializers import UserSerializer, AuthenticationSerializer
+from .serializers import UserSerializer, AuthenticationSerializer, UserProfileSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
@@ -13,7 +13,7 @@ class AuthenticationView(TokenObtainPairView):
     serializer_class = AuthenticationSerializer
 
 class AuthenticatedUserView(generics.RetrieveUpdateAPIView):
-    serializer_class = UserSerializer
+    serializer_class = UserProfileSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 

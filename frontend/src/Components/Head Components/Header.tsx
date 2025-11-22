@@ -26,17 +26,18 @@ const Header: React.FC = () => {
   const [acc, setAcc] = useState<string | null>(null);
   const [isLoginOpen, setLoginOpen] = useState(false);
   const [isSignupOpen, setSignupOpen] = useState(false);
+  const [isOutDialog, setOut] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isDropDownOpen, setDropDown] = useState(false);
 
-  // SIGNUP HANDLER
+  /* ------------------------------
+     SIGNUP HANDLER
+  ------------------------------*/
   const handSignin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     const formData = new FormData(e.currentTarget);
 
-    const conf_password = String(formData.get("conf_password") || "");
-
+    const conf_password = String(formData.get("conf_password"));
     const signData: SigninType = {
       username: String(formData.get("username")),
       email: String(formData.get("email")),
@@ -51,10 +52,10 @@ const Header: React.FC = () => {
     try {
       setLoading(true);
 
-      // Create account
+      // Create user
       await axiosInstance.post("/create/", signData);
 
-      // Auto-login (username-based)
+      // Auto login
       const res = await axiosInstance.post("/token/", {
         username: signData.username,
         password: signData.password,
@@ -63,21 +64,20 @@ const Header: React.FC = () => {
       localStorage.setItem("accessToken", res.data.access);
       localStorage.setItem("refreshToken", res.data.refresh);
 
-      toast.success(`Welcome ${signData.username}`);
       setAcc(signData.username);
       setSignupOpen(false);
+      toast.success("Account created successfully!");
+
     } catch (error: any) {
-      const errMsg =
-        error?.response?.data?.username?.[0] ||
-        error?.response?.data?.email?.[0] ||
-        "Signup failed";
-      toast.error(errMsg);
+      toast.error(error?.response?.data?.email?.[0] || "Signup failed");
     } finally {
       setLoading(false);
     }
   };
 
-  // LOGIN HANDLER
+  /* ------------------------------
+      LOGIN HANDLER
+  ------------------------------*/
   const handleLoginForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -89,8 +89,8 @@ const Header: React.FC = () => {
 
     try {
       setLoading(true);
-      const res = await axiosInstance.post("/token/", loginData);
 
+      const res = await axiosInstance.post("/token/", loginData);
       localStorage.setItem("accessToken", res.data.access);
       localStorage.setItem("refreshToken", res.data.refresh);
 
@@ -105,9 +105,19 @@ const Header: React.FC = () => {
     }
   };
 
+  /* ------------------------------
+      LOGOUT HANDLER
+  ------------------------------*/
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    setAcc(null);
+    toast.info("Logged out");
+  };
+
   return (
     <nav className="px-6 py-4 flex items-center justify-between bg-white shadow-md">
-      {/* Logo */}
+      {/* Left Section - Logo */}
       <div className="flex items-center gap-2">
         <img src={Img} alt="Site Logo" className="h-10 w-auto object-contain" />
       </div>
@@ -127,7 +137,7 @@ const Header: React.FC = () => {
 
         <FaGlobe className="text-xl cursor-pointer text-gray-700 hover:text-black transition" />
 
-        {/* Dropdown */}
+        {/* DROPDOWN MENU */}
         <DropdownMenu.Root open={isDropDownOpen} onOpenChange={setDropDown}>
           <DropdownMenu.Trigger asChild>
             <FaBars className="text-xl cursor-pointer text-gray-700 hover:text-black transition" />
@@ -137,7 +147,7 @@ const Header: React.FC = () => {
             <DropdownMenu.Content
               side="bottom"
               align="end"
-              className="bg-white rounded-md shadow-xl p-2 w-60 text-sm border border-gray-200"
+              className="bg-white rounded-xl shadow-xl p-3 w-60 text-sm border border-gray-200"
             >
               <DropdownMenu.Item className="p-2 rounded-md flex items-center gap-2 cursor-pointer hover:bg-gray-100 text-gray-700">
                 <FaQuestionCircle />
@@ -146,8 +156,8 @@ const Header: React.FC = () => {
 
               <hr className="my-2" />
 
-              {/* LOGIN & SIGNUP */}
-              {!acc && (
+              {/* Auth Options */}
+              {!acc ? (
                 <>
                   <DropdownMenu.Item
                     onSelect={() => {
@@ -169,15 +179,11 @@ const Header: React.FC = () => {
                     Sign Up
                   </DropdownMenu.Item>
                 </>
-              )}
-
-              {/* LOGOUT */}
-              {acc && (
+              ) : (
                 <DropdownMenu.Item
                   onSelect={() => {
-                    setAcc(null);
-                    localStorage.clear();
-                    toast.info("Logged out");
+                    setDropDown(false);
+                    setOut(true);
                   }}
                   className="p-2 rounded-md cursor-pointer hover:bg-gray-100 text-gray-700"
                 >
@@ -188,11 +194,15 @@ const Header: React.FC = () => {
           </DropdownMenu.Portal>
         </DropdownMenu.Root>
 
-        {/* SIGNUP POPUP */}
+        {/* SIGNUP MODAL */}
         <Dialog.Root open={isSignupOpen} onOpenChange={setSignupOpen}>
           <Dialog.Portal>
             <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
-            <Dialog.Content className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-xl w-[90%] max-w-sm border border-gray-200">
+
+            <Dialog.Content
+              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
+              bg-white p-6 rounded-lg shadow-xl w-[90%] max-w-sm border border-gray-300"
+            >
               <Dialog.Title className="text-lg font-semibold mb-3">
                 Create Account
               </Dialog.Title>
@@ -217,12 +227,15 @@ const Header: React.FC = () => {
           </Dialog.Portal>
         </Dialog.Root>
 
-
-        {/* LOGIN POPUP */}
+        {/* LOGIN MODAL */}
         <Dialog.Root open={isLoginOpen} onOpenChange={setLoginOpen}>
           <Dialog.Portal>
             <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
-            <Dialog.Content className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-xl w-[90%] max-w-sm border border-gray-200">
+
+            <Dialog.Content
+              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
+              bg-white p-6 rounded-lg shadow-xl w-[90%] max-w-sm border border-gray-300"
+            >
               <Dialog.Title className="text-lg font-semibold mb-3">
                 Log In
               </Dialog.Title>
@@ -241,6 +254,54 @@ const Header: React.FC = () => {
                   <FaTimes className="text-xl text-gray-700 hover:text-black cursor-pointer" />
                 </button>
               </Dialog.Close>
+            </Dialog.Content>
+          </Dialog.Portal>
+        </Dialog.Root>
+
+        {/* LOGOUT CONFIRMATION MODAL */}
+        <Dialog.Root open={isOutDialog} onOpenChange={setOut}>
+          <Dialog.Portal>
+            <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
+
+            <Dialog.Content
+              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
+              bg-white p-6 rounded-lg shadow-xl w-[90%] max-w-sm border border-gray-300 flex flex-col gap-4"
+            >
+              <Dialog.Title className="text-lg font-semibold text-gray-900">
+                Logout
+              </Dialog.Title>
+
+              <p className="text-gray-600 text-sm">
+                Are you sure you want to log out?
+              </p>
+
+              <div className="flex justify-end gap-3 mt-4">
+
+                {/* Cancel */}
+                <Dialog.Close asChild>
+                  <button className="px-4 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100 transition">
+                    Cancel
+                  </button>
+                </Dialog.Close>
+
+                {/* Confirm Logout */}
+                <Dialog.Close asChild>
+                  <button
+                    onClick={handleLogout}
+                    className="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700 transition"
+                  >
+                    Logout
+                  </button>
+                </Dialog.Close>
+
+              </div>
+
+              <Dialog.Close asChild>
+                <button className="absolute top-4 right-4">
+                  <FaTimes className="text-xl text-gray-700 hover:text-black cursor-pointer" />
+                </button>
+              </Dialog.Close>
+
             </Dialog.Content>
           </Dialog.Portal>
         </Dialog.Root>
