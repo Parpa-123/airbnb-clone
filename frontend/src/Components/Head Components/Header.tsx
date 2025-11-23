@@ -30,9 +30,18 @@ const Header: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [isDropDownOpen, setDropDown] = useState(false);
 
-  /* ------------------------------
-     SIGNUP HANDLER
-  ------------------------------*/
+  if(localStorage.getItem('accessToken'))
+  {
+    ;(async () =>{
+      try {
+        const res = await axiosInstance.get('/me/');
+        setAcc(res.data.username)
+      } catch (error:any) {
+        toast.error('Sign in Again');
+      }
+    })()
+  }
+
   const handSignin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -75,9 +84,7 @@ const Header: React.FC = () => {
     }
   };
 
-  /* ------------------------------
-      LOGIN HANDLER
-  ------------------------------*/
+
   const handleLoginForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
