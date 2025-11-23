@@ -40,13 +40,13 @@ class PublicUserApiTests(TestCase):
         self.assertEqual(res.status_code,status.HTTP_400_BAD_REQUEST)
 
     def test_pswd_too_short(self):
+        """Test that password shorter than 8 characters is rejected"""
         payload = {
             'email': 'test@example.com',
-            'password': 'pw',
+            'password': 'short1',
             'username': 'testuser',
         }
 
-        
         res = self.client.post(USER_API_URL, payload)
 
         self.assertEqual(res.status_code,status.HTTP_400_BAD_REQUEST)
@@ -88,6 +88,7 @@ class PrivateUserApiTests(TestCase):
             username = 'TestUser',
             password = 'testpass123',
             email='test@example.com',
+            phone='+1234567890',
         )
 
         self.client = APIClient()
@@ -101,6 +102,9 @@ class PrivateUserApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data['username'], self.testUser.username)
         self.assertEqual(res.data['email'], self.testUser.email)
+        self.assertIn('phone', res.data)
+        self.assertIn('avatar', res.data)
+        self.assertNotIn('password', res.data)
 
 
     def test_post_on_self_not_allowed(self):
@@ -110,10 +114,9 @@ class PrivateUserApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def test_update_on_self(self):
-
+        """Test updating user profile (password only, phone is optional)"""
         payload = {
-            'username' : 'TestUser1',
-            'password' : 'testpass1234',
+            'password' : 'newpass123',
         }
 
         res = self.client.patch(USER_SELF_URL,payload)
@@ -121,5 +124,8 @@ class PrivateUserApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.testUser.refresh_from_db()
 
-        self.assertEqual(self.testUser.username,payload['username'])
+        # Username and email should remain unchanged (read-only)
+        self.assertEqual(self.testUser.username, 'TestUser')
+        self.assertEqual(self.testUser.email, 'test@example.com')
+        # Password should be updated
         self.assertTrue(self.testUser.check_password(payload['password']))

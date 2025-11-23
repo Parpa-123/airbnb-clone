@@ -12,7 +12,7 @@ class AdminSiteTests(TestCase):
         )
 
         # Login as admin user for Django admin
-        self.client.login(email=self.admin_user.email, password="testpass123")
+        self.client.login(username=self.admin_user.username, password="testpass123")
 
         self.user = User.objects.create_user(
             email="user@example.com",
