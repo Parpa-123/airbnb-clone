@@ -43,9 +43,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
-    
+    'django_countries',
+    "cities_light",
     'rest_framework_simplejwt',
     'users',
+    'listings',
     'phonenumber_field',
     'drf_spectacular',
 ]

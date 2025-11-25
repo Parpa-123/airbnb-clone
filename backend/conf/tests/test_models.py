@@ -1,5 +1,6 @@
 from django.test import TestCase
 from users.models import User
+from listings.models import Listings
 
 class UserModelTest(TestCase):
 
@@ -52,3 +53,28 @@ class UserModelTest(TestCase):
         self.assertEqual(user.email, email)
         self.assertTrue(user.check_password(password))
         self.assertTrue(user.is_host)
+
+class ListingModelTest(TestCase):
+
+    def test_create_recipes(self):
+        email = "host@example.com"
+        password = "testpass123"
+        username = "hostuser"
+        user = User.objects.create_host(email, password, username=username)
+        listing = Listings.objects.create(
+            host=user,
+            title="Sample Listing Title",
+            description="This is a sample description for testing the Listings model.",
+            address="123 Test Street",
+            country="IN",  # India (ISO code)
+            city=None,      # Set later if needed
+            property_type="apartment",
+            max_guests=4,
+            bhk_choice=2,
+            bed_choice=3,
+            bathrooms=2.0,
+            price=199.99,
+            price_per_night=59.99
+        )
+
+        self.assertEqual(str(listing),listing.title)

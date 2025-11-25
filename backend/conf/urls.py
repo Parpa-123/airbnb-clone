@@ -28,6 +28,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('users.urls')),
 
+    path("api/listings/", include("listings.urls", namespace="listing")),
+
     # OpenAPI schema generation
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
 
