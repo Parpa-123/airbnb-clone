@@ -4,7 +4,7 @@ import {
   FaGlobe,
   FaBars,
   FaQuestionCircle,
-  FaUser,
+
   FaTimes,
   FaSpinner,
 } from "react-icons/fa";

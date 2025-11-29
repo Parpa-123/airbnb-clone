@@ -1,4 +1,5 @@
 #!/bin/bash
+source venv/Scripts/activate
 
 echo "🚨 WARNING: This will delete ALL migrations in 'users' and 'listings' apps and delete your local database!"
 read -p "Are you sure? (yes/no): " CONFIRM

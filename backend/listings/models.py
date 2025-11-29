@@ -1,9 +1,27 @@
 from django.db import models
 from django.conf import settings
 from django_countries.fields import CountryField
-from cities_light.models import City
 
-class Amineties(models.Model):
+
+# ---------------------------
+# City Model (Simple)
+# ---------------------------
+class City(models.Model):
+    country = CountryField()
+    name = models.CharField(max_length=100)
+
+    class Meta:
+        unique_together = ("country", "name")
+        ordering = ["name"]
+
+    def __str__(self):
+        return f"{self.name}, {self.country}"
+
+
+# ---------------------------
+# Amenities
+# ---------------------------
+class Amenities(models.Model):
     AMENITY_CHOICES = [
         ("wifi", "Wi-Fi"),
         ("tv", "TV"),
@@ -28,14 +46,19 @@ class Amineties(models.Model):
         ("long_term_stays", "Long-Term Stays Allowed"),
     ]
 
-
-    name = models.CharField(max_length = 100, choices= AMENITY_CHOICES)
+    name = models.CharField(max_length=100, choices=AMENITY_CHOICES)
 
     def __str__(self):
-        return self.name
+        return self.get_name_display()
+
+    class Meta:
+        verbose_name_plural = "Amenities"
+        ordering = ["name"]
 
 
-
+# ---------------------------
+# Listings
+# ---------------------------
 class Listings(models.Model):
 
     PROPERTY_TYPES = [
@@ -61,34 +84,56 @@ class Listings(models.Model):
         (4.0, "4.0"),
     ]
 
-    host = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    title = models.CharField(max_length = 255)
+    host = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="listings"
+    )
+
+    title = models.CharField(max_length=255)
     description = models.TextField()
-    address = models.CharField(max_length = 255)
-    country = CountryField(blank_label="(Select country)", blank=True)
+    address = models.CharField(max_length=255)
+
+    country = CountryField(blank_label="Select Country")
     city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True, blank=True)
 
-    property_type = models.CharField(max_length = 15, choices = PROPERTY_TYPES)
+    property_type = models.CharField(max_length=15, choices=PROPERTY_TYPES)
+
     max_guests = models.IntegerField(choices=GUEST_COUNT_CHOICES)
-    bhk_choice = models.IntegerField(choices= BEDROOM_CHOICES)
-    bed_choice = models.IntegerField(choices = BED_CHOICES)
-    bathrooms = models.DecimalField(max_digits=3, decimal_places=1, choices = BATHROOM_CHOICES)
-    price = models.DecimalField(max_digits=10,decimal_places=2, blank=True)
+    bhk_choice = models.IntegerField(choices=BEDROOM_CHOICES)
+    bed_choice = models.IntegerField(choices=BED_CHOICES)
+    bathrooms = models.DecimalField(max_digits=3, decimal_places=1, choices=BATHROOM_CHOICES)
 
-    crested_at = models.DateTimeField(auto_now_add=True)
-    update_at = models.DateTimeField(auto_now=True)
-
-    aminities = models.ManyToManyField(Amineties)
     price_per_night = models.DecimalField(max_digits=10, decimal_places=2)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    amenities = models.ManyToManyField(Amenities, blank=True)
 
     def __str__(self):
         return self.title
 
+    class Meta:
+        verbose_name_plural = "Listings"
+        ordering = ["-created_at"]
+
+
+# ---------------------------
+# Listing Images
+# ---------------------------
 class ListingImages(models.Model):
-    name = models.CharField(max_length = 100)
-    listings = models.ForeignKey(Listings, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='media/listings')
+    listings = models.ForeignKey(
+        Listings,
+        on_delete=models.CASCADE,
+        related_name='listingimages'
+    )
+    name = models.CharField(max_length=100)
+    image = models.ImageField(upload_to='listings/', blank=True, null=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        verbose_name_plural = "Listing Images"
+
     def __str__(self):
-        return self.name
+        return f"{self.name} ({self.listings.title})"

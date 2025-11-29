@@ -7,9 +7,12 @@ from rest_framework.test import APIClient
 from users.models import User
 from cities_light.models import City, Country
 from listings.models import Listings
-from listings.serializers import ListingSerializer
+from listings.serializers import ListingSerializer, ListingDetailSerializer
 
 LIST_API_URL = reverse('listing:listings-list')
+
+def detailed_list_url(p_id):
+    return reverse('listing:property-details', args=[p_id])
 
 
 def create_estate(user, params=None):
@@ -37,10 +40,10 @@ def create_estate(user, params=None):
         "description": "Beautiful apartment overlooking the sea with modern interiors.",
         "address": "Marine Drive, Mumbai",
 
-        # Listings.country expects a string code ("IN"), not a Country instance
+        
         "country": "IN",
 
-        # Listings.city expects a City FK
+        
         "city": city_obj,
 
         "property_type": "apartment",
@@ -110,3 +113,13 @@ class PrivateListingsTest(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
+
+    def test_detailed_description(self):
+
+        property_dets = create_estate(user=self.testuser)
+
+        res = self.client.get(detailed_list_url(property_dets.id))
+
+        serialized_data = ListingDetailSerializer(property_dets).data
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(serialized_data, res.data)
