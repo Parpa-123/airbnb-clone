@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import User
+from listings import models as listing_models
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
 
@@ -27,3 +28,5 @@ class UserAdmin(BaseUserAdmin):
     filter_horizontal = ()
 
 admin.site.register(User, UserAdmin)
+admin.site.register(listing_models.Listings)
+admin.site.register(listing_models.ListingImages)
