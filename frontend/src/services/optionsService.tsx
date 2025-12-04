@@ -8,6 +8,8 @@ interface OptionsResponse {
     guest_options: { value: string; label: string }[];
     bathroom_options: { value: string; label: string }[];
     bed_options: { value: string; label: string }[];
+    country_options?: { value: string; label: string }[];
+    city_options?: { value: string; label: string }[];
 }
 
 const useOptionsService = () => {

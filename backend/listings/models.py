@@ -1,21 +1,9 @@
 from django.db import models
 from django.conf import settings
-from django_countries.fields import CountryField
 
 
-# ---------------------------
-# City Model (Simple)
-# ---------------------------
-class City(models.Model):
-    country = CountryField()
-    name = models.CharField(max_length=100)
 
-    class Meta:
-        unique_together = ("country", "name")
-        ordering = ["name"]
 
-    def __str__(self):
-        return f"{self.name}, {self.country}"
 
 
 # ---------------------------
@@ -94,8 +82,8 @@ class Listings(models.Model):
     description = models.TextField()
     address = models.CharField(max_length=255)
 
-    country = CountryField(blank_label="Select Country")
-    city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True, blank=True)
+    country = models.CharField(max_length=100)
+    city = models.CharField(max_length=100)
 
     property_type = models.CharField(max_length=15, choices=PROPERTY_TYPES)
 

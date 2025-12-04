@@ -1,6 +1,7 @@
 from rest_framework import generics, permissions, views
 from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from listings.models import Listings, Amenities
 from listings.serializers import ListingSerializer, ListingDetailSerializer, CreateUpdateListSerializer
 
@@ -24,8 +25,14 @@ class ListingView(generics.ListCreateAPIView):
             return CreateUpdateListSerializer
         return ListingSerializer
     
-    def perform_create(self, serializer):
-        serializer.save(host=self.request.user)
+    @extend_schema(
+        request=CreateUpdateListSerializer,
+        responses={201: ListingDetailSerializer}
+    )
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+    
+    
 
 
 class ListingDetailView(generics.RetrieveUpdateAPIView):
@@ -41,6 +48,20 @@ class ListingDetailView(generics.RetrieveUpdateAPIView):
         if self.request.method in ["PUT", "PATCH"]:
             return CreateUpdateListSerializer
         return ListingDetailSerializer
+    
+    @extend_schema(
+        request=CreateUpdateListSerializer,
+        responses={200: ListingDetailSerializer}
+    )
+    def put(self, request, *args, **kwargs):
+        return super().put(request, *args, **kwargs)
+    
+    @extend_schema(
+        request=CreateUpdateListSerializer,
+        responses={200: ListingDetailSerializer}
+    )
+    def patch(self, request, *args, **kwargs):
+        return super().patch(request, *args, **kwargs)
     
 class PublicListingView(generics.ListAPIView):
     queryset = Listings.objects.all().order_by("-id")

@@ -18,6 +18,7 @@ export interface StepField {
     'bedroomCounts' |
     'bedCounts' |
     'bathroomCounts';
+    accept?: string;
 }
 
 export interface Step {
@@ -29,8 +30,14 @@ export interface Step {
 export const createFormSteps = (apiOptions: any): Step[] => {
     return [
         {
-            title: "Property Type",
+            title: "Property Details",
             fields: [
+                {
+                    name: "title",
+                    label: "Property Title",
+                    type: "text",
+                    rules: { required: true },
+                },
                 {
                     name: "property_type",
                     label: "Property Type",
@@ -44,29 +51,29 @@ export const createFormSteps = (apiOptions: any): Step[] => {
             title: "Property Features",
             fields: [
                 {
-                    name: "guest_count",
-                    label: "Guest Count",
+                    name: "max_guests",
+                    label: "Maximum Guests",
                     type: "select",
                     options: apiOptions?.guest_options || [],
                     rules: { required: true }
                 },
                 {
-                    name: "bedroom_count",
-                    label: "Bedroom Count",
+                    name: "bhk_choice",
+                    label: "Bedroom Count (BHK)",
                     type: "select",
                     options: apiOptions?.bedroom_options || [],
                     rules: { required: true }
                 },
                 {
-                    name: "bed_count",
+                    name: "bed_choice",
                     label: "Bed Count",
                     type: "select",
                     options: apiOptions?.bed_options || [],
                     rules: { required: true }
                 },
                 {
-                    name: "bathroom_count",
-                    label: "Bathroom Count",
+                    name: "bathrooms",
+                    label: "Bathrooms",
                     type: "select",
                     options: apiOptions?.bathroom_options || [],
                     rules: { required: true }
@@ -102,7 +109,7 @@ export const createFormSteps = (apiOptions: any): Step[] => {
                 {
                     name: "description",
                     label: "Description",
-                    type: "text",
+                    type: "textarea",
                     rules: { required: true }
                 },
             ]
@@ -114,7 +121,7 @@ export const createFormSteps = (apiOptions: any): Step[] => {
                     name: "amenities",
                     label: "Amenities",
                     type: "checkbox",
-                    options: apiOptions?.amenities || [],
+                    options: apiOptions?.aminities || [],
                     rules: { required: true }
                 },
             ]
@@ -123,8 +130,8 @@ export const createFormSteps = (apiOptions: any): Step[] => {
             title: "Property Pricing",
             fields: [
                 {
-                    name: "price",
-                    label: "Price",
+                    name: "price_per_night",
+                    label: "Price Per Night",
                     type: "number",
                     rules: { required: true }
                 },
@@ -137,8 +144,9 @@ export const createFormSteps = (apiOptions: any): Step[] => {
                     name: "images",
                     label: "Images",
                     type: "file",
-                    rules: { required: true }
-                },
+                    accept: "image/*",
+                    rules: { required: true, maxFiles: 5 }
+                }
             ]
         },
     ];

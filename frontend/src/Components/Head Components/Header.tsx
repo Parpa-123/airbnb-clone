@@ -146,20 +146,20 @@ const Header: React.FC = () => {
           </Dialog.Trigger>
 
           <Dialog.Portal>
-            <Dialog.Overlay className="fixed inset-0 bg-black/40 backdrop-blur-sm" />
+            <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-md z-40" />
 
             <Dialog.Content className="
-              fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
-              bg-white rounded-xl shadow-xl p-6 max-w-lg w-[90%]
-              border border-gray-200
+              fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50
+              bg-linear-to-br from-white to-gray-50 rounded-2xl shadow-2xl 
+              p-8 max-w-4xl w-[95%] border border-gray-100
             ">
-              <Dialog.Title className="text-xl font-semibold mb-3">
+              <Dialog.Title className="text-2xl font-bold mb-2 bg-linear-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
                 Become a Host
               </Dialog.Title>
 
               {/* FIXED: Swapped statements */}
-              <Dialog.Description className="text-sm text-gray-600 mb-5">
-                {!acc
+              <Dialog.Description className="text-sm text-gray-600 mb-6">
+                {acc
                   ? "List your property and start earning."
                   : "Sign up to become a host and start listing your property."}
               </Dialog.Description>
@@ -167,8 +167,9 @@ const Header: React.FC = () => {
               <MultiStepController />
 
               <Dialog.Close asChild>
-                <button className="w-full mt-6 py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-                  Close
+                <button className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 
+                  transition-colors duration-200">
+                  <FaTimes className="text-xl" />
                 </button>
               </Dialog.Close>
             </Dialog.Content>
