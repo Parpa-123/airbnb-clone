@@ -1,6 +1,6 @@
 from django.db import models
 from django.conf import settings
-
+from django.utils.text import slugify
 
 
 
@@ -98,6 +98,13 @@ class Listings(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     amenities = models.ManyToManyField(Amenities, blank=True)
+
+    title_slug = models.SlugField(unique=True, blank=True, max_length=255, null=True)
+
+    def save(self, *args, **kwargs):
+        if not self.title_slug:
+            self.title_slug = slugify(self.title)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.title

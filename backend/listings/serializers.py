@@ -52,6 +52,7 @@ class ListingSerializer(serializers.ModelSerializer):
         fields = [
             "host",
             "title",
+            "title_slug",
             "country",
             "city",
             "property_type",
@@ -73,6 +74,7 @@ class ListingSerializer(serializers.ModelSerializer):
 
 class ListingDetailSerializer(ListingSerializer):
     amenities = AmenitySerializer(many=True, read_only=True)
+    images = ListingImageSerializer(many=True, read_only=True, source="listingimages")
 
     class Meta(ListingSerializer.Meta):
         fields = ListingSerializer.Meta.fields + [
@@ -80,6 +82,7 @@ class ListingDetailSerializer(ListingSerializer):
             "address",
             "updated_at",
             "amenities",
+            "images",
         ]
         read_only_fields = ListingSerializer.Meta.read_only_fields + ["updated_at"]
 

@@ -11,7 +11,6 @@ class ListingView(generics.ListCreateAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
-    # Only show the logged-in user's listings
     def get_queryset(self):
         return Listings.objects.filter(host=self.request.user).order_by("-id")
 
@@ -37,8 +36,8 @@ class ListingView(generics.ListCreateAPIView):
 
 class ListingDetailView(generics.RetrieveUpdateAPIView):
     serializer_class = ListingDetailSerializer
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
+    
+    permission_classes = [permissions.AllowAny]
 
     
     def get_queryset(self):

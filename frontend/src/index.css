@@ -25,3 +25,40 @@
   scrollbar-width: thin;
   scrollbar-color: #9ca3af #f3f4f6;
 }
+
+@layer components {
+  /* Airbnb Swiper Wrapper */
+  .airbnb-swiper {
+    @apply relative rounded-xl overflow-hidden shadow-md;
+  }
+
+  /* Translucent circular Airbnb arrow buttons */
+  .airbnb-arrow {
+    @apply absolute top-1/2 -translate-y-1/2 z-20
+           w-11 h-11 rounded-full 
+           bg-white/70 backdrop-blur 
+           shadow-md flex justify-center items-center
+           transition hover:bg-white/90 hover:scale-105;
+  }
+
+  .airbnb-arrow-prev {
+    @apply left-4;
+  }
+
+  .airbnb-arrow-next {
+    @apply right-4;
+  }
+
+  .airbnb-arrow-icon {
+    @apply text-xl font-semibold text-gray-800 select-none;
+  }
+
+  /* Airbnb pagination bullets */
+  .airbnb-pagination .swiper-pagination-bullet {
+    @apply bg-white/70 w-2 h-2 opacity-100;
+  }
+
+  .airbnb-pagination .swiper-pagination-bullet-active {
+    @apply bg-[#FF385C] w-[10px] h-[10px];
+  }
+}
