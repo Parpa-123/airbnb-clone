@@ -12,6 +12,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import axiosInstance from "../../../public/connect";
 import { toast } from "react-toastify";
 import MultiStepController from "../Multiform Components/MultiStepController";
+import { Outlet } from "react-router-dom";
 
 /* --------------------------------- Types --------------------------------- */
 interface LoginType {
@@ -121,6 +122,7 @@ const Header: React.FC = () => {
   /* ============================ RETURN JSX ================================ */
 
   return (
+    <>
     <nav className="px-6 py-4 flex items-center justify-between bg-white shadow-md">
       {/* Logo */}
       <div className="flex items-center gap-2">
@@ -341,6 +343,8 @@ const Header: React.FC = () => {
 
       </div>
     </nav>
+    <Outlet />
+    </>
   );
 };
 
