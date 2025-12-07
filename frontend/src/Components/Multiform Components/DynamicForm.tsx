@@ -42,7 +42,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
 
             {/* Scrollable Content Area */}
             <div className="flex-1 overflow-y-auto px-8 py-2 custom-scrollbar">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-6 pt-4">
+                <div>
                     {step.fields.map((field) => (
                         <ReusableTextField
                             key={field.name}
