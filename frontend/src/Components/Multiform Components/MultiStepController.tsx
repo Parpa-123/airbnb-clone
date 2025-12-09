@@ -77,6 +77,7 @@ const MultiStepController = () => {
             return;
         }
         setCurrentStep((prev) => prev - 1);
+        
     };
 
     if (loading) return <p className="text-center py-10">Loading...</p>;

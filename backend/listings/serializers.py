@@ -309,3 +309,5 @@ class CreateUpdateListSerializer(serializers.ModelSerializer):
     # -----------------------------------------
     def to_representation(self, instance):
         return ListingDetailSerializer(instance, context=self.context).data
+
+

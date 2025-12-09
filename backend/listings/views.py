@@ -1,9 +1,10 @@
 from rest_framework import generics, permissions, views
 from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.utils import extend_schema, OpenApiParameter, extend_schema_view
 from listings.models import Listings, Amenities
 from listings.serializers import ListingSerializer, ListingDetailSerializer, CreateUpdateListSerializer
+from listings.filters import ListingFilter
 
 
 class ListingView(generics.ListCreateAPIView):
@@ -61,11 +62,44 @@ class ListingDetailView(generics.RetrieveUpdateAPIView):
     )
     def patch(self, request, *args, **kwargs):
         return super().patch(request, *args, **kwargs)
-    
+
+
+
+@extend_schema_view(
+    list = extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="country",
+                description="Filter listings by country",
+                required=False,
+                type=str
+            ),
+            OpenApiParameter(
+                name="city",
+                description="Filter listings by city",
+                required=False,
+                type=str
+            ),
+            OpenApiParameter(
+                name="price",
+                description="Filter listings by price",
+                required=False,
+                type=str
+            ),
+            OpenApiParameter(
+                name="guests",
+                description="Filter listings by number of guests",
+                required=False,
+                type=str
+            ),
+        ]
+    )
+)
 class PublicListingView(generics.ListAPIView):
     queryset = Listings.objects.all().order_by("-id")
     serializer_class = ListingSerializer
     permission_classes = [permissions.AllowAny]
+    filterset_class = ListingFilter
 
 class OptionsView(views.APIView):
     def get(self,request):
