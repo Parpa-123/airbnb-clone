@@ -35,33 +35,11 @@ class ListingView(generics.ListCreateAPIView):
     
 
 
-class ListingDetailView(generics.RetrieveUpdateAPIView):
+class ListingDetailView(generics.RetrieveAPIView):
+    queryset = Listings.objects.all()
     serializer_class = ListingDetailSerializer
-    
     permission_classes = [permissions.AllowAny]
-
-    
-    def get_queryset(self):
-        return Listings.objects.filter(host=self.request.user)
-
-    def get_serializer_class(self):
-        if self.request.method in ["PUT", "PATCH"]:
-            return CreateUpdateListSerializer
-        return ListingDetailSerializer
-    
-    @extend_schema(
-        request=CreateUpdateListSerializer,
-        responses={200: ListingDetailSerializer}
-    )
-    def put(self, request, *args, **kwargs):
-        return super().put(request, *args, **kwargs)
-    
-    @extend_schema(
-        request=CreateUpdateListSerializer,
-        responses={200: ListingDetailSerializer}
-    )
-    def patch(self, request, *args, **kwargs):
-        return super().patch(request, *args, **kwargs)
+    lookup_field = 'title_slug'
 
 
 

@@ -35,7 +35,7 @@ const App: React.FC = () => {
               <Route index element={<PublicListings />} />
 
               {/* Detailed listing page */}
-              <Route path=":id" element={<DetailedPage />} />
+              <Route path=":slug" element={<DetailedPage />} />
 
               {/* Protected route for profile page */}
               <Route

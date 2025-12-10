@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'users',
     'listings',
+    'bookings',
     'phonenumber_field',
     'drf_spectacular',
     'django_filters',

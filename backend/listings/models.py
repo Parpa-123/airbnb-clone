@@ -1,6 +1,8 @@
 from django.db import models
 from django.conf import settings
 from django.utils.text import slugify
+from django.core.exceptions import ValidationError
+from django.db.models import Q
 
 
 
@@ -112,7 +114,12 @@ class Listings(models.Model):
     class Meta:
         verbose_name_plural = "Listings"
         ordering = ["-created_at"]
-
+        constraints = [
+            models.CheckConstraint(
+                check= Q(price_per_night__gte = 0),
+                name = "price_per_night_must_be_positive"
+            )
+        ]
 
 # ---------------------------
 # Listing Images

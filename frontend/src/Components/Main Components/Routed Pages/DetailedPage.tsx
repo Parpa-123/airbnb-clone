@@ -58,7 +58,7 @@ export interface ListingDetail {
 /* --------------------------- COMPONENT --------------------------- */
 
 const DetailedPage = () => {
-  const { id } = useParams();
+  const { slug } = useParams();
 
   const [listingDetail, setListingDetail] = useState<ListingDetail | null>(null);
   const [photos, setPhotos] = useState<ListingImage[]>([]);
@@ -95,20 +95,18 @@ const DetailedPage = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const res = await axiosInstance.get<ListingDetail>(
-          `/listings/${Number(id)}/`
-        );
+        const res = await axiosInstance.get<ListingDetail>(`/listings/${slug}/`);
         setListingDetail(res.data);
         setPhotos(res.data.images);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Something went wrong.");
+      } catch (err: any) {
+        setError(err?.message ?? "Something went wrong.");
       } finally {
         setLoading(false);
       }
     };
 
-    loadData();
-  }, [id]);
+    if (slug) loadData();
+  }, [slug]);
 
   if (loading) return <p>Loading…</p>;
   if (error) return <p>Error: {error}</p>;
@@ -128,8 +126,8 @@ const DetailedPage = () => {
       {/* ----------------------- MAIN SWIPER ----------------------- */}
       <div className="mt-6 airbnb-swiper relative">
 
-        <button ref={mainPrev} className="airbnb-arrow airbnb-arrow-prev cursor-pointer">‹</button>
-        <button ref={mainNext} className="airbnb-arrow airbnb-arrow-next cursor-pointer">›</button>
+        <button ref={mainPrev} className="airbnb-arrow airbnb-arrow-prev">‹</button>
+        <button ref={mainNext} className="airbnb-arrow airbnb-arrow-next">›</button>
 
         <Swiper
           modules={[Navigation, Pagination]}
@@ -139,7 +137,10 @@ const DetailedPage = () => {
           }}
           pagination={{ clickable: true }}
           onInit={(swiper) => {
-            if (swiper.params.navigation && typeof swiper.params.navigation !== "boolean") {
+            if (
+              swiper.params.navigation &&
+              typeof swiper.params.navigation !== "boolean"
+            ) {
               swiper.params.navigation.prevEl = mainPrev.current;
               swiper.params.navigation.nextEl = mainNext.current;
             }
@@ -165,10 +166,10 @@ const DetailedPage = () => {
 
       {/* --------------------- FULLSCREEN MODAL --------------------- */}
       {openFull && (
-        <div className="fixed inset-0 bg-black/90 z-9999 flex justify-center items-center">
+        <div className="fixed inset-0 bg-black/90 z-[9999] flex justify-center items-center">
 
-          <button ref={fullPrev} className="airbnb-arrow airbnb-arrow-prev cursor-pointer">‹</button>
-          <button ref={fullNext} className="airbnb-arrow airbnb-arrow-next cursor-pointer">›</button>
+          <button ref={fullPrev} className="airbnb-arrow airbnb-arrow-prev">‹</button>
+          <button ref={fullNext} className="airbnb-arrow airbnb-arrow-next">›</button>
 
           <Swiper
             modules={[Pagination, Navigation]}
@@ -179,7 +180,10 @@ const DetailedPage = () => {
               nextEl: fullNext.current,
             }}
             onInit={(swiper) => {
-              if (swiper.params.navigation && typeof swiper.params.navigation !== "boolean") {
+              if (
+                swiper.params.navigation &&
+                typeof swiper.params.navigation !== "boolean"
+              ) {
                 swiper.params.navigation.prevEl = fullPrev.current;
                 swiper.params.navigation.nextEl = fullNext.current;
               }
@@ -200,8 +204,6 @@ const DetailedPage = () => {
               </SwiperSlide>
             ))}
           </Swiper>
-
-         
         </div>
       )}
 
