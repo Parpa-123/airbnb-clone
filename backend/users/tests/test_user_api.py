@@ -54,27 +54,61 @@ class PublicUserApiTests(TestCase):
         self.assertFalse(db_state)
     
     def test_token_fetch(self):
-        payload = {
+        user_data = {
             'email': 'test@example.com',
             'password': 'testpass123',
             'username': 'testuser',
         }
-        create_user(**payload)
-        res = self.client.post(USER_TOKEN_URL,payload)
+        create_user(**user_data)
+        
+        # Login using username, not email
+        login_payload = {
+            'username': 'testuser',
+            'password': 'testpass123',
+        }
+        res = self.client.post(USER_TOKEN_URL, login_payload)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertIn('access', res.data)
+        self.assertIn('refresh', res.data)
 
     def test_token_fetch_failure_on_no_pswd(self):
-        payload = {
+        """Test that token fetch fails with empty password"""
+        user_data = {
             'email': 'test@example.com',
-            'password': '',
+            'password': 'testpass123',
             'username': 'testuser',
         }
-        create_user(**payload)
-        res = self.client.post(USER_TOKEN_URL,payload)
+        create_user(**user_data)
+        
+        # Try to login with empty password using username
+        login_payload = {
+            'username': 'testuser',
+            'password': '',
+        }
+        res = self.client.post(USER_TOKEN_URL, login_payload)
 
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertNotIn('access', res.data)
 
+    def test_token_fetch_with_wrong_username(self):
+        """Test that token fetch fails with non-existent username"""
+        user_data = {
+            'email': 'test@example.com',
+            'password': 'testpass123',
+            'username': 'testuser',
+        }
+        create_user(**user_data)
+        
+        # Try to login with wrong username
+        login_payload = {
+            'username': 'wronguser',
+            'password': 'testpass123',
+        }
+        res = self.client.post(USER_TOKEN_URL, login_payload)
+
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+    
     def test_retriving_self_not_allowed(self):
 
         res = self.client.get(USER_SELF_URL)

@@ -1,16 +1,28 @@
 from rest_framework import generics
-from .models import Bookings
-from .serializers import CreateBookingSerializer, PublicBookingSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-# Create your views here.
+from .serializers import CreateBookingSerializer
+from .models import Bookings
 
-class CreateBookingView(generics.CreateAPIView):
-    queryset = Bookings.objects.all()
-    serializer_class = CreateBookingSerializer
-    authentication_classes = [JWTAuthentication]
+class AuthAPIView:
     permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+class BookingListCreateView(AuthAPIView,generics.ListCreateAPIView):
+    serializer_class = CreateBookingSerializer
+    
+
+    def get_queryset(self):
+        
+        return Bookings.objects.filter(guest=self.request.user)
 
     def perform_create(self, serializer):
         serializer.save(guest=self.request.user)
+
+class BookingRetrieveUpdateDestroyView(AuthAPIView,generics.DestroyAPIView):
+    serializer_class = CreateBookingSerializer
+    
+
+    def get_queryset(self):
+        return Bookings.objects.filter(guest=self.request.user)

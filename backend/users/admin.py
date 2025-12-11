@@ -4,6 +4,8 @@ from listings import models as listing_models
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
 
+from bookings import models as booking_models
+
 class UserAdmin(BaseUserAdmin):
     list_display = ('email', 'username')
     
@@ -27,6 +29,16 @@ class UserAdmin(BaseUserAdmin):
     ordering = ('email',)
     filter_horizontal = ()
 
+
+class ListingsAdmin(admin.ModelAdmin):
+    list_display = ('title', 'host')
+
+class BookingsAdmin(admin.ModelAdmin):
+    list_display = ('guest', 'listing', 'start_date', 'end_date', 'status')
+
+
 admin.site.register(User, UserAdmin)
-admin.site.register(listing_models.Listings)
+admin.site.register(listing_models.Listings, ListingsAdmin)
 admin.site.register(listing_models.ListingImages)
+admin.site.register(booking_models.Bookings, BookingsAdmin)
+

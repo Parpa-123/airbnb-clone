@@ -105,7 +105,16 @@ class Listings(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.title_slug:
-            self.title_slug = slugify(self.title)
+            base_slug = slugify(self.title)
+            unique_slug = base_slug
+            counter = 1
+
+            while Listings.objects.filter(title_slug=unique_slug).exists():
+                unique_slug = f"{base_slug}-{counter}"
+                counter += 1
+
+            self.title_slug = unique_slug
+
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -138,4 +147,4 @@ class ListingImages(models.Model):
         verbose_name_plural = "Listing Images"
 
     def __str__(self):
-        return f"{self.name} ({self.listings.title})"
+        return f"{self.name}"

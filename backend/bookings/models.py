@@ -55,7 +55,7 @@ class Bookings(models.Model):
         verbose_name_plural = "Bookings"
         constraints = [
             models.CheckConstraint(
-                check = Q(start_date__lte = end_date) & Q(end_date__gte = start_date),
+                check = Q(start_date__lte = models.F("end_date")) & Q(end_date__gte = models.F("start_date")),
                 name = "start_date_before_end_date"
             ),
 

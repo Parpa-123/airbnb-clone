@@ -30,6 +30,7 @@ urlpatterns = [
     path('api/', include('users.urls')),
 
     path("api/listings/", include("listings.urls", namespace="listing")),
+    path("api/bookings/", include("bookings.urls", namespace="booking")),
 
     # OpenAPI schema generation
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
