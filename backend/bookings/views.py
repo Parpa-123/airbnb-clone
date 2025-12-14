@@ -2,7 +2,7 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from .serializers import CreateBookingSerializer
+from .serializers import BookingSerializer,ViewBookingSerializer
 from .models import Bookings
 
 class AuthAPIView:
@@ -10,7 +10,7 @@ class AuthAPIView:
     authentication_classes = [JWTAuthentication]
 
 class BookingListCreateView(AuthAPIView,generics.ListCreateAPIView):
-    serializer_class = CreateBookingSerializer
+    serializer_class = BookingSerializer
     
 
     def get_queryset(self):
@@ -21,8 +21,17 @@ class BookingListCreateView(AuthAPIView,generics.ListCreateAPIView):
         serializer.save(guest=self.request.user)
 
 class BookingRetrieveUpdateDestroyView(AuthAPIView,generics.DestroyAPIView):
-    serializer_class = CreateBookingSerializer
+    serializer_class = BookingSerializer
     
 
     def get_queryset(self):
         return Bookings.objects.filter(guest=self.request.user)
+
+class RetrieveView(AuthAPIView,generics.ListAPIView):
+    serializer_class = ViewBookingSerializer
+    
+
+    def get_queryset(self):
+        return Bookings.objects.filter(guest=self.request.user)
+
+    

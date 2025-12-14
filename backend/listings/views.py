@@ -80,6 +80,8 @@ class PublicListingView(generics.ListAPIView):
     filterset_class = ListingFilter
 
 class OptionsView(views.APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
     def get(self,request):
         return Response({
             'property_options' : [

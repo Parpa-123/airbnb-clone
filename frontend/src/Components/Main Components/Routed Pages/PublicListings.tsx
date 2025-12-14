@@ -1,6 +1,3 @@
-// =========================
-// Imports
-// =========================
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../../../../public/connect";
 import { type ListingImage } from "./DetailedPage";
@@ -8,9 +5,7 @@ import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 
 
-// =========================
-// Interfaces
-// =========================
+
 
 export interface Listing {
   id: number;
@@ -32,9 +27,7 @@ export interface Listing {
   created_at: string;
 }
 
-// =========================
-// Component
-// =========================
+
 
 const PublicListings: React.FC = () => {
   const [listings, setListings] = useState<Listing[]>([]);
@@ -122,7 +115,5 @@ const PublicListings: React.FC = () => {
   );
 };
 
-// =========================
-// Export
-// =========================
+
 export default PublicListings;

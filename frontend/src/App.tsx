@@ -17,6 +17,7 @@ import PublicListings from "./Components/Main Components/Routed Pages/PublicList
 // Auth and protected routes
 import LoginContextProvider from "../public/loginContext";
 import ProtectedRoute from "../public/ProtectedRoute";
+import Bookings from "./Components/Main Components/Routed Pages/Bookings";
 
 // ==============================
 // App Component
@@ -36,6 +37,7 @@ const App: React.FC = () => {
 
               {/* Detailed listing page */}
               <Route path=":slug" element={<DetailedPage />} />
+              <Route path="bookings" element={<Bookings />} />
 
               {/* Protected route for profile page */}
               <Route

@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import axiosInstance from "../../public/connect";
 import { useState } from "react";
 
@@ -28,14 +29,12 @@ const useOptionsService = () => {
 
             // Set the fetched data
             setOptions(response.data);
-            console.log(response.data);
+           
             setLoading(false);
             return response.data;
 
-        } catch (err) {
-            console.error("Error fetching options:", err);
-            setError("Failed to fetch options.");
-            setLoading(false);
+        } catch (err : any) {
+            toast.info(err)
             throw err;
         }
     };

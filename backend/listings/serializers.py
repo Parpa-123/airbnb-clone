@@ -159,6 +159,7 @@ class CreateUpdateListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Listings
         fields = [
+            "id",
             "title",
             "description",
             "address",
