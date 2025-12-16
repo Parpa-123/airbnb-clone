@@ -18,10 +18,13 @@ const ListingEditPage = () => {
     }, []);
 
     /* ---------------- FETCH LISTING ---------------- */
+    const fetchListing = async () => {
+        const res = await axiosInstance.get(`/listings/${Number(id)}/edit/`);
+        setListing(res.data);
+    };
+
     useEffect(() => {
-        axiosInstance.get(`/listings/${Number(id)}/edit/`).then((res) => {
-            setListing(res.data);
-        });
+        fetchListing();
     }, [id]);
 
     /* ---------------- PATCH HANDLER ---------------- */
@@ -52,6 +55,11 @@ const ListingEditPage = () => {
             );
 
             toast.success("Listing updated");
+
+            // Refetch listing data after FormData updates (for images)
+            if (payload instanceof FormData) {
+                await fetchListing();
+            }
         }
         catch (err) {
             setListing(previous);
@@ -268,21 +276,27 @@ const ListingEditPage = () => {
                             <div className="md:col-span-2">
                                 <label className="block text-sm font-medium text-gray-700 mb-3">Amenities</label>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                    {options?.aminities?.map((opt) => (
-                                        <label
-                                            key={opt.value}
-                                            className="flex items-center gap-3 p-3 border border-gray-300 rounded-lg hover:border-[#FF385C] hover:bg-gray-50 transition-all cursor-pointer"
-                                        >
-                                            <input
-                                                type="checkbox"
-                                                value={opt.value}
-                                                {...register("amenities")}
-                                                className="w-4 h-4 text-[#FF385C] border-gray-300 rounded focus:ring-[#FF385C] focus:ring-2"
-                                                checked={listing.amenities.includes(opt)}
-                                            />
-                                            <span className="text-sm text-gray-700">{opt.label}</span>
-                                        </label>
-                                    ))}
+                                    {options?.aminities?.map((opt) => {
+                                        const isChecked = listing.amenities.some(
+                                            (amenity) => amenity.name === opt.value
+                                        );
+
+                                        return (
+                                            <label
+                                                key={opt.value}
+                                                className="flex items-center gap-3 p-3 border border-gray-300 rounded-lg hover:border-[#FF385C] hover:bg-gray-50 transition-all cursor-pointer"
+                                            >
+                                                <input
+                                                    type="checkbox"
+                                                    value={opt.value}
+                                                    {...register("amenities")}
+                                                    defaultChecked={isChecked}
+                                                    className="w-4 h-4 text-[#FF385C] border-gray-300 rounded focus:ring-[#FF385C] focus:ring-2"
+                                                />
+                                                <span className="text-sm text-gray-700">{opt.label}</span>
+                                            </label>
+                                        );
+                                    })}
                                 </div>
                             </div>
                         )}

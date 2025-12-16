@@ -3,7 +3,6 @@ from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
-import base64
 
 from users.models import User
 from listings.models import Listings, ListingImages, Amenities
@@ -163,58 +162,6 @@ class PrivateListingsTest(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_create_listing_with_base64_images(self):
-        """Test creating a listing with base64 encoded images"""
-        # Create a minimal 1x1 PNG image in base64
-        # This is a valid 1x1 transparent PNG
-        tiny_png_base64 = (
-            "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
-        )
-        
-        # Create the data URL format
-        image_data_url = f"data:image/png;base64,{tiny_png_base64}"
-        
-        valid_params = {
-            "title": "Beach House with Images",
-            "description": "Beautiful beach house with ocean views",
-            "address": "456 Ocean Drive",
-            "country": "India",
-            "city": "Goa",
-            "property_type": "house",
-            "max_guests": 6,
-            "bhk_choice": 3,
-            "bed_choice": 4,
-            "bathrooms": 2.0,
-            "price_per_night": "200.50",
-            "images": [
-                {
-                    "name": "front_view",
-                    "image_data": image_data_url
-                },
-                {
-                    "name": "back_view",
-                    "image_data": image_data_url
-                }
-            ]
-        }
-        
-        res = self.client.post(LIST_API_URL, valid_params, format='json')
-        
-        # Verify listing was created
-        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
-        
-        # Verify listing exists
-        listing = Listings.objects.filter(title="Beach House with Images").first()
-        self.assertIsNotNone(listing)
-        
-        # Verify images were created
-        images = ListingImages.objects.filter(listings=listing)
-        self.assertEqual(images.count(), 2)
-        
-        # Verify image names
-        image_names = [img.name for img in images]
-        self.assertIn("front_view", image_names)
-        self.assertIn("back_view", image_names)
 
     def test_create_amenities(self):
         amenities = Amenities.objects.create(name="Wi-Fi")

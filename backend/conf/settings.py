@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'users',
     'listings',
     'bookings',
+    'wishlist',
     'phonenumber_field',
     'drf_spectacular',
     'django_filters',

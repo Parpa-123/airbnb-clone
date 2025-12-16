@@ -240,7 +240,7 @@ const DetailedPage: React.FC = () => {
       {/* FULLSCREEN MODAL */}
       {openFull && (
         <div
-          className="fixed inset-0 bg-black/95 z-[9999] flex justify-center items-center"
+          className="fixed inset-0 bg-black/95 z-9999 flex justify-center items-center"
           onClick={() => setOpenFull(false)}
         >
           <button

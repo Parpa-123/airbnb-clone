@@ -81,7 +81,7 @@ const Bookings = () => {
     fetchBookings()
   }, []);
 
-  const cancelBooking = async (id : number) => {
+  const cancelBooking = async (id: number) => {
     try {
       setLoading(true)
       await axiosInstance.delete(`bookings/delete/${id}/`)

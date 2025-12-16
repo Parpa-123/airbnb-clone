@@ -73,11 +73,10 @@ interface ListingImagesComponentsProps {
 }
 
 export function ListingImagesComponents(
-{
-    images,
-    onUpload
-}: ListingImagesComponentsProps)
-{
+    {
+        images,
+        onUpload
+    }: ListingImagesComponentsProps) {
     const [newImages, setNewImages] = useState<File[]>([]);
     const [imagesToDelete, setImagesToDelete] = useState<string[]>([]);
     const [uploading, setUploading] = useState(false);
@@ -90,21 +89,17 @@ export function ListingImagesComponents(
     const totalImages =
         existingImages.length + newImages.length;
 
-    const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) =>
-    {
+    const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = Array.from(e.target.files || []);
         const validFiles = files.filter((f) => f.type.startsWith("image/"));
 
-        if (validFiles.length !== files.length)
-        {
+        if (validFiles.length !== files.length) {
             alert("Only image files are allowed");
         }
 
-        if (totalImages + validFiles.length > MAX_IMAGES)
-        {
+        if (totalImages + validFiles.length > MAX_IMAGES) {
             alert(
-                `Maximum ${MAX_IMAGES} images allowed. You can add ${
-                    MAX_IMAGES - totalImages
+                `Maximum ${MAX_IMAGES} images allowed. You can add ${MAX_IMAGES - totalImages
                 } more.`
             );
             return;
@@ -114,43 +109,37 @@ export function ListingImagesComponents(
         e.target.value = "";
     };
 
-    const removeNewImage = (index: number) =>
-    {
+    const removeNewImage = (index: number) => {
         setNewImages((prev) =>
             prev.filter((_, i) => i !== index)
         );
     };
 
-    const markForDeletion = (url: string) =>
-    {
+    const markForDeletion = (url: string) => {
         setImagesToDelete((prev) => [...prev, url]);
     };
 
-    const undoDeletion = (url: string) =>
-    {
+    const undoDeletion = (url: string) => {
         setImagesToDelete((prev) =>
             prev.filter((u) => u !== url)
         );
     };
 
-    const handleSubmit = async (e: React.FormEvent) =>
-    {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (newImages.length === 0 && imagesToDelete.length === 0)
-        {
+        if (newImages.length === 0 && imagesToDelete.length === 0) {
             alert("No changes to save");
             return;
         }
 
         setUploading(true);
 
-        try
-        {
+        try {
             const formData = new FormData();
 
-            newImages.forEach((file, index) =>
-            {
+            // Add new images
+            newImages.forEach((file, index) => {
                 formData.append(`images[${index}]file`, file);
                 formData.append(
                     `images[${index}]name`,
@@ -158,13 +147,17 @@ export function ListingImagesComponents(
                 );
             });
 
+            // Add images to delete (send URLs)
+            if (imagesToDelete.length > 0) {
+                formData.append('delete_images', JSON.stringify(imagesToDelete));
+            }
+
             await onUpload(formData);
 
             setNewImages([]);
             setImagesToDelete([]);
         }
-        finally
-        {
+        finally {
             setUploading(false);
         }
     };
@@ -184,24 +177,21 @@ export function ListingImagesComponents(
                         </h4>
 
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                            {existingImages.map((img) =>
-                            {
+                            {existingImages.map((img) => {
                                 const isMarked =
                                     imagesToDelete.includes(img.image);
 
                                 return (
                                     <div
                                         key={img.image}
-                                        className={`relative group ${
-                                            isMarked ? "opacity-50" : ""
-                                        }`}
+                                        className={`relative group ${isMarked ? "opacity-50" : ""
+                                            }`}
                                     >
                                         <img
                                             src={img.image}
                                             alt={img.name}
                                             className="w-full h-40 object-cover rounded-lg border-2 border-gray-200"
-                                            onError={(e) =>
-                                            {
+                                            onError={(e) => {
                                                 e.currentTarget.src =
                                                     "/placeholder.png";
                                             }}
@@ -321,8 +311,7 @@ export function ListingImagesComponents(
                     <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
                         <button
                             type="button"
-                            onClick={() =>
-                            {
+                            onClick={() => {
                                 setNewImages([]);
                                 setImagesToDelete([]);
                             }}

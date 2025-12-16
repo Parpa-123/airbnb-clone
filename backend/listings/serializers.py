@@ -199,6 +199,15 @@ class CreateUpdateListSerializer(serializers.ModelSerializer):
                 except json.JSONDecodeError:
                     pass
         
+        # Handle image deletions
+        if request and 'delete_images' in request.data:
+            delete_images_str = request.data.get('delete_images')
+            if isinstance(delete_images_str, str):
+                import json
+                try:
+                    attrs['delete_images'] = json.loads(delete_images_str)
+                except json.JSONDecodeError:
+                    attrs['delete_images'] = []
         
         if request and request.FILES:
             image_groups = {}
@@ -253,11 +262,14 @@ class CreateUpdateListSerializer(serializers.ModelSerializer):
 
         # Add images using the preprocessed data from validate()
         for img_data in images_data:
-            ListingImages.objects.create(
-                listings=listing,
-                name=img_data['name'],
-                image=img_data['image']
-            )
+            image_file = img_data.get('image')
+            image_name = img_data.get('name')
+            if image_file and image_name:
+                ListingImages.objects.create(
+                    listings=listing,
+                    name=image_name,
+                    image=image_file
+                )
 
         return listing
 
@@ -267,6 +279,7 @@ class CreateUpdateListSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         amenities_data = validated_data.pop("amenities", None)
         images_data = validated_data.pop("images", None)
+        delete_images = validated_data.pop("delete_images", None)
 
         # Update basic fields
         for attr, value in validated_data.items():
@@ -280,18 +293,28 @@ class CreateUpdateListSerializer(serializers.ModelSerializer):
                 amenity, _ = Amenities.objects.get_or_create(name=a)
                 instance.amenities.add(amenity)
 
-        # Update images using the preprocessed data from validate()
+        # Delete specified images
+        if delete_images:
+            for image_url in delete_images:
+                # Extract the image path from URL
+                # URL format: http://localhost:8000/media/listings/image.jpg
+                # We need just the relative path: listings/image.jpg
+                if '/media/' in image_url:
+                    image_path = image_url.split('/media/')[-1]
+                    instance.listingimages.filter(image=image_path).delete()
+
+        # Append new images (don't delete existing ones)
         if images_data is not None:
-            # Clear existing images
-            instance.listingimages.all().delete()
-            
             # Create new images
             for img_data in images_data:
-                ListingImages.objects.create(
-                    listings=instance,
-                    name=img_data['name'],
-                    image=img_data['image']
-                )
+                image_file = img_data.get('image')
+                image_name = img_data.get('name')
+                if image_file and image_name:
+                    ListingImages.objects.create(
+                        listings=instance,
+                        name=image_name,
+                        image=image_file
+                    )
 
         return instance
 

@@ -3,9 +3,10 @@ from django.conf import settings
 from listings.models import Listings
 from django.core.exceptions import ValidationError
 from django.db.models import Q
+from users.base_models import TimeStampedModel
 
 
-class Bookings(models.Model):
+class Bookings(TimeStampedModel):
 
     guest = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -36,8 +37,6 @@ class Bookings(models.Model):
         default="confirmed"
     )
 
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"Booking by {self.guest} for {self.listing}"

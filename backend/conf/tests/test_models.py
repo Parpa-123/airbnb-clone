@@ -2,6 +2,7 @@ from django.test import TestCase
 from users.models import User
 from listings.models import Listings, ListingImages, Amenities
 from django.core.exceptions import ValidationError
+from wishlist.models import Wishlist
 
 class UserModelTest(TestCase):
 
@@ -116,3 +117,24 @@ class ListingModelTest(TestCase):
         amenity = Amenities.objects.create(name="Wi-Fi")
         self.assertEqual(str(amenity),amenity.name)
     
+class WishlistModelTest(TestCase):
+    def test_create_wishlist(self):
+        user = User.objects.create_user(username='testUser', email='test@example.com', password='testpass123')
+        cite = Listings.objects.create(
+            host=user,
+            title="Sample Listing Title",
+            description="This is a sample description for testing the Listings model.",
+            address="123 Test Street",
+            country="IN",  
+            city="Mumbai",  
+            property_type="apartment",
+            max_guests=4,
+            bhk_choice=2,
+            bed_choice=3,
+            bathrooms=2.0,
+            price_per_night=59.99
+        )
+
+        wishlist = Wishlist.objects.create(user=user, name="Sample Wishlist")
+
+        self.assertEqual(str(wishlist),wishlist.name)

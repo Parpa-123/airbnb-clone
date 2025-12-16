@@ -3,6 +3,7 @@ from django.conf import settings
 from django.utils.text import slugify
 from django.core.exceptions import ValidationError
 from django.db.models import Q
+from users.base_models import TimeStampedModel
 
 
 
@@ -44,12 +45,10 @@ class Amenities(models.Model):
     class Meta:
         verbose_name_plural = "Amenities"
         ordering = ["name"]
-
-
 # ---------------------------
 # Listings
 # ---------------------------
-class Listings(models.Model):
+class Listings(TimeStampedModel):
 
     PROPERTY_TYPES = [
         ("apartment", "Apartment"),
@@ -96,9 +95,6 @@ class Listings(models.Model):
 
     price_per_night = models.DecimalField(max_digits=10, decimal_places=2)
 
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
     amenities = models.ManyToManyField(Amenities, blank=True)
 
     title_slug = models.SlugField(unique=True, blank=True, max_length=255, null=True)
@@ -129,11 +125,10 @@ class Listings(models.Model):
                 name = "price_per_night_must_be_positive"
             )
         ]
-
 # ---------------------------
 # Listing Images
 # ---------------------------
-class ListingImages(models.Model):
+class ListingImages(TimeStampedModel):
     listings = models.ForeignKey(
         Listings,
         on_delete=models.CASCADE,
@@ -141,7 +136,6 @@ class ListingImages(models.Model):
     )
     name = models.CharField(max_length=100)
     image = models.ImageField(upload_to='listings/', blank=True, null=True)
-    uploaded_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name_plural = "Listing Images"

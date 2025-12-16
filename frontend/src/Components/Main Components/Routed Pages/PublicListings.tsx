@@ -92,7 +92,7 @@ const PublicListings: React.FC = () => {
 
                 {/* Price */}
                 <p className="text-md font-semibold mt-3">
-                  ₹{item.price_per_night}{" "}
+                  ${item.price_per_night}{" "}
                   <span className="text-sm text-gray-500 font-normal">night</span>
                 </p>
 
