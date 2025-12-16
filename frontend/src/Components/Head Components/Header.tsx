@@ -17,11 +17,13 @@ import { useAuth } from "./hooks/useAuth";
 import { useListings } from "./hooks/useListings";
 import SignupDialog from "./components/dialogs/SignupDialog";
 import ReusableDialog from "./components/ui/ReusableDialog";
+import { useNavigate } from "react-router-dom";
 
 const Header: React.FC = () => {
   const dispatch = useDispatch();
   const { user, loading, doLogin, doSignup, logout } = useAuth();
   const { setFilters } = useListings({});
+  const navigate = useNavigate();
 
   // dialogs
   const [loginOpen, setLoginOpen] = useState(false);
@@ -52,7 +54,7 @@ const Header: React.FC = () => {
           <li>
             <DropdownMenu.Root>
               <DropdownMenu.Trigger asChild>
-                <button className="px-3 py-2 border rounded-md hover:bg-gray-50">
+                <button className="px-3 py-2 border rounded-md hover:bg-gray-50 cursor-pointer">
                   Where To
                 </button>
               </DropdownMenu.Trigger>
@@ -61,7 +63,7 @@ const Header: React.FC = () => {
                 <DropdownMenu.Content
                   sideOffset={6}
                   align="start"
-                  className="w-72 p-4 bg-white border rounded-lg shadow-md space-y-3"
+                  className="z-50 w-72 p-4 bg-white border rounded-lg shadow-xl space-y-3"
                 >
                   <DropdownMenu.Label className="font-semibold">
                     Location
@@ -97,7 +99,7 @@ const Header: React.FC = () => {
           <li>
             <DropdownMenu.Root>
               <DropdownMenu.Trigger asChild>
-                <button className="px-3 py-2 border rounded-md hover:bg-gray-50">
+                <button className="px-3 py-2 border rounded-md hover:bg-gray-50 cursor-pointer">
                   The Troupe
                 </button>
               </DropdownMenu.Trigger>
@@ -106,7 +108,7 @@ const Header: React.FC = () => {
                 <DropdownMenu.Content
                   sideOffset={6}
                   align="start"
-                  className="w-72 p-4 bg-white border rounded-lg shadow-md space-y-3"
+                  className="z-50 w-72 p-4 bg-white border rounded-lg shadow-xl space-y-3"
                 >
                   <DropdownMenu.Label className="font-semibold">
                     Guests
@@ -153,7 +155,7 @@ const Header: React.FC = () => {
         <div className="flex items-center gap-4">
           <button
             onClick={() => setHostingOpen(true)}
-            className="text-sm hover:text-black"
+            className="text-sm hover:text-black cursor-pointer"
           >
             {user?.is_host ? "List More Places" : "Become a Host"}
           </button>
@@ -167,7 +169,11 @@ const Header: React.FC = () => {
             </DropdownMenu.Trigger>
 
             <DropdownMenu.Portal>
-              <DropdownMenu.Content className="w-60 p-3 bg-white border rounded-xl shadow-xl text-sm">
+              <DropdownMenu.Content
+                sideOffset={6}
+                align="end"
+                className="z-50 w-60 p-3 bg-white border rounded-xl shadow-2xl text-sm"
+              >
                 <DropdownMenu.Item className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-100">
                   <FaQuestionCircle /> Help Center
                 </DropdownMenu.Item>
@@ -197,15 +203,48 @@ const Header: React.FC = () => {
                     </DropdownMenu.Item>
                   </>
                 ) : (
-                  <DropdownMenu.Item
-                    onSelect={() => {
-                      setMenuOpen(false);
-                      setLogoutOpen(true);
-                    }}
-                    className="p-2 rounded-md hover:bg-gray-100"
-                  >
-                    Logout ({user.username})
-                  </DropdownMenu.Item>
+                  <>
+                    <DropdownMenu.Item
+                      onSelect={() => {
+                        setMenuOpen(false);
+                        setLogoutOpen(true);
+                      }}
+                      className="p-2 rounded-md hover:bg-gray-100"
+                    >
+                      Logout ({user.username})
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Separator className="my-2 h-px bg-gray-200" />
+                    <DropdownMenu.Item
+                      onSelect={() => {
+                        setMenuOpen(false);
+                        navigate(`/me`);
+                      }}
+                      className="p-2 rounded-md hover:bg-gray-100"
+                    >
+                      My Profile
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Separator className="my-2 h-px bg-gray-200" />
+                    <DropdownMenu.Item
+                      onSelect={() => {
+                        setMenuOpen(false);
+                        navigate(`bookings`);
+                      }}
+                      className="p-2 rounded-md hover:bg-gray-100"
+                    >
+                      My Bookings
+                    </DropdownMenu.Item>
+                    {user?.is_host && (
+                      <DropdownMenu.Item
+                        onSelect={() => {
+                          setMenuOpen(false);
+                          navigate(`/me/listings`);
+                        }}
+                        className="p-2 rounded-md hover:bg-gray-100"
+                      >
+                        My Listings
+                      </DropdownMenu.Item>
+                    )}
+                  </>
                 )}
               </DropdownMenu.Content>
             </DropdownMenu.Portal>
@@ -261,7 +300,7 @@ const Header: React.FC = () => {
             required
           />
 
-          <button className="w-full bg-black text-white py-2 rounded-md hover:bg-gray-800">
+          <button className="w-full bg-black text-white py-2 rounded-md hover:bg-gray-800 cursor-pointer">
             {loading ? "Loading..." : "Log In"}
           </button>
         </form>
@@ -277,14 +316,14 @@ const Header: React.FC = () => {
         <div className="flex justify-end gap-3 mt-6">
           <button
             onClick={() => setLogoutOpen(false)}
-            className="px-4 py-2 border rounded-md"
+            className="px-4 py-2 border rounded-md cursor-pointer"
           >
             Cancel
           </button>
 
           <button
             onClick={confirmLogout}
-            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 cursor-pointer"
           >
             Logout
           </button>
@@ -309,7 +348,7 @@ const Header: React.FC = () => {
             <Dialog.Close asChild>
               <button
                 onClick={() => dispatch(resetForm())}
-                className="absolute top-6 right-6 text-gray-400 hover:text-gray-600"
+                className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 cursor-pointer"
                 aria-label="Close"
               >
                 <FaTimes />

@@ -66,7 +66,7 @@ const PublicListings: React.FC = () => {
         {listings.map((item) => (
           <Link to={`/${item.title_slug}`}>
             <div className="rounded-xl overflow-hidden shadow-sm border border-gray-200 hover:shadow-md transition cursor-pointer">
-              
+
               {/* Image */}
               {item.images?.length > 0 && (
                 <img
@@ -92,7 +92,7 @@ const PublicListings: React.FC = () => {
 
                 {/* Price */}
                 <p className="text-md font-semibold mt-3">
-                  ${item.price_per_night}{" "}
+                  ₹{item.price_per_night}{" "}
                   <span className="text-sm text-gray-500 font-normal">night</span>
                 </p>
 

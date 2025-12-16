@@ -20,7 +20,7 @@ const LoginDialog: React.FC<Props> = ({ open, setOpen }) => {
       password: String(fd.get("login_password")),
     };
 
-    await doLogin(data).then(() => setOpen(false)).catch(() => {});
+    await doLogin(data).then(() => setOpen(false)).catch(() => { });
   };
 
   return (
@@ -31,7 +31,7 @@ const LoginDialog: React.FC<Props> = ({ open, setOpen }) => {
           <Input name="login_username" placeholder="Username" required />
           <Input name="login_password" type="password" placeholder="Password" required />
 
-          <button className="bg-black text-white py-2 rounded-md flex justify-center hover:bg-gray-800">
+          <button className="bg-black text-white py-2 rounded-md flex justify-center hover:bg-gray-800 cursor-pointer">
             {loading ? <FaSpinner className="animate-spin" /> : "Log In"}
           </button>
         </form>

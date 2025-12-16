@@ -1,7 +1,5 @@
 from rest_framework import serializers
 from decimal import Decimal
-import base64
-from django.core.files.base import ContentFile
 
 from .models import Listings, ListingImages, Amenities
 from users.models import User
@@ -22,8 +20,7 @@ class HostSerializer(serializers.ModelSerializer):
 class ListingImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ListingImages
-        fields = ["name", "image", "uploaded_at"]
-        read_only_fields = ["uploaded_at"]
+        fields = ["name", "image"]
 
 
 
@@ -86,31 +83,6 @@ class ListingDetailSerializer(ListingSerializer):
         read_only_fields = ListingSerializer.Meta.read_only_fields + ["updated_at"]
 
 
-# ============================================================
-# Serializer for handling base64 image uploads
-# ============================================================
-
-class Base64ImageSerializer(serializers.Serializer):
-    """Serializer to handle base64 encoded images from frontend"""
-    name = serializers.CharField(max_length=100)
-    image_data = serializers.CharField()
-
-    def validate_image_data(self, value):
-        """Validate and decode base64 image"""
-        try:
-            # Check if it's a data URL (e.g., "data:image/png;base64,...")
-            if value.startswith('data:'):
-                # Extract the base64 part
-                header, encoded = value.split(',', 1)
-            else:
-                encoded = value
-            
-            # Try to decode
-            base64.b64decode(encoded)
-            return value
-        except Exception as e:
-            raise serializers.ValidationError(f"Invalid base64 image data: {str(e)}")
-
 
 # ============================================================
 # Create / Update Serializer
@@ -124,8 +96,6 @@ class CreateUpdateListSerializer(serializers.ModelSerializer):
         allow_empty=True,
         write_only=True
     )
-
-    images = Base64ImageSerializer(many=True, required=False, write_only=True)
 
     # Required text fields
     title = serializers.CharField(max_length=255, required=True)
@@ -155,6 +125,9 @@ class CreateUpdateListSerializer(serializers.ModelSerializer):
             "min_value": "Price must be greater than 0"
         }
     )
+
+    
+    images = ListingImageSerializer(many=True, required=False, write_only=True)
 
     class Meta:
         model = Listings
@@ -213,39 +186,63 @@ class CreateUpdateListSerializer(serializers.ModelSerializer):
                 f"Invalid choice. Valid options are: {valid_choices}"
             )
         return value
-
-    # -----------------------------------------
-    # Helper method to decode base64 image
-    # -----------------------------------------
-    def _decode_base64_image(self, image_data_str):
-        """Decode base64 string to image file"""
-        try:
-            # Check if it's a data URL
-            if image_data_str.startswith('data:'):
-                # Extract format and base64 data
-                header, encoded = image_data_str.split(',', 1)
-                # Extract image format from header (e.g., "data:image/png;base64")
-                format_part = header.split(';')[0].split('/')[1]
-                ext = format_part.lower()
-            else:
-                encoded = image_data_str
-                ext = 'jpg'  # default extension
+    def validate(self, attrs):
+        request = self.context.get('request')
+        
+        # Parse amenities if it comes as JSON string from FormData
+        if request and 'amenities' in request.data:
+            amenities_str = request.data.get('amenities')
+            if isinstance(amenities_str, str):
+                import json
+                try:
+                    attrs['amenities'] = json.loads(amenities_str)
+                except json.JSONDecodeError:
+                    pass
+        
+        
+        if request and request.FILES:
+            image_groups = {}
             
-            # Decode base64
-            decoded_file = base64.b64decode(encoded)
-            return ContentFile(decoded_file), ext
-        except Exception as e:
-            raise serializers.ValidationError(f"Error decoding image: {str(e)}")
+            # Group files by index
+            for key in request.FILES:
+                if key.startswith('images[') and key.endswith(']file'):
+                    index = key.split('[')[1].split(']')[0]
+                    if index not in image_groups:
+                        image_groups[index] = {}
+                    image_groups[index]['image'] = request.FILES[key]
+            
+            # Get corresponding names from request.data
+            for key in request.data:
+                if key.startswith('images[') and key.endswith(']name'):
+                    index = key.split('[')[1].split(']')[0]
+                    if index not in image_groups:
+                        image_groups[index] = {}
+                    image_groups[index]['name'] = request.data[key]
+            
+            # Convert to list format for ListingImageSerializer
+            images_list = []
+            for index in sorted(image_groups.keys(), key=int):
+                img_data = image_groups[index]
+                if 'image' in img_data and 'name' in img_data:
+                    images_list.append(img_data)
+            
+            if images_list:
+                attrs['images'] = images_list
+        
+        return attrs
+
 
     # -----------------------------------------
     # CREATE
     # -----------------------------------------
     def create(self, validated_data):
+        request = self.context.get('request')
+        
         amenities_data = validated_data.pop("amenities", [])
         images_data = validated_data.pop("images", [])
 
         listing = Listings.objects.create(
-            host=self.context["request"].user,
+            host=request.user,
             **validated_data
         )
 
@@ -254,18 +251,13 @@ class CreateUpdateListSerializer(serializers.ModelSerializer):
             amenity, _ = Amenities.objects.get_or_create(name=a)
             listing.amenities.add(amenity)
 
-        # Add images (decode base64)
-        for idx, img_data in enumerate(images_data):
-            image_file, ext = self._decode_base64_image(img_data["image_data"])
-            filename = f"{img_data['name']}.{ext}"
-            
-            # Create ListingImage instance
-            listing_image = ListingImages(
+        # Add images using the preprocessed data from validate()
+        for img_data in images_data:
+            ListingImages.objects.create(
                 listings=listing,
-                name=img_data["name"]
+                name=img_data['name'],
+                image=img_data['image']
             )
-            # Save the image file with proper filename
-            listing_image.image.save(filename, image_file, save=True)
 
         return listing
 
@@ -288,20 +280,18 @@ class CreateUpdateListSerializer(serializers.ModelSerializer):
                 amenity, _ = Amenities.objects.get_or_create(name=a)
                 instance.amenities.add(amenity)
 
-        # Update images
+        # Update images using the preprocessed data from validate()
         if images_data is not None:
-            instance.listingimages_set.all().delete()
-            for idx, img_data in enumerate(images_data):
-                image_file, ext = self._decode_base64_image(img_data["image_data"])
-                filename = f"{img_data['name']}.{ext}"
-                
-                # Create ListingImage instance
-                listing_image = ListingImages(
+            # Clear existing images
+            instance.listingimages.all().delete()
+            
+            # Create new images
+            for img_data in images_data:
+                ListingImages.objects.create(
                     listings=instance,
-                    name=img_data["name"]
+                    name=img_data['name'],
+                    image=img_data['image']
                 )
-                # Save the image file with proper filename
-                listing_image.image.save(filename, image_file, save=True)
 
         return instance
 

@@ -14,7 +14,7 @@ const SignupDialog: React.FC<Props> = ({ open, setOpen, onSubmit, loading }) => 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
-    await onSubmit(fd).then(() => setOpen(false)).catch(() => {});
+    await onSubmit(fd).then(() => setOpen(false)).catch(() => { });
   };
 
   return (
@@ -27,7 +27,7 @@ const SignupDialog: React.FC<Props> = ({ open, setOpen, onSubmit, loading }) => 
           <Input name="password" type="password" placeholder="Password" required />
           <Input name="conf_password" type="password" placeholder="Confirm Password" required />
 
-          <button className="bg-black text-white py-2 rounded-md hover:bg-gray-800 flex justify-center">
+          <button className="bg-black text-white py-2 rounded-md hover:bg-gray-800 flex justify-center cursor-pointer">
             {loading ? <FaSpinner className="animate-spin" /> : "Sign Up"}
           </button>
         </form>

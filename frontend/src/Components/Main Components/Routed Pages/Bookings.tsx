@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
 import axiosInstance from "../../../../public/connect"
 import { toast } from "react-toastify"
+import { Link } from "react-router-dom"
 
 /* =======================
    Interfaces
@@ -28,17 +29,19 @@ interface Listing {
   city: string
   country: string
   property_type_display: string
+  title_slug: string
   price_per_night: string
   images: ListingImage[]
   host: Host
 }
 
 interface Booking {
-  guest: Guest
-  listing: Listing
-  start_date: string
-  end_date: string
-  total_price: string
+  id: number,
+  guest: Guest,
+  listing: Listing,
+  start_date: string,
+  end_date: string,
+  total_price: string,
   status: "confirmed" | "pending" | "cancelled"
 }
 
@@ -76,7 +79,19 @@ const Bookings = () => {
 
   useEffect(() => {
     fetchBookings()
-  }, [])
+  }, []);
+
+  const cancelBooking = async (id : number) => {
+    try {
+      setLoading(true)
+      await axiosInstance.delete(`bookings/delete/${id}/`)
+      fetchBookings()
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Failed to cancel booking")
+    } finally {
+      setLoading(false)
+    }
+  }
 
   /* =======================
      Loading State
@@ -150,9 +165,8 @@ const Bookings = () => {
                   </h3>
 
                   <span
-                    className={`text-xs px-2 py-1 rounded-full capitalize whitespace-nowrap ${
-                      statusStyles[booking.status]
-                    }`}
+                    className={`text-xs px-2 py-1 rounded-full capitalize whitespace-nowrap ${statusStyles[booking.status]
+                      }`}
                   >
                     {booking.status}
                   </span>
@@ -170,11 +184,14 @@ const Bookings = () => {
 
                 <div className="pt-2 flex items-center justify-between">
                   <p className="font-semibold">
-                    ₹{Math.abs(Number(booking.total_price))}
+                    ${Math.abs(Number(booking.total_price))}
                   </p>
 
-                  <button className="text-sm font-medium text-rose-600 hover:underline">
-                    View details
+                  <button className="text-sm font-medium text-rose-600 hover:underline cursor-pointer">
+                    <Link to={`/${booking.listing.title_slug}`}>View details</Link>
+                  </button>
+                  <button className="text-sm font-medium text-black hover:underline cursor-pointer" onClick={() => cancelBooking(booking.id)}>
+                    Cancel
                   </button>
                 </div>
               </div>

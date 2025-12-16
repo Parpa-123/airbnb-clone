@@ -3,7 +3,7 @@ import DynamicForm from "./DynamicForm";
 import useOptionsService from "../../services/optionsService";
 import { createFormSteps } from "./formSteps";
 import { useDispatch, useSelector } from "react-redux";
-import { updateForm, type EntireFormData, type ImageData } from "../../../public/redux/slice/slice";
+import { updateForm, type EntireFormData } from "../../../public/redux/slice/slice";
 import axiosInstance from "../../../public/connect";
 import { toast } from "react-toastify";
 
@@ -22,35 +22,64 @@ const MultiStepController = () => {
 
     useEffect(() => { fetchOptions(); }, []);
 
-    // Helper function to convert file to base64
-    const fileToBase64 = (file: File): Promise<string> => {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result as string);
-            reader.onerror = error => reject(error);
-        });
-    };
-
     const handleFormSubmit = async (data: EntireFormData) => {
         try {
-            // Transform images from ImageWithName[] to ImageData[] with base64
-            const transformedImages: ImageData[] = await Promise.all(
-                data.images.map(async (img) => ({
-                    name: img.name,
-                    image_data: await fileToBase64(img.image)
-                }))
-            );
+            const formData = new FormData();
 
-            const submissionData = {
-                ...data,
-                images: transformedImages
-            };
+            // Append all text fields
+            formData.append("title", data.title);
+            formData.append("description", data.description);
+            formData.append("address", data.address);
+            formData.append("country", data.country);
+            formData.append("city", data.city);
+            formData.append("property_type", data.property_type);
+            formData.append("max_guests", data.max_guests.toString());
+            formData.append("bhk_choice", data.bhk_choice.toString());
+            formData.append("bed_choice", data.bed_choice.toString());
+            formData.append("bathrooms", data.bathrooms.toString());
+            formData.append("price_per_night", data.price_per_night.toString());
 
-            await axiosInstance.post("/listings/", submissionData);
+            // Append amenities as JSON array
+            if (data.amenities && data.amenities.length > 0) {
+                data.amenities.forEach((amenity) => {
+                    formData.append(`amenities`, amenity);
+                });
+            }
+
+            // Append image files directly with their names
+            if (data.images && data.images.length > 0) {
+                data.images.forEach((img, index) => {
+                    formData.append(`images[${index}]file`, img.image);
+                    formData.append(`images[${index}]name`, img.name);
+                });
+            }
+
+
+            // Debug: Log FormData contents
+            console.log("=== Submitting Listing Form ===");
+            console.log("Form data:", data);
+            for (const [key, value] of formData.entries()) {
+                console.log(`${key}:`, value);
+            }
+
+            await axiosInstance.post("/listings/", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
             toast.success("Listing created successfully");
         } catch (error: any) {
-            toast.error(error?.response?.data?.message || "Failed to create listing");
+            console.error("=== Listing Creation Error ===");
+            console.error("Full error:", error);
+            console.error("Response data:", error?.response?.data);
+            console.error("Response status:", error?.response?.status);
+
+            const errorMsg = error?.response?.data?.message ||
+                error?.response?.data?.detail ||
+                JSON.stringify(error?.response?.data) ||
+                "Failed to create listing";
+            console.log(errorMsg);
+            toast.error(errorMsg);
         }
     };
 
@@ -77,7 +106,7 @@ const MultiStepController = () => {
             return;
         }
         setCurrentStep((prev) => prev - 1);
-        
+
     };
 
     if (loading) return <p className="text-center py-10">Loading...</p>;
@@ -86,7 +115,7 @@ const MultiStepController = () => {
         return (
             <div className="text-center p-6">
                 <p className="text-red-600">{error}</p>
-                <button onClick={fetchOptions} className="btn-primary">
+                <button onClick={fetchOptions} className="btn-primary cursor-pointer">
                     Retry
                 </button>
             </div>

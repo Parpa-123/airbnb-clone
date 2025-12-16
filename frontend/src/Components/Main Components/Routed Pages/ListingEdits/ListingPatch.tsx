@@ -1,0 +1,301 @@
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import axiosInstance from "../../../../../public/connect";
+import { toast } from "react-toastify";
+import { EditableSection, ListingImagesComponents } from "./Components";
+import useOptionsService from "../../../../services/optionsService";
+import type { ListingEditData, ListingUpdatePayload } from "./types";
+
+const ListingEditPage = () => {
+    const { id } = useParams<{ id: string }>();
+
+    const [listing, setListing] = useState<ListingEditData | null>(null);
+
+    const { options, fetchOptions } = useOptionsService();
+
+    useEffect(() => {
+        fetchOptions();
+    }, []);
+
+    /* ---------------- FETCH LISTING ---------------- */
+    useEffect(() => {
+        axiosInstance.get(`/listings/${Number(id)}/edit/`).then((res) => {
+            setListing(res.data);
+        });
+    }, [id]);
+
+    /* ---------------- PATCH HANDLER ---------------- */
+    const onPatch = async (
+        payload: Partial<ListingEditData> | FormData
+    ) => {
+        if (!listing) {
+            return;
+        }
+
+        const previous = listing;
+
+        // optimistic UI update (only for JSON payloads, not for FormData image uploads)
+        if (!(payload instanceof FormData)) {
+            setListing((prev: ListingEditData | null) => ({
+                ...prev!,
+                ...payload
+            } as ListingEditData));
+        }
+
+        try {
+            await axiosInstance.patch(
+                `/listings/${id}/edit/`,
+                payload,
+                payload instanceof FormData
+                    ? { headers: { "Content-Type": "multipart/form-data" } }
+                    : undefined
+            );
+
+            toast.success("Listing updated");
+        }
+        catch (err) {
+            setListing(previous);
+            toast.error("Failed to update listing");
+        }
+    };
+
+    if (!listing) {
+        return (
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+                <div className="text-center">
+                    <div className="animate-spin inline-block w-10 h-10 border-4 border-gray-300 border-t-[#FF385C] rounded-full mb-4"></div>
+                    <p className="text-gray-600 font-medium">Loading listing details...</p>
+                </div>
+            </div>
+        );
+    }
+
+    /* ---------------- RENDER ---------------- */
+    return (
+        <div className="min-h-screen bg-gray-50">
+            <div className="max-w-5xl mx-auto px-4 py-8">
+                {/* Header */}
+                <div className="mb-8">
+                    <h1 className="text-3xl font-bold text-gray-900 mb-2">Edit Your Listing</h1>
+                    <p className="text-gray-600">Update your property details and information</p>
+                </div>
+
+                {/* Form Sections */}
+                <div className="space-y-6">
+                    <EditableSection
+                        title="Property details"
+                        fields={["title", "property_type"]}
+                        listing={listing}
+                        onPatch={onPatch}
+                    >
+                        {(register) => (
+                            <>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">Title</label>
+                                    <input
+                                        {...register("title")}
+                                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF385C] focus:border-[#FF385C] transition-all"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">Property type</label>
+                                    <select
+                                        {...register("property_type")}
+                                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF385C] focus:border-[#FF385C] transition-all bg-white"
+                                    >
+                                        {options?.property_options?.map((opt) => (
+                                            <option key={opt.value} value={opt.value}>
+                                                {opt.label}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </>
+                        )}
+                    </EditableSection>
+
+                    <EditableSection
+                        title="Property features"
+                        fields={[
+                            "max_guests",
+                            "bhk_choice",
+                            "bed_choice",
+                            "bathrooms"
+                        ]}
+                        listing={listing}
+                        onPatch={onPatch}
+                    >
+                        {(register) => (
+                            <>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">Max guests</label>
+                                    <select
+                                        {...register("max_guests", { valueAsNumber: true })}
+                                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF385C] focus:border-[#FF385C] transition-all bg-white"
+                                    >
+                                        {options?.guest_options?.map((opt) => (
+                                            <option key={opt.value} value={opt.value}>
+                                                {opt.label}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">BHK</label>
+                                    <select
+                                        {...register("bhk_choice", { valueAsNumber: true })}
+                                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF385C] focus:border-[#FF385C] transition-all bg-white"
+                                    >
+                                        {options?.bedroom_options?.map((opt) => (
+                                            <option key={opt.value} value={opt.value}>
+                                                {opt.label}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">Beds</label>
+                                    <select
+                                        {...register("bed_choice", { valueAsNumber: true })}
+                                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF385C] focus:border-[#FF385C] transition-all bg-white"
+                                    >
+                                        {options?.bed_options?.map((opt) => (
+                                            <option key={opt.value} value={opt.value}>
+                                                {opt.label}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">Bathrooms</label>
+                                    <select
+                                        {...register("bathrooms", { valueAsNumber: true })}
+                                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF385C] focus:border-[#FF385C] transition-all bg-white"
+                                    >
+                                        {options?.bathroom_options?.map((opt) => (
+                                            <option key={opt.value} value={opt.value}>
+                                                {opt.label}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </>
+                        )}
+                    </EditableSection>
+
+                    <EditableSection
+                        title="Location"
+                        fields={["country", "city", "address"]}
+                        listing={listing}
+                        onPatch={onPatch}
+                    >
+                        {(register) => (
+                            <>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">Country</label>
+                                    <input
+                                        {...register("country")}
+                                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF385C] focus:border-[#FF385C] transition-all"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">City</label>
+                                    <input
+                                        {...register("city")}
+                                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF385C] focus:border-[#FF385C] transition-all"
+                                    />
+                                </div>
+
+                                <div className="md:col-span-2">
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">Address</label>
+                                    <input
+                                        {...register("address")}
+                                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF385C] focus:border-[#FF385C] transition-all"
+                                    />
+                                </div>
+                            </>
+                        )}
+                    </EditableSection>
+
+                    <EditableSection
+                        title="Pricing"
+                        fields={["price_per_night"]}
+                        listing={listing}
+                        onPatch={onPatch}
+                    >
+                        {(register) => (
+                            <div className="md:col-span-2">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Price Per Night ($)</label>
+                                <input
+                                    type="number"
+                                    {...register("price_per_night", { valueAsNumber: true })}
+                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF385C] focus:border-[#FF385C] transition-all"
+                                />
+                            </div>
+                        )}
+                    </EditableSection>
+
+                    <EditableSection
+                        title="Description"
+                        fields={["description"]}
+                        listing={listing}
+                        onPatch={onPatch}
+                    >
+                        {(register) => (
+                            <div className="md:col-span-2">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                                <textarea
+                                    {...register("description")}
+                                    rows={5}
+                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF385C] focus:border-[#FF385C] transition-all resize-none"
+                                />
+                            </div>
+                        )}
+                    </EditableSection>
+
+                    <EditableSection
+                        title="Amenities"
+                        fields={["amenities"]}
+                        listing={listing}
+                        onPatch={onPatch}
+                    >
+                        {(register) => (
+                            <div className="md:col-span-2">
+                                <label className="block text-sm font-medium text-gray-700 mb-3">Amenities</label>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    {options?.aminities?.map((opt) => (
+                                        <label
+                                            key={opt.value}
+                                            className="flex items-center gap-3 p-3 border border-gray-300 rounded-lg hover:border-[#FF385C] hover:bg-gray-50 transition-all cursor-pointer"
+                                        >
+                                            <input
+                                                type="checkbox"
+                                                value={opt.value}
+                                                {...register("amenities")}
+                                                className="w-4 h-4 text-[#FF385C] border-gray-300 rounded focus:ring-[#FF385C] focus:ring-2"
+                                                checked={listing.amenities.includes(opt)}
+                                            />
+                                            <span className="text-sm text-gray-700">{opt.label}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </EditableSection>
+
+                    <ListingImagesComponents
+                        images={listing.images}
+                        onUpload={onPatch}
+                    />
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default ListingEditPage;

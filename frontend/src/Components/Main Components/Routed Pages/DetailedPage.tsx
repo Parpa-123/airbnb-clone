@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import axiosInstance from "../../../../public/connect";
 
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -63,6 +64,10 @@ type DatePickerRef = {
 /* --------------------------- COMPONENT --------------------------- */
 
 const DetailedPage: React.FC = () => {
+
+  const location = useLocation();
+  const host_type = location.state?.type;
+
   const { slug } = useParams();
 
   const datePickerRef = useRef<DatePickerRef | null>(null);
@@ -174,7 +179,7 @@ const DetailedPage: React.FC = () => {
       <div className="mt-6 relative">
         <button
           ref={mainPrev}
-          className="absolute left-3 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white hover:scale-105 shadow-lg rounded-full w-8 h-8 flex items-center justify-center transition-all duration-200 backdrop-blur-sm"
+          className="absolute left-3 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white hover:scale-105 shadow-lg rounded-full w-8 h-8 flex items-center justify-center transition-all duration-200 backdrop-blur-sm cursor-pointer"
           aria-label="Previous"
         >
           <svg className="w-5 h-5 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -184,7 +189,7 @@ const DetailedPage: React.FC = () => {
 
         <button
           ref={mainNext}
-          className="absolute right-3 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white hover:scale-105 shadow-lg rounded-full w-8 h-8 flex items-center justify-center transition-all duration-200 backdrop-blur-sm"
+          className="absolute right-3 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white hover:scale-105 shadow-lg rounded-full w-8 h-8 flex items-center justify-center transition-all duration-200 backdrop-blur-sm cursor-pointer"
           aria-label="Next"
         >
           <svg className="w-5 h-5 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -240,7 +245,7 @@ const DetailedPage: React.FC = () => {
         >
           <button
             ref={fullPrev}
-            className="absolute left-6 z-20 bg-white/90 hover:bg-white hover:scale-105 shadow-xl rounded-full w-12 h-12 flex items-center justify-center transition-all duration-200 backdrop-blur-sm"
+            className="absolute left-6 z-20 bg-white/90 hover:bg-white hover:scale-105 shadow-xl rounded-full w-12 h-12 flex items-center justify-center transition-all duration-200 backdrop-blur-sm cursor-pointer"
             onClick={(e) => e.stopPropagation()}
             aria-label="Previous full"
           >
@@ -251,7 +256,7 @@ const DetailedPage: React.FC = () => {
 
           <button
             ref={fullNext}
-            className="absolute right-6 z-20 bg-white/90 hover:bg-white hover:scale-105 shadow-xl rounded-full w-12 h-12 flex items-center justify-center transition-all duration-200 backdrop-blur-sm"
+            className="absolute right-6 z-20 bg-white/90 hover:bg-white hover:scale-105 shadow-xl rounded-full w-12 h-12 flex items-center justify-center transition-all duration-200 backdrop-blur-sm cursor-pointer"
             onClick={(e) => e.stopPropagation()}
             aria-label="Next full"
           >
@@ -298,7 +303,7 @@ const DetailedPage: React.FC = () => {
 
           <button
             onClick={() => setOpenFull(false)}
-            className="absolute top-6 right-6 z-20 text-white hover:bg-white/10 rounded-full p-2 transition-colors duration-200"
+            className="absolute top-6 right-6 z-20 text-white hover:bg-white/10 rounded-full p-2 transition-colors duration-200 cursor-pointer"
             aria-label="Close full"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -375,7 +380,7 @@ const DetailedPage: React.FC = () => {
 
               {/* Reserve Button */}
               <button
-                className="mt-5 w-full bg-gradient-to-r from-[#E61E4D] to-[#D70466] text-white py-3.5 rounded-lg text-base font-semibold hover:from-[#D01346] hover:to-[#C00357] transition-all duration-200 shadow-md hover:shadow-lg"
+                className="mt-5 w-full bg-linear-to-r from-[#E61E4D] to-[#D70466] text-white py-3.5 rounded-lg text-base font-semibold hover:from-[#D01346] hover:to-[#C00357] transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer"
                 onClick={handleReserve}
               >
                 Reserve

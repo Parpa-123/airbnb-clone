@@ -4,7 +4,7 @@ import { useState } from "react";
 
 interface OptionsResponse {
     property_options: { value: string; label: string }[];
-    amenities: { value: string; label: string }[];
+    aminities: { value: string; label: string }[];  // Note: backend typo
     bedroom_options: { value: string; label: string }[];
     guest_options: { value: string; label: string }[];
     bathroom_options: { value: string; label: string }[];
@@ -29,11 +29,11 @@ const useOptionsService = () => {
 
             // Set the fetched data
             setOptions(response.data);
-           
+
             setLoading(false);
             return response.data;
 
-        } catch (err : any) {
+        } catch (err: any) {
             toast.info(err)
             throw err;
         }

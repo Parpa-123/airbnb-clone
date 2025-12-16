@@ -42,7 +42,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
 
     avatar = models.ImageField(null=True, blank=True)
-    phone = PhoneNumberField()
+    phone = PhoneNumberField(null=True, blank=True)
 
     # LOGIN FIELD
     USERNAME_FIELD = "username"

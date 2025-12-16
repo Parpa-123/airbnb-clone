@@ -48,6 +48,7 @@ const ReusableDialog: React.FC<ReusableDialogProps> = ({
                 absolute right-4 top-4
                 text-gray-600 hover:text-gray-900
                 focus:outline-none
+                cursor-pointer
               "
             >
               <FaTimes className="text-lg" />

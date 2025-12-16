@@ -7,21 +7,29 @@ from listings.serializers import ListingSerializer, ListingDetailSerializer, Cre
 from listings.filters import ListingFilter
 
 
-class ListingView(generics.ListCreateAPIView):
-    serializer_class = ListingSerializer
+# ============================================================
+# Base Authentication Mixin
+# ============================================================
+
+class BaseAuthenticatedView:
+    """Base class providing JWT authentication and default serializer"""
+    
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
+
+# ============================================================
+# Listing Views
+# ============================================================
+
+class ListingView(BaseAuthenticatedView, generics.ListCreateAPIView):
+    """List and create listings for authenticated users"""
+    serializer_class = ListingSerializer
     def get_queryset(self):
         return Listings.objects.filter(host=self.request.user).order_by("-id")
 
-    # Assign the logged-in user as the host when creating
     def get_serializer_class(self):
         if self.request.method == "POST":
-            user = self.request.user
-            if not user.is_host:
-                user.is_host = True
-                user.save()
             return CreateUpdateListSerializer
         return ListingSerializer
     
@@ -79,10 +87,10 @@ class PublicListingView(generics.ListAPIView):
     permission_classes = [permissions.AllowAny]
     filterset_class = ListingFilter
 
-class OptionsView(views.APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
-    def get(self,request):
+class OptionsView(BaseAuthenticatedView, views.APIView):
+    """Get form options for authenticated users"""
+    
+    def get(self, request):
         return Response({
             'property_options' : [
                 {'value':v[0],'label':v[1]} for v in Listings.PROPERTY_TYPES
@@ -104,3 +112,18 @@ class OptionsView(views.APIView):
                 {'value':v[0],'label':v[1]} for v in Listings.BED_CHOICES
             ],
         })
+
+class PrivateListingView(BaseAuthenticatedView, generics.ListAPIView):
+    """List all listings for the authenticated user"""
+    serializer_class = ListingSerializer
+    
+    def get_queryset(self):
+        return Listings.objects.filter(host=self.request.user).order_by("-id")
+
+
+class ListingEditView(BaseAuthenticatedView, generics.RetrieveUpdateAPIView):
+    """Update a specific listing for the authenticated user"""
+    serializer_class = CreateUpdateListSerializer
+    
+    def get_object(self):
+        return Listings.objects.get(id=self.kwargs["id"])

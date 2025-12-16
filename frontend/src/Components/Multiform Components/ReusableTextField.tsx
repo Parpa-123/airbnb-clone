@@ -45,27 +45,34 @@ const ReusableTextField = ({
   const isCountry = name === "country";
   const isCity = name === "city";
 
-  const selectedCountry = useWatch({
+  // For country field, we need to track the ISO code separately for city filtering
+  // but send the full name to the backend
+  const selectedCountryName = useWatch({
     control,
     name: "country",
   });
+
+  // Find the ISO code from the selected country name
+  const selectedCountryIsoCode = selectedCountryName
+    ? Country.getAllCountries().find((c) => c.name === selectedCountryName)?.isoCode
+    : null;
 
   // Local UI-only state for real files
   const [localFiles, setLocalFiles] = useState<File[]>([]);
 
   // Build options dynamically for country & city selectors
-  const cityOptions = selectedCountry
-    ? City.getCitiesOfCountry(selectedCountry)?.map((c) => ({
-        label: c.name,
-        value: c.name,
-      })) ?? []
+  const cityOptions = selectedCountryIsoCode
+    ? City.getCitiesOfCountry(selectedCountryIsoCode)?.map((c) => ({
+      label: c.name,
+      value: c.name,
+    })) ?? []
     : [];
 
   let displayOptions = options;
   if (isCountry) {
     displayOptions = Country.getAllCountries().map((c) => ({
       label: c.name,
-      value: c.isoCode,
+      value: c.name,  // Send full country name to backend
     }));
   }
   if (isCity) displayOptions = cityOptions;
@@ -171,7 +178,7 @@ const ReusableTextField = ({
 
                         <button
                           type="button"
-                          className="bg-red-500 text-white px-3 py-2 rounded-full"
+                          className="bg-red-500 text-white px-3 py-2 rounded-full cursor-pointer"
                           onClick={() => {
                             field.onChange(
                               field.value.filter((_: any, i: number) => i !== idx)

@@ -25,18 +25,18 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['email', 'username', 'phone', 'avatar','password','is_host']
-        read_only_fields = ['username', 'email']
+        read_only_fields = ['username','is_host']
         extra_kwargs = {
             'password' : {'write_only':True,'min_length':8},
             'avatar' : {'required':False},
             'phone' : {'required':False},
         }
 
-    def validate(self, attrs):
-        phone = attrs.get("phone")
-        if phone and not phone.isdigit():
-            raise serializers.ValidationError("Phone number must contain only digits.")
-        return attrs
+    def validate_phone(self, value):
+    
+        if not value or value == '':
+            return None
+        return value
     
     def update(self, instance, validated_data):
         password = validated_data.pop('password', None)

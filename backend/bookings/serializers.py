@@ -18,7 +18,7 @@ class BookingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Bookings
         fields = [
-            
+            "id",
             "listing",
             "start_date",
             "end_date",
@@ -68,6 +68,7 @@ class ViewBookingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Bookings
         fields = [
+            "id",
             "guest",
             "listing",
 

@@ -75,6 +75,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
                 hover:bg-gray-50 hover:border-gray-400
                 transition-all duration-200
                 shadow-sm hover:shadow-md
+                cursor-pointer
               "
             >
               ← Back
