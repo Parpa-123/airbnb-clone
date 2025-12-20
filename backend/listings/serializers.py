@@ -189,7 +189,7 @@ class CreateUpdateListSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         request = self.context.get('request')
         
-        # Parse amenities if it comes as JSON string from FormData
+        
         if request and 'amenities' in request.data:
             amenities_str = request.data.get('amenities')
             if isinstance(amenities_str, str):
@@ -199,7 +199,6 @@ class CreateUpdateListSerializer(serializers.ModelSerializer):
                 except json.JSONDecodeError:
                     pass
         
-        # Handle image deletions
         if request and 'delete_images' in request.data:
             delete_images_str = request.data.get('delete_images')
             if isinstance(delete_images_str, str):
@@ -241,9 +240,7 @@ class CreateUpdateListSerializer(serializers.ModelSerializer):
         return attrs
 
 
-    # -----------------------------------------
-    # CREATE
-    # -----------------------------------------
+    
     def create(self, validated_data):
         request = self.context.get('request')
         
@@ -296,9 +293,6 @@ class CreateUpdateListSerializer(serializers.ModelSerializer):
         # Delete specified images
         if delete_images:
             for image_url in delete_images:
-                # Extract the image path from URL
-                # URL format: http://localhost:8000/media/listings/image.jpg
-                # We need just the relative path: listings/image.jpg
                 if '/media/' in image_url:
                     image_path = image_url.split('/media/')[-1]
                     instance.listingimages.filter(image=image_path).delete()
@@ -318,10 +312,5 @@ class CreateUpdateListSerializer(serializers.ModelSerializer):
 
         return instance
 
-    # -----------------------------------------
-    # Return full details after save
-    # -----------------------------------------
     def to_representation(self, instance):
         return ListingDetailSerializer(instance, context=self.context).data
-
-

@@ -1,0 +1,83 @@
+from rest_framework import generics
+from rest_framework.response import Response
+from rest_framework import status
+from users.base_views import AuthAPIView
+from .serializers import WishlistSerializer, WishlistDetailSerializer
+from .models import Wishlist
+from listings.models import Listings
+from django.shortcuts import get_object_or_404
+# Create your views here.
+
+class WishlistListView(AuthAPIView,generics.ListCreateAPIView):
+    serializer_class = WishlistSerializer
+    queryset = Wishlist.objects.all()
+
+    def get_queryset(self):
+        return self.queryset.filter(user=self.request.user)
+    
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+class WishlistDetailView(AuthAPIView,generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = WishlistDetailSerializer
+    lookup_field = "slug"
+    
+    def get_queryset(self):
+        return Wishlist.objects.filter(user=self.request.user)
+    
+    def patch(self, request, *args, **kwargs):
+        """
+        Updates a wishlist and optionally adds a listing to it.
+        
+        Expects:
+        - name (optional): Update wishlist name
+        - listing (optional): Listing ID/slug to add to wishlist
+        """
+        wishlist = self.get_object()
+        
+        # Update wishlist fields (e.g., name)
+        if 'name' in request.data:
+            wishlist.name = request.data['name']
+            wishlist.save()
+        
+        # Add listing to wishlist if provided
+        if 'listing' in request.data:
+            listing_identifier = request.data['listing']
+            try:
+                # Try to get listing by pk first, then by slug
+                if isinstance(listing_identifier, int) or listing_identifier.isdigit():
+                    listing = Listings.objects.get(pk=int(listing_identifier))
+                else:
+                    listing = Listings.objects.get(slug=listing_identifier)
+                
+                wishlist.listings.add(listing)
+            except Listings.DoesNotExist:
+                return Response(
+                    {"error": "Listing not found"},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+        
+        # Serialize and return the updated wishlist
+        serializer = self.get_serializer(wishlist)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class DeleteListingFromWishlistView(AuthAPIView,generics.DestroyAPIView):
+    serializer_class = WishlistSerializer
+    
+
+    def delete(self, request, *args, **kwargs):
+        wishlist_slug = kwargs.get("slug")
+        title_slug = kwargs.get("title_slug")
+        
+        # Get the wishlist that belongs to the user
+        wishlist = get_object_or_404(Wishlist, slug=wishlist_slug, user=request.user)
+        
+        # Get the listing to remove by title_slug
+        listing = get_object_or_404(Listings, title_slug=title_slug)
+        
+        # Remove the listing from the wishlist
+        wishlist.listings.remove(listing)
+        
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+        

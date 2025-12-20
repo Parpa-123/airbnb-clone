@@ -20,6 +20,8 @@ import ListingsDashboard from "./Components/Main Components/Routed Pages/Listing
 import LoginContextProvider from "../public/loginContext";
 import ProtectedRoute from "../public/ProtectedRoute";
 import ListingEditPage from "./Components/Main Components/Routed Pages/ListingEdits/ListingPatch";
+import Wishlist from "./Components/Main Components/Wishlist";
+import WishlistDetail from "./Components/Main Components/Routed Pages/WishlistDetail";
 
 // ==============================
 // App Component
@@ -69,6 +71,17 @@ const App: React.FC = () => {
                 </ProtectedRoute>
               }
             />
+
+            {/* Wishlist */}
+            <Route
+              path="me/wishlist"
+              element={
+                <ProtectedRoute>
+                  <Wishlist />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/wishlist/:slug" element={<WishlistDetail />} />
           </Route>
         </Routes>
       </Router>
