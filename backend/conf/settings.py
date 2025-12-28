@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -30,6 +33,7 @@ ALLOWED_HOSTS = [
     'localhost',
     'localhost:5173',
     '127.0.0.1',
+    'genna-granitelike-sherill.ngrok-free.dev',
 ]
 
 
@@ -166,5 +170,10 @@ CORS_ALLOWED_ORIGINS = [
 
 PHONENUMBER_DEFAULT_REGION = "IN"
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'listings') # Absolute path to the directory where uploaded files will be stored
-MEDIA_URL = '/listings/' # URL used to access the media files
+MEDIA_ROOT = os.path.join(BASE_DIR, 'listings')
+MEDIA_URL = '/listings/'
+
+CASHFREE_APP_ID = os.getenv("CASHFREE_APP_ID")
+CASHFREE_SECRET_KEY = os.getenv("CASHFREE_SECRET_KEY")
+CASHFREE_ENV = os.getenv("CASHFREE_ENV", "TEST")  # Default to TEST if not set
+CASHFREE_BASE_URL = os.getenv("CASHFREE_BASE_URL")

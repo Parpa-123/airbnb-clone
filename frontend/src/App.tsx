@@ -22,6 +22,9 @@ import ProtectedRoute from "../public/ProtectedRoute";
 import ListingEditPage from "./Components/Main Components/Routed Pages/ListingEdits/ListingPatch";
 import Wishlist from "./Components/Main Components/Wishlist";
 import WishlistDetail from "./Components/Main Components/Routed Pages/WishlistDetail";
+import BookingStatus from "./Components/Main Components/Routed Pages/BookingStatus";
+import { FilterContextProvider } from "./services/filterContext";
+import BookingDetails from "./Components/Main Components/Routed Pages/BookingsDetail";
 
 // ==============================
 // App Component
@@ -29,65 +32,72 @@ import WishlistDetail from "./Components/Main Components/Routed Pages/WishlistDe
 const App: React.FC = () => {
   return (
     <LoginContextProvider>
-      <Router>
-        <Routes>
-          {/* Layout route */}
-          <Route path="/" element={<Header />}>
-            {/* Home */}
-            <Route index element={<PublicListings />} />
+      <FilterContextProvider>
+        <Router>
+          <Routes>
+            {/* Layout route */}
+            <Route path="/" element={<Header />}>
+              {/* Home */}
+              <Route index element={<PublicListings />} />
 
-            {/* Listing detail */}
-            <Route path=":slug" element={<DetailedPage />} />
+              {/* Listing detail */}
+              <Route path=":slug" element={<DetailedPage />} />
 
-            {/* Bookings */}
-            <Route path="bookings" element={<Bookings />} />
+              {/* Bookings */}
+              <Route path="bookings" element={<Bookings />} />
 
-            {/* Profile page */}
-            <Route
-              path="me"
-              element={
-                <ProtectedRoute>
-                  <AuthView />
-                </ProtectedRoute>
-              }
-            />
+              {/* Profile page */}
+              <Route
+                path="me"
+                element={
+                  <ProtectedRoute>
+                    <AuthView />
+                  </ProtectedRoute>
+                }
+              />
 
-            {/* Host's listings dashboard - separate protected route */}
-            <Route
-              path="me/listings"
-              element={
-                <ProtectedRoute>
-                  <ListingsDashboard />
-                </ProtectedRoute>
-              }
-            />
+              {/* Host's listings dashboard - separate protected route */}
+              <Route
+                path="me/listings"
+                element={
+                  <ProtectedRoute>
+                    <ListingsDashboard />
+                  </ProtectedRoute>
+                }
+              />
 
-            {/* Listing edit */}
-            <Route
-              path="me/listings/:id/edit"
-              element={
-                <ProtectedRoute>
-                  <ListingEditPage />
-                </ProtectedRoute>
-              }
-            />
+              {/* Listing edit */}
+              <Route
+                path="me/listings/:id/edit"
+                element={
+                  <ProtectedRoute>
+                    <ListingEditPage />
+                  </ProtectedRoute>
+                }
+              />
 
-            {/* Wishlist */}
-            <Route
-              path="me/wishlist"
-              element={
-                <ProtectedRoute>
-                  <Wishlist />
-                </ProtectedRoute>
-              }
-            />
-            <Route path="/wishlist/:slug" element={<WishlistDetail />} />
-          </Route>
-        </Routes>
-      </Router>
+              {/* Wishlist */}
+              <Route
+                path="me/wishlist"
+                element={
+                  <ProtectedRoute>
+                    <Wishlist />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="/wishlist/:slug" element={<WishlistDetail />} />
 
-      {/* Global Toast */}
-      <ToastContainer position="top-center" />
+              {/* Bookings */}
+              <Route path="bookings" element={<Bookings />} />
+              <Route path="bookings/:id" element={<BookingStatus />} />
+              <Route path="bookings/details/:id" element={<BookingDetails />} />
+            </Route>
+          </Routes>
+        </Router>
+
+        {/* Global Toast */}
+        <ToastContainer position="top-center" />
+      </FilterContextProvider>
     </LoginContextProvider>
   );
 };

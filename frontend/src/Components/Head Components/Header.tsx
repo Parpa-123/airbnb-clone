@@ -14,15 +14,15 @@ import Img from "../../assets/image.png";
 import { resetForm } from "../../../public/redux/slice/slice";
 import MultiStepController from "../Multiform Components/MultiStepController";
 import { useAuth } from "./hooks/useAuth";
-import { useListings } from "./hooks/useListings";
+import { useFilterContext } from "../../services/filterContext";
 import SignupDialog from "./components/dialogs/SignupDialog";
 import ReusableDialog from "./components/ui/ReusableDialog";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const Header: React.FC = () => {
   const dispatch = useDispatch();
   const { user, loading, doLogin, doSignup, logout } = useAuth();
-  const { setFilters } = useListings({});
+  const { setFilters } = useFilterContext();
   const navigate = useNavigate();
 
   // dialogs
@@ -46,7 +46,9 @@ const Header: React.FC = () => {
     <>
       {/* ================= HEADER ================= */}
       <nav className="flex items-center justify-between px-6 py-4 bg-white shadow-md">
-        <img src={Img} alt="Logo" className="h-10" />
+        <Link to="/">
+          <img src={Img} alt="Logo" className="h-10 cursor-pointer" />
+        </Link>
 
         {/* ================= DESKTOP FILTERS ================= */}
         <ul className="hidden md:flex gap-6 text-sm font-medium text-gray-700">
@@ -159,6 +161,13 @@ const Header: React.FC = () => {
           >
             {user?.is_host ? "List More Places" : "Become a Host"}
           </button>
+
+          <Link
+            to="/me/wishlist"
+            className="text-sm hover:text-black cursor-pointer"
+          >
+            Wishlist
+          </Link>
 
           <FaGlobe className="text-xl cursor-pointer hover:text-black" />
 

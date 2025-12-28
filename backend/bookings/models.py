@@ -8,6 +8,15 @@ from users.base_models import TimeStampedModel
 
 class Bookings(TimeStampedModel):
 
+
+    STATUS_PENDING = "pending"
+    STATUS_CONFIRMED = "confirmed"
+    STATUS_CANCELLED = "cancelled"
+    STATUS_PAID = "paid"
+    STATUS_FAILED = "failed"
+    STATUS_REFUNDED = "refunded"
+    STATUS_ONGOING = "ongoing"
+
     guest = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -26,15 +35,19 @@ class Bookings(TimeStampedModel):
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
 
     STATUS_CHOICES = [
-        ("confirmed", "Confirmed"),
-        ("cancelled", "Cancelled"),
-        ("pending", "Pending"),
+        (STATUS_PENDING, "Pending"),
+        (STATUS_CONFIRMED, "Confirmed"),
+        (STATUS_CANCELLED, "Cancelled"),
+        (STATUS_PAID, "Paid"),
+        (STATUS_FAILED, "Failed"),
+        (STATUS_REFUNDED, "Refunded"),
+        (STATUS_ONGOING, "Ongoing"),
     ]
 
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
-        default="confirmed"
+        default=STATUS_PENDING
     )
 
 
@@ -63,9 +76,42 @@ class Bookings(TimeStampedModel):
                 name = "total_price_must_be_positive"
             ),
 
+            # Only prevent duplicate CONFIRMED bookings
+            # This allows retrying failed bookings for same dates
             models.UniqueConstraint(
                 fields = ["guest", "listing", "start_date", "end_date"],
-                name = "unique_booking"
+                condition = Q(status__in=["confirmed", "paid"]),
+                name = "unique_confirmed_booking"
             )
         ]
 
+
+class Payment(models.Model):
+    INITIATED = "initiated"
+    PAID = "paid"
+    FAILED = "failed"
+    REFUNDED = "refunded"
+
+    STATUS_CHOICES = [
+        (INITIATED, "Initiated"),
+        (PAID, "Paid"),
+        (FAILED, "Failed"),
+        (REFUNDED, "Refunded"),
+    ]
+
+    booking = models.ForeignKey(
+        Bookings,
+        on_delete=models.CASCADE,
+        related_name="payments"
+    )
+
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    gateway = models.CharField(max_length=50, default="cashfree")
+    order_id = models.CharField(max_length=255, unique=True)
+    payment_session_id = models.CharField(max_length=255, blank=True, null=True)
+    transaction_id = models.CharField(max_length=255, blank=True, null=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    

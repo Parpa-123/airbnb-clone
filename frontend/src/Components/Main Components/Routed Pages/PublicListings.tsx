@@ -6,6 +6,8 @@ import { Link } from "react-router-dom";
 import { FaHeart } from "react-icons/fa";
 import * as Dialog from "@radix-ui/react-dialog";
 import WishlistForm from "../../../services/WishlistForm";
+import { useFilterContext } from "../../../services/filterContext";
+
 
 /* ---------------- TYPES ---------------- */
 
@@ -37,6 +39,7 @@ export interface Listing {
 /* ---------------- COMPONENT ---------------- */
 
 const PublicListings: React.FC = () => {
+  const { filters } = useFilterContext();
   const [listings, setListings] = useState<Listing[]>([]);
   const [wishlists, setWishlists] = useState<Wishlist[]>([]);
 
@@ -50,8 +53,24 @@ const PublicListings: React.FC = () => {
 
   useEffect(() => {
     (async () => {
+      setLoading(true);
+      setError(null);
       try {
-        const res = await axiosInstance.get<Listing[]>("/listings/public/");
+        // Build query params from filters
+        const params = new URLSearchParams();
+
+        if (filters.country) params.append("country", filters.country);
+        if (filters.city) params.append("city", filters.city);
+        if (filters.property_type) params.append("property_type", filters.property_type);
+        if (filters.price_per_night__gte) params.append("price_per_night__gte", filters.price_per_night__gte.toString());
+        if (filters.price_per_night__lte) params.append("price_per_night__lte", filters.price_per_night__lte.toString());
+        if (filters.max_guests__gte) params.append("max_guests__gte", filters.max_guests__gte.toString());
+        if (filters.max_guests__lte) params.append("max_guests__lte", filters.max_guests__lte.toString());
+
+        const queryString = params.toString();
+        const url = queryString ? `/listings/public/?${queryString}` : "/listings/public/";
+
+        const res = await axiosInstance.get<Listing[]>(url);
         setListings(res.data);
       } catch (err: any) {
         const msg = err?.response?.data?.message || err.message;
@@ -61,7 +80,7 @@ const PublicListings: React.FC = () => {
         setLoading(false);
       }
     })();
-  }, []);
+  }, [filters]);
 
   /* ---------------- FETCH WISHLISTS ---------------- */
 
@@ -178,14 +197,14 @@ const PublicListings: React.FC = () => {
 
             <div className="space-y-3 max-h-60 overflow-y-auto">
               <form action="">
-              {activeListing && wishlists.map((wl) => (
-                <WishlistForm
-                  key={wl.slug}
-                  wishlist={wl}
-                  listing={activeListing}
-                  onSuccess={() => setOpen(false)}
-                />
-              ))}
+                {activeListing && wishlists.map((wl) => (
+                  <WishlistForm
+                    key={wl.slug}
+                    wishlist={wl}
+                    listing={activeListing}
+                    onSuccess={() => setOpen(false)}
+                  />
+                ))}
               </form>
             </div>
 

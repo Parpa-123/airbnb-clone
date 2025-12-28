@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react"
 import axiosInstance from "../../../../public/connect"
 import { toast } from "react-toastify"
-import { Link } from "react-router-dom"
+import { Link, useSearchParams } from "react-router-dom"
+import CancelBookingButton from "../Buttons/CancelBookingButton"
 
 /* =======================
    Interfaces
@@ -62,6 +63,9 @@ const statusStyles: Record<Booking["status"], string> = {
 const Bookings = () => {
   const [bookings, setBookings] = useState<Booking[]>([])
   const [loading, setLoading] = useState(true)
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  const orderId = searchParams.get("order_id");
 
   const fetchBookings = async () => {
     try {
@@ -77,21 +81,73 @@ const Bookings = () => {
     }
   }
 
+  // Initial fetch of bookings
   useEffect(() => {
-    fetchBookings()
+    fetchBookings();
   }, []);
 
-  const cancelBooking = async (id: number) => {
-    try {
-      setLoading(true)
-      await axiosInstance.delete(`bookings/delete/${id}/`)
-      fetchBookings()
-    } catch (error: any) {
-      toast.error(error?.response?.data?.message || "Failed to cancel booking")
-    } finally {
-      setLoading(false)
+  // Payment status polling when order_id is present
+  useEffect(() => {
+    if (!orderId) return;
+
+    // Extract booking ID from order_id format: "booking_1_abc123" -> "1"
+    const bookingIdMatch = orderId.match(/^booking_(\d+)_/);
+    if (!bookingIdMatch) {
+      console.error("Invalid order_id format:", orderId);
+      return;
     }
-  }
+
+    const bookingId = bookingIdMatch[1];
+    let intervalId: number;
+
+    const checkPaymentStatus = async () => {
+      try {
+        const res = await axiosInstance.get(
+          `/bookings/${bookingId}/`
+        );
+
+        const booking = res.data;
+
+        // Check if booking and status exist
+        if (!booking || !booking.status) {
+          console.warn("Booking or status not found in response:", booking);
+          return;
+        }
+
+        const bookingStatus = booking.status.toUpperCase();
+
+        if (bookingStatus === "CONFIRMED") {
+          clearInterval(intervalId);
+          toast.success("Payment confirmed! Your booking has been created.");
+          await fetchBookings(); // Reload bookings after confirmation
+          // Remove order_id from URL
+          setSearchParams({});
+        }
+
+        if (bookingStatus === "FAILED") {
+          clearInterval(intervalId);
+          toast.error("Payment failed. Please try again.");
+          setSearchParams({});
+        }
+
+        if (bookingStatus === "CANCELLED") {
+          clearInterval(intervalId);
+          toast.warning("Payment was cancelled.");
+          setSearchParams({});
+        }
+      } catch (err: any) {
+        console.error("Payment status check error:", err);
+        console.error("Error response:", err.response?.data);
+        clearInterval(intervalId);
+        toast.error("Failed to check payment status.");
+      }
+    };
+
+    checkPaymentStatus(); // Immediate check
+    intervalId = window.setInterval(checkPaymentStatus, 2000);
+
+    return () => clearInterval(intervalId);
+  }, [orderId]);
 
   /* =======================
      Loading State
@@ -188,11 +244,12 @@ const Bookings = () => {
                   </p>
 
                   <button className="text-sm font-medium text-rose-600 hover:underline cursor-pointer">
-                    <Link to={`/${booking.listing.title_slug}`}>View details</Link>
+                    <Link to={`/bookings/details/${booking.id}`}>View details</Link>
                   </button>
-                  <button className="text-sm font-medium text-black hover:underline cursor-pointer" onClick={() => cancelBooking(booking.id)}>
-                    Cancel
-                  </button>
+                  <CancelBookingButton
+                    bookingId={booking.id}
+                    onSuccess={fetchBookings}
+                  />
                 </div>
               </div>
             </div>
