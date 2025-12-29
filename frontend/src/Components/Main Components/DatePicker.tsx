@@ -10,9 +10,9 @@ type DatePickerRef = {
 };
 
 const DatePickerValue = React.forwardRef<DatePickerRef>((_props, ref) => {
-  const [checkIn, setCheckIn] = React.useState<Dayjs | null>(dayjs());
+  const [checkIn, setCheckIn] = React.useState<Dayjs | null>(dayjs().add(1, "day"));
   const [checkOut, setCheckOut] = React.useState<Dayjs | null>(
-    dayjs().add(5, "day")
+    dayjs().add(6, "day")
   );
 
   React.useImperativeHandle(

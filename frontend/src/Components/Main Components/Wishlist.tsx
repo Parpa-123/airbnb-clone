@@ -70,7 +70,7 @@ const Wishlist: React.FC = () => {
 
           {wishlists.length > 0 && (
             <Dialog.Trigger asChild>
-              <button className="flex items-center gap-2 text-[#FF385C] hover:opacity-80">
+              <button className="flex items-center gap-2 text-[#FF385C] hover:opacity-80 cursor-pointer">
                 <FaPlusCircle size={22} />
                 <span className="text-sm font-medium">Add</span>
               </button>
@@ -112,7 +112,7 @@ const Wishlist: React.FC = () => {
                   {/* Dropdown Menu */}
                   <DropdownMenu.Root>
                     <DropdownMenu.Trigger asChild>
-                      <button className="absolute top-3 right-3 bg-white/90 rounded-full p-2 shadow hover:bg-white">
+                      <button className="absolute top-3 right-3 bg-white/90 rounded-full p-2 shadow hover:bg-white cursor-pointer">
                         <FaEllipsisH />
                       </button>
                     </DropdownMenu.Trigger>
@@ -170,7 +170,7 @@ const Wishlist: React.FC = () => {
 
             <div className="mt-6 flex justify-end gap-3">
               <Dialog.Close asChild onClick={() => setWishlistName("")}>
-                <button className="px-4 py-2 border rounded-lg">
+                <button className="px-4 py-2 border rounded-lg cursor-pointer">
                   Cancel
                 </button>
               </Dialog.Close>
@@ -179,7 +179,7 @@ const Wishlist: React.FC = () => {
                 <button
                   onClick={createWishlist}
                   disabled={!wishlistName.trim()}
-                  className="px-4 py-2 bg-[#FF385C] text-white rounded-lg disabled:opacity-50"
+                  className="px-4 py-2 bg-[#FF385C] text-white rounded-lg disabled:opacity-50 cursor-pointer"
                 >
                   Create
                 </button>
@@ -188,7 +188,7 @@ const Wishlist: React.FC = () => {
           </Dialog.Content>
         </Dialog.Portal>
       </Dialog.Root>
-    </div>
+    </div >
   );
 };
 

@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-c(&x+d49dwk3icpnh=&8s(q-a_$m%2e6tl0+bi!6pg-n77^99s'
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'phonenumber_field',
     'drf_spectacular',
     'django_filters',
+    'reviews',
 ]
 
 MIDDLEWARE = [

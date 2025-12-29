@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import Wishlist
 from listings.serializers import ListingSerializer
-
+from listings.models import Listings
 
 # Create your tests here.
 
@@ -51,6 +51,33 @@ class WishlistDetailSerializer(serializers.ModelSerializer):
             'name',
             'listings',
         )
+
+
+class BulkAddToWishlistSerializer(serializers.Serializer):
+    listing = serializers.CharField()
+    wishlist = serializers.ListField(
+        child = serializers.SlugField(),
+    )
+
+    def validate(self,attrs):
+        user = self.context.get('request').user
+        listing = attrs.get('listing')
+        wishlist = attrs.get('wishlist')
+        
+        try:
+            listing = Listings.objects.get(title_slug=listing)
+        except Listings.DoesNotExist:
+            raise serializers.ValidationError("Listing not found")
+        
+        wishlists = Wishlist.objects.filter(user=user,slug__in=wishlist)
+
+        if not wishlists.exists():
+            raise serializers.ValidationError("Wishlist not found")
+
+        attrs['listing_obj'] = listing
+        attrs['wishlists_qs'] = wishlists
+
+        return attrs
 
 
 

@@ -1,8 +1,8 @@
-from rest_framework import generics
+from rest_framework import generics, views
 from rest_framework.response import Response
 from rest_framework import status
 from users.base_views import AuthAPIView
-from .serializers import WishlistSerializer, WishlistDetailSerializer
+from .serializers import WishlistSerializer, WishlistDetailSerializer, BulkAddToWishlistSerializer
 from .models import Wishlist
 from listings.models import Listings
 from django.shortcuts import get_object_or_404
@@ -81,3 +81,23 @@ class DeleteListingFromWishlistView(AuthAPIView,generics.DestroyAPIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
         
+class BulkAddToWishlistView(AuthAPIView,views.APIView):
+    
+    def post(self, request):
+        serializer = BulkAddToWishlistSerializer(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        
+        listing = serializer.validated_data['listing_obj']
+        wishlists = serializer.validated_data['wishlists_qs']
+
+        added = []
+
+        for wishlist in wishlists:
+            if wishlist.listings.filter(pk=listing.pk).exists():
+                continue
+            wishlist.listings.add(listing)
+            added.append(wishlist.slug)
+        
+        return Response({"added": added}, status=status.HTTP_200_OK)
+
+

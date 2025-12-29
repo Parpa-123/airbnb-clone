@@ -4,6 +4,7 @@ from listings.models import Listings
 from django.core.exceptions import ValidationError
 from django.db.models import Q
 from users.base_models import TimeStampedModel
+from datetime import date
 
 
 class Bookings(TimeStampedModel):
@@ -62,6 +63,14 @@ class Bookings(TimeStampedModel):
         if self.guest == self.listing.host:
             raise ValidationError("Guest cannot be the host")
 
+    @property
+    def can_review(self):
+        return(
+            self.status == self.STATUS_CONFIRMED and
+            date.today() > self.end_date and
+            not hasattr(self, "review")
+        )
+
     class Meta:
         verbose_name = "Booking"
         verbose_name_plural = "Bookings"
@@ -85,6 +94,9 @@ class Bookings(TimeStampedModel):
             )
         ]
 
+
+    
+    
 
 class Payment(models.Model):
     INITIATED = "initiated"

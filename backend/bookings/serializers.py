@@ -38,7 +38,7 @@ class BookingSerializer(serializers.ModelSerializer):
         now = timezone.localtime(timezone.now()).date()
 
         if start_date < now:
-            raise serializers.ValidationError("Start date must be after today")
+            raise serializers.ValidationError("Start date cannot be in the past")
 
         if end_date < start_date:
             raise serializers.ValidationError("End date must be after start date")
@@ -48,6 +48,11 @@ class BookingSerializer(serializers.ModelSerializer):
 
         if Bookings.objects.filter(listing=listing,start_date__lte = end_date, end_date__gte = start_date, status=Bookings.STATUS_CONFIRMED).exists():
             raise serializers.ValidationError("Listing is already booked for this period")
+        
+        
+        request = self.context.get('request')
+        if request and hasattr(request, 'user') and request.user == listing.host:
+            raise serializers.ValidationError("You cannot book your own listing")
         
         return attrs
 
@@ -72,6 +77,7 @@ class BookingSerializer(serializers.ModelSerializer):
 class ViewBookingSerializer(serializers.ModelSerializer):
     guest = UserProfileSerializer(read_only=True)
     listing = ListingSerializer(read_only=True)
+    can_review = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = Bookings
@@ -84,6 +90,7 @@ class ViewBookingSerializer(serializers.ModelSerializer):
             "end_date",
             "total_price",
             "status",
+            "can_review"
         ]
 
 class PaymentSerializer(serializers.ModelSerializer):
@@ -100,6 +107,7 @@ class BookingDetailSerializer(serializers.ModelSerializer):
     """
     guest = UserProfileSerializer(read_only=True)
     listing = ListingSerializer(read_only=True)
+    can_review = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = Bookings
@@ -113,5 +121,6 @@ class BookingDetailSerializer(serializers.ModelSerializer):
             "status",
             "created_at",
             "updated_at",
+            "can_review",
         ]
         read_only_fields = fields  # All fields are read-only for detail view

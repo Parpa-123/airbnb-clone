@@ -31,6 +31,7 @@ urlpatterns = [
 
     path("api/listings/", include("listings.urls", namespace="listing")),
     path("api/bookings/", include("bookings.urls", namespace="booking")),
+    path("api/reviews/", include("reviews.urls", namespace="review")),
     path("api/wishlist/", include("wishlist.urls", namespace="wishlist")),
 
     # OpenAPI schema generation

@@ -42,7 +42,7 @@ export function EditableSection({ title, fields, listing, onPatch, children }: E
                         type="button"
                         onClick={() => reset(listing)}
                         className="px-5 py-2.5 border-2 border-gray-300 rounded-lg font-medium text-gray-700 
-                                   hover:border-gray-400 hover:bg-gray-50 transition-all duration-200"
+                                   hover:border-gray-400 hover:bg-gray-50 transition-all duration-200 cursor-pointer"
                     >
                         Cancel
                     </button>
@@ -50,7 +50,7 @@ export function EditableSection({ title, fields, listing, onPatch, children }: E
                         type="submit"
                         className="px-5 py-2.5 bg-linear-to-r from-[#FF385C] to-[#e03050] text-white 
                                    rounded-lg font-medium shadow-md hover:shadow-lg hover:from-[#e03050] 
-                                   hover:to-[#c02848] transition-all duration-200"
+                                   hover:to-[#c02848] transition-all duration-200 cursor-pointer"
                     >
                         Save Changes
                     </button>
@@ -208,7 +208,7 @@ export function ListingImagesComponents(
                                                     }
                                                     className="opacity-0 group-hover:opacity-100 
                                                                bg-green-500 text-white px-4 py-2 
-                                                               rounded-lg font-medium transition-opacity"
+                                                               rounded-lg font-medium transition-opacity cursor-pointer"
                                                 >
                                                     Undo
                                                 </button>
@@ -265,7 +265,7 @@ export function ListingImagesComponents(
                                             }
                                             className="opacity-0 group-hover:opacity-100 
                                                        bg-red-500 text-white px-4 py-2 
-                                                       rounded-lg font-medium transition-opacity"
+                                                       rounded-lg font-medium transition-opacity cursor-pointer"
                                         >
                                             Remove
                                         </button>
@@ -318,7 +318,7 @@ export function ListingImagesComponents(
                             disabled={uploading}
                             className="px-5 py-2.5 border-2 border-gray-300 
                                        rounded-lg font-medium text-gray-700 
-                                       hover:bg-gray-50 disabled:opacity-50"
+                                       hover:bg-gray-50 disabled:opacity-50 cursor-pointer"
                         >
                             Cancel
                         </button>
@@ -328,7 +328,7 @@ export function ListingImagesComponents(
                             disabled={uploading}
                             className="px-5 py-2.5 bg-[#FF385C] text-white 
                                        rounded-lg font-medium shadow-md 
-                                       hover:bg-[#e03050] disabled:opacity-50"
+                                       hover:bg-[#e03050] disabled:opacity-50 cursor-pointer"
                         >
                             {uploading ? "Uploading..." : "Upload Images"}
                         </button>

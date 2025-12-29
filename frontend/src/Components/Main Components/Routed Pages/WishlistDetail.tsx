@@ -4,7 +4,7 @@ import axiosInstance from "../../../../public/connect";
 import { toast } from "react-toastify";
 import type { Listing } from "./PublicListings";
 import { useParams, useNavigate } from "react-router-dom";
-import { FaHeart, FaArrowLeft, FaPlus, FaEllipsisH } from "react-icons/fa";
+import { FaHeart, FaArrowLeft, FaEllipsisH } from "react-icons/fa";
 
 const WishlistDetail: React.FC = () => {
   const [listings, setListings] = useState<Listing[]>([]);
@@ -58,7 +58,7 @@ const WishlistDetail: React.FC = () => {
           </div>
         </div>
 
-        
+
       </div>
 
       {/* ---------- EMPTY STATE ---------- */}
@@ -100,7 +100,7 @@ const WishlistDetail: React.FC = () => {
                       e.stopPropagation();
                       toast.info("Remove from wishlist");
                     }}
-                    className="absolute top-3 left-3 bg-white rounded-full p-2 shadow hover:scale-105 transition"
+                    className="absolute top-3 left-3 bg-white rounded-full p-2 shadow hover:scale-105 transition cursor-pointer"
                   >
                     <FaHeart className="text-[#FF385C]" />
                   </button>
@@ -139,7 +139,7 @@ const WishlistDetail: React.FC = () => {
                             onClick={(e) => {
                               e.stopPropagation();
                               delFunc(listing.title_slug);
-                              
+
                             }}
                           >
                             Remove

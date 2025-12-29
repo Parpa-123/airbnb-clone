@@ -45,219 +45,287 @@ const Header: React.FC = () => {
   return (
     <>
       {/* ================= HEADER ================= */}
-      <nav className="flex items-center justify-between px-6 py-4 bg-white shadow-md">
-        <Link to="/">
-          <img src={Img} alt="Logo" className="h-10 cursor-pointer" />
-        </Link>
+      <nav className="sticky top-0 z-50 bg-white border-b border-gray-200">
+        <div className="max-w-screen-2xl mx-auto px-6 lg:px-12 py-4">
+          <div className="flex items-center justify-between gap-4">
+            {/* Logo */}
+            <Link to="/" className="shrink-0">
+              <img src={Img} alt="Logo" className="h-8 cursor-pointer" />
+            </Link>
 
-        {/* ================= DESKTOP FILTERS ================= */}
-        <ul className="hidden md:flex gap-6 text-sm font-medium text-gray-700">
-          {/* Where To */}
-          <li>
-            <DropdownMenu.Root>
-              <DropdownMenu.Trigger asChild>
-                <button className="px-3 py-2 border rounded-md hover:bg-gray-50 cursor-pointer">
-                  Where To
-                </button>
-              </DropdownMenu.Trigger>
+            {/* Central Search Bar - Airbnb Style */}
+            <div className="hidden md:flex items-center gap-0 border border-gray-300 rounded-full shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer">
+              {/* Where */}
+              <DropdownMenu.Root>
+                <DropdownMenu.Trigger asChild>
+                  <button className="px-6 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-full transition-colors cursor-pointer">
+                    Anywhere
+                  </button>
+                </DropdownMenu.Trigger>
 
-              <DropdownMenu.Portal>
-                <DropdownMenu.Content
-                  sideOffset={6}
-                  align="start"
-                  className="z-50 w-72 p-4 bg-white border rounded-lg shadow-xl space-y-3"
+                <DropdownMenu.Portal>
+                  <DropdownMenu.Content
+                    sideOffset={8}
+                    align="start"
+                    className="z-50 w-80 p-6 bg-white border border-gray-200 rounded-3xl shadow-xl"
+                  >
+                    <DropdownMenu.Label className="text-xs font-semibold text-gray-900 mb-4">
+                      Where to?
+                    </DropdownMenu.Label>
+
+                    <div className="space-y-3">
+                      <input
+                        placeholder="Search destinations"
+                        className="w-full border border-gray-300 px-4 py-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#FF385C] transition"
+                        onChange={(e) =>
+                          setFilters((p: any) => ({
+                            ...p,
+                            country: e.target.value || undefined,
+                          }))
+                        }
+                      />
+
+                      <input
+                        placeholder="City"
+                        className="w-full border border-gray-300 px-4 py-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#FF385C] transition"
+                        onChange={(e) =>
+                          setFilters((p: any) => ({
+                            ...p,
+                            city: e.target.value || undefined,
+                          }))
+                        }
+                      />
+                    </div>
+                  </DropdownMenu.Content>
+                </DropdownMenu.Portal>
+              </DropdownMenu.Root>
+
+              {/* Divider */}
+              <div className="h-6 w-px bg-gray-300" />
+
+              {/* Check in placeholder */}
+              <button className="px-6 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-full transition-colors cursor-pointer">
+                Any week
+              </button>
+
+              {/* Divider */}
+              <div className="h-6 w-px bg-gray-300" />
+
+              {/* Guests */}
+              <DropdownMenu.Root>
+                <DropdownMenu.Trigger asChild>
+                  <button className="px-6 py-2 text-sm text-gray-500 hover:bg-gray-100 rounded-full transition-colors cursor-pointer">
+                    Add guests
+                  </button>
+                </DropdownMenu.Trigger>
+
+                <DropdownMenu.Portal>
+                  <DropdownMenu.Content
+                    sideOffset={8}
+                    align="end"
+                    className="z-50 w-80 p-6 bg-white border border-gray-200 rounded-3xl shadow-xl"
+                  >
+                    <DropdownMenu.Label className="text-xs font-semibold text-gray-900 mb-4">
+                      Who's coming?
+                    </DropdownMenu.Label>
+
+                    <div className="space-y-3">
+                      <input
+                        type="number"
+                        min={1}
+                        placeholder="Number of guests"
+                        className="w-full border border-gray-300 px-4 py-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#FF385C] transition"
+                        onChange={(e) =>
+                          setFilters((p: any) => ({
+                            ...p,
+                            max_guests__gte:
+                              e.target.value === ""
+                                ? undefined
+                                : Number(e.target.value),
+                          }))
+                        }
+                      />
+                    </div>
+                  </DropdownMenu.Content>
+                </DropdownMenu.Portal>
+              </DropdownMenu.Root>
+
+              {/* Search Button */}
+              <button className="bg-[#FF385C] text-white p-2 rounded-full m-1 hover:bg-[#E31C5F] transition-colors cursor-pointer">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 32 32"
+                  aria-hidden="true"
+                  role="presentation"
+                  focusable="false"
+                  className="w-4 h-4"
+                  fill="currentColor"
                 >
-                  <DropdownMenu.Label className="font-semibold">
-                    Location
-                  </DropdownMenu.Label>
+                  <path d="M13 0c7.18 0 13 5.82 13 13 0 2.868-.929 5.519-2.502 7.669l7.916 7.917-2.828 2.828-7.917-7.916A12.942 12.942 0 0 1 13 26C5.82 26 0 20.18 0 13S5.82 0 13 0zm0 4a9 9 0 1 0 0 18 9 9 0 0 0 0-18z"></path>
+                </svg>
+              </button>
+            </div>
 
-                  <input
-                    placeholder="Country"
-                    className="w-full border px-3 py-2 rounded-md"
-                    onChange={(e) =>
-                      setFilters((p: any) => ({
-                        ...p,
-                        country: e.target.value || undefined,
-                      }))
-                    }
-                  />
-
-                  <input
-                    placeholder="City"
-                    className="w-full border px-3 py-2 rounded-md"
-                    onChange={(e) =>
-                      setFilters((p: any) => ({
-                        ...p,
-                        city: e.target.value || undefined,
-                      }))
-                    }
-                  />
-                </DropdownMenu.Content>
-              </DropdownMenu.Portal>
-            </DropdownMenu.Root>
-          </li>
-
-          {/* Guests */}
-          <li>
-            <DropdownMenu.Root>
-              <DropdownMenu.Trigger asChild>
-                <button className="px-3 py-2 border rounded-md hover:bg-gray-50 cursor-pointer">
-                  The Troupe
-                </button>
-              </DropdownMenu.Trigger>
-
-              <DropdownMenu.Portal>
-                <DropdownMenu.Content
-                  sideOffset={6}
-                  align="start"
-                  className="z-50 w-72 p-4 bg-white border rounded-lg shadow-xl space-y-3"
-                >
-                  <DropdownMenu.Label className="font-semibold">
-                    Guests
-                  </DropdownMenu.Label>
-
-                  <input
-                    type="number"
-                    min={1}
-                    placeholder="Min guests"
-                    className="w-full border px-3 py-2 rounded-md"
-                    onChange={(e) =>
-                      setFilters((p: any) => ({
-                        ...p,
-                        max_guests__gte:
-                          e.target.value === ""
-                            ? undefined
-                            : Number(e.target.value),
-                      }))
-                    }
-                  />
-
-                  <input
-                    type="number"
-                    min={1}
-                    placeholder="Max guests"
-                    className="w-full border px-3 py-2 rounded-md"
-                    onChange={(e) =>
-                      setFilters((p: any) => ({
-                        ...p,
-                        max_guests__lte:
-                          e.target.value === ""
-                            ? undefined
-                            : Number(e.target.value),
-                      }))
-                    }
-                  />
-                </DropdownMenu.Content>
-              </DropdownMenu.Portal>
-            </DropdownMenu.Root>
-          </li>
-        </ul>
-
-        {/* ================= RIGHT ACTIONS ================= */}
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => setHostingOpen(true)}
-            className="text-sm hover:text-black cursor-pointer"
-          >
-            {user?.is_host ? "List More Places" : "Become a Host"}
-          </button>
-
-          <Link
-            to="/me/wishlist"
-            className="text-sm hover:text-black cursor-pointer"
-          >
-            Wishlist
-          </Link>
-
-          <FaGlobe className="text-xl cursor-pointer hover:text-black" />
-
-          {/* ================= USER MENU ================= */}
-          <DropdownMenu.Root open={menuOpen} onOpenChange={setMenuOpen}>
-            <DropdownMenu.Trigger asChild>
-              <FaBars className="text-xl cursor-pointer hover:text-black" />
-            </DropdownMenu.Trigger>
-
-            <DropdownMenu.Portal>
-              <DropdownMenu.Content
-                sideOffset={6}
-                align="end"
-                className="z-50 w-60 p-3 bg-white border rounded-xl shadow-2xl text-sm"
+            {/* Right Actions */}
+            <div className="flex items-center gap-2">
+              {/* Airbnb your home */}
+              <button
+                onClick={() => setHostingOpen(true)}
+                className="hidden lg:block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
               >
-                <DropdownMenu.Item className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-100">
-                  <FaQuestionCircle /> Help Center
-                </DropdownMenu.Item>
+                {user?.is_host ? "List your home" : "Airbnb your home"}
+              </button>
 
-                <DropdownMenu.Separator className="my-2 h-px bg-gray-200" />
+              {/* Wishlist */}
+              <Link
+                to="/me/wishlist"
+                className="hidden lg:block px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
+              >
+                Wishlist
+              </Link>
 
-                {!user ? (
-                  <>
-                    <DropdownMenu.Item
-                      onSelect={() => {
-                        setMenuOpen(false);
-                        setLoginOpen(true);
-                      }}
-                      className="p-2 rounded-md hover:bg-gray-100"
-                    >
-                      Log In
-                    </DropdownMenu.Item>
+              {/* Globe */}
+              <button className="p-3 hover:bg-gray-100 rounded-full transition-colors cursor-pointer">
+                <FaGlobe className="w-4 h-4 text-gray-700" />
+              </button>
 
-                    <DropdownMenu.Item
-                      onSelect={() => {
-                        setMenuOpen(false);
-                        setSignupOpen(true);
-                      }}
-                      className="p-2 rounded-md hover:bg-gray-100"
-                    >
-                      Sign Up
-                    </DropdownMenu.Item>
-                  </>
-                ) : (
-                  <>
-                    <DropdownMenu.Item
-                      onSelect={() => {
-                        setMenuOpen(false);
-                        setLogoutOpen(true);
-                      }}
-                      className="p-2 rounded-md hover:bg-gray-100"
-                    >
-                      Logout ({user.username})
-                    </DropdownMenu.Item>
-                    <DropdownMenu.Separator className="my-2 h-px bg-gray-200" />
-                    <DropdownMenu.Item
-                      onSelect={() => {
-                        setMenuOpen(false);
-                        navigate(`/me`);
-                      }}
-                      className="p-2 rounded-md hover:bg-gray-100"
-                    >
-                      My Profile
-                    </DropdownMenu.Item>
-                    <DropdownMenu.Separator className="my-2 h-px bg-gray-200" />
-                    <DropdownMenu.Item
-                      onSelect={() => {
-                        setMenuOpen(false);
-                        navigate(`bookings`);
-                      }}
-                      className="p-2 rounded-md hover:bg-gray-100"
-                    >
-                      My Bookings
-                    </DropdownMenu.Item>
-                    {user?.is_host && (
-                      <DropdownMenu.Item
-                        onSelect={() => {
-                          setMenuOpen(false);
-                          navigate(`/me/listings`);
-                        }}
-                        className="p-2 rounded-md hover:bg-gray-100"
-                      >
-                        My Listings
-                      </DropdownMenu.Item>
+              {/* User Menu */}
+              <DropdownMenu.Root open={menuOpen} onOpenChange={setMenuOpen}>
+                <DropdownMenu.Trigger asChild>
+                  <button className="flex items-center gap-3 pl-3 pr-2 py-1 border border-gray-300 rounded-full hover:shadow-md transition-shadow cursor-pointer">
+                    <FaBars className="w-4 h-4 text-gray-700" />
+                    {user?.avatar ? (
+                      <img
+                        src={user.avatar}
+                        alt={user.username}
+                        className="w-8 h-8 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center text-white text-sm font-medium">
+                        {user?.username?.[0]?.toUpperCase() || "U"}
+                      </div>
                     )}
-                  </>
-                )}
-              </DropdownMenu.Content>
-            </DropdownMenu.Portal>
-          </DropdownMenu.Root>
+                  </button>
+                </DropdownMenu.Trigger>
+
+                <DropdownMenu.Portal>
+                  <DropdownMenu.Content
+                    sideOffset={8}
+                    align="end"
+                    className="z-50 w-60 py-2 bg-white border border-gray-200 rounded-xl shadow-xl"
+                  >
+                    {!user ? (
+                      <>
+                        <DropdownMenu.Item
+                          onSelect={() => {
+                            setMenuOpen(false);
+                            setLoginOpen(true);
+                          }}
+                          className="px-4 py-3 text-sm font-medium hover:bg-gray-50 cursor-pointer outline-none"
+                        >
+                          Log in
+                        </DropdownMenu.Item>
+
+                        <DropdownMenu.Item
+                          onSelect={() => {
+                            setMenuOpen(false);
+                            setSignupOpen(true);
+                          }}
+                          className="px-4 py-3 text-sm hover:bg-gray-50 cursor-pointer outline-none"
+                        >
+                          Sign up
+                        </DropdownMenu.Item>
+
+                        <DropdownMenu.Separator className="my-2 h-px bg-gray-200" />
+
+                        <DropdownMenu.Item className="px-4 py-3 text-sm hover:bg-gray-50 cursor-pointer outline-none">
+                          <div className="flex items-center gap-2">
+                            <FaQuestionCircle className="text-gray-600" />
+                            <span>Help Center</span>
+                          </div>
+                        </DropdownMenu.Item>
+                      </>
+                    ) : (
+                      <>
+                        <DropdownMenu.Item
+                          onSelect={() => {
+                            setMenuOpen(false);
+                            navigate(`/me`);
+                          }}
+                          className="px-4 py-3 text-sm font-medium hover:bg-gray-50 cursor-pointer outline-none"
+                        >
+                          Profile
+                        </DropdownMenu.Item>
+
+                        <DropdownMenu.Item
+                          onSelect={() => {
+                            setMenuOpen(false);
+                            navigate(`bookings`);
+                          }}
+                          className="px-4 py-3 text-sm hover:bg-gray-50 cursor-pointer outline-none"
+                        >
+                          Trips
+                        </DropdownMenu.Item>
+
+                        <DropdownMenu.Item
+                          onSelect={() => {
+                            setMenuOpen(false);
+                            navigate(`/me/wishlist`);
+                          }}
+                          className="px-4 py-3 text-sm hover:bg-gray-50 cursor-pointer outline-none"
+                        >
+                          Wishlists
+                        </DropdownMenu.Item>
+
+                        {user?.is_host && (
+                          <DropdownMenu.Item
+                            onSelect={() => {
+                              setMenuOpen(false);
+                              navigate(`/me/listings`);
+                            }}
+                            className="px-4 py-3 text-sm hover:bg-gray-50 cursor-pointer outline-none"
+                          >
+                            Manage listings
+                          </DropdownMenu.Item>
+                        )}
+
+                        <DropdownMenu.Separator className="my-2 h-px bg-gray-200" />
+
+                        <DropdownMenu.Item
+                          onSelect={() => {
+                            setMenuOpen(false);
+                            setHostingOpen(true);
+                          }}
+                          className="px-4 py-3 text-sm hover:bg-gray-50 cursor-pointer outline-none"
+                        >
+                          {user?.is_host ? "List your home" : "Airbnb your home"}
+                        </DropdownMenu.Item>
+
+                        <DropdownMenu.Item className="px-4 py-3 text-sm hover:bg-gray-50 cursor-pointer outline-none">
+                          <div className="flex items-center gap-2">
+                            <FaQuestionCircle className="text-gray-600" />
+                            <span>Help Center</span>
+                          </div>
+                        </DropdownMenu.Item>
+
+                        <DropdownMenu.Separator className="my-2 h-px bg-gray-200" />
+
+                        <DropdownMenu.Item
+                          onSelect={() => {
+                            setMenuOpen(false);
+                            setLogoutOpen(true);
+                          }}
+                          className="px-4 py-3 text-sm hover:bg-gray-50 cursor-pointer outline-none"
+                        >
+                          Log out
+                        </DropdownMenu.Item>
+                      </>
+                    )}
+                  </DropdownMenu.Content>
+                </DropdownMenu.Portal>
+              </DropdownMenu.Root>
+            </div>
+          </div>
         </div>
       </nav>
 
