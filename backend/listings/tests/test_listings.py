@@ -161,10 +161,3 @@ class PrivateListingsTest(TestCase):
         res = self.client.post(LIST_API_URL, invalid_params)
 
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
-
-
-    def test_create_amenities(self):
-        amenities = Amenities.objects.create(name="Wi-Fi")
-        self.assertEqual(str(amenities),amenities.name)
-    
-    

@@ -3,6 +3,8 @@ from users.models import User
 from listings.models import Listings, ListingImages, Amenities
 from django.core.exceptions import ValidationError
 from wishlist.models import Wishlist
+from bookings.models import Bookings, Payment
+from reviews.models import Review
 
 class UserModelTest(TestCase):
 
@@ -138,3 +140,83 @@ class WishlistModelTest(TestCase):
         wishlist = Wishlist.objects.create(user=user, name="Sample Wishlist")
 
         self.assertEqual(str(wishlist),wishlist.name)
+
+
+class BookingModelTest(TestCase):
+    def test_create_booking(self):
+        user = User.objects.create_user(username='testUser', email='test@example.com', password='testpass123')
+        listing = Listings.objects.create(
+            host=user,
+            title="Sample Listing Title",
+            description="This is a sample description for testing the Listings model.",
+            address="123 Test Street",
+            country="IN",  
+            city="Mumbai",  
+            property_type="apartment",
+            max_guests=4,
+            bhk_choice=2,
+            bed_choice=3,
+            bathrooms=2.0,
+            price_per_night=59.99
+        )
+
+        booking = Bookings.objects.create(guest=user, listing=listing, start_date="2023-01-01", end_date="2023-01-02", total_price=100.00)
+
+        self.assertEqual(str(booking),f"{booking.guest.username} : {booking.listing.title}")
+    
+    def test_payment_model(self):
+        user = User.objects.create_user(username='testUser', email='test@example.com', password='testpass123')
+        listing = Listings.objects.create(
+            host=user,
+            title="Sample Listing Title",
+            description="This is a sample description for testing the Listings model.",
+            address="123 Test Street",
+            country="IN",  
+            city="Mumbai",  
+            property_type="apartment",
+            max_guests=4,
+            bhk_choice=2,
+            bed_choice=3,
+            bathrooms=2.0,
+            price_per_night=59.99
+        )
+
+        booking = Bookings.objects.create(guest=user, listing=listing, start_date="2023-01-01", end_date="2023-01-02", total_price=100.00)
+
+        payment = Payment.objects.create(booking=booking, amount=100.00, gateway="cashfree", order_id="test_order_id", payment_session_id="test_payment_session_id", transaction_id="test_transaction_id", status="paid")
+
+        self.assertEqual(str(payment),f"{payment.booking.guest.username} : {payment.booking.listing.title} for {payment.booking.start_date} to {payment.booking.end_date}")
+
+class ReviewModelTest(TestCase):
+    def test_create_review(self):
+        user = User.objects.create_user(username='testUser', email='test@example.com', password='testpass123')
+        listing = Listings.objects.create(
+            host=user,
+            title="Sample Listing Title",
+            description="This is a sample description for testing the Listings model.",
+            address="123 Test Street",
+            country="IN",  
+            city="Mumbai",  
+            property_type="apartment",
+            max_guests=4,
+            bhk_choice=2,
+            bed_choice=3,
+            bathrooms=2.0,
+            price_per_night=59.99
+        )
+
+        review = Review.objects.create(
+            review="Great place!",
+            accuracy=4,
+            communication=5,
+            cleanliness=4,
+            location=5,
+            check_in=5,
+            value=4,
+            listing=listing,
+            user=user
+        )
+
+        self.assertEqual(str(review),f"{review.review} - {review.listing.title} - {review.user.username}")
+
+

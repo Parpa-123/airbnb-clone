@@ -20,7 +20,7 @@ class Review(TimeStampedModel):
     
 
     def __str__(self):
-        return f"{self.review} - {self.listing} - {self.user}"
+        return f"{self.review} - {self.listing.title} - {self.user.username}"
 
     class Meta:
         verbose_name = "Review"

@@ -53,7 +53,7 @@ class Bookings(TimeStampedModel):
 
 
     def __str__(self):
-        return f"Booking by {self.guest} for {self.listing}"
+        return f"{self.guest} : {self.listing}"
 
     def clean(self):
         if self.start_date > self.end_date:
@@ -126,4 +126,5 @@ class Payment(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
 
-    
+    def __str__(self):
+        return f"{self.booking.guest.username} : {self.booking.listing.title} for {self.booking.start_date} to {self.booking.end_date}"
