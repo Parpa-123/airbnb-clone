@@ -10,7 +10,7 @@ urlpatterns = [
     path("view/", BookingListView.as_view(), name="booking-list"),
     path("delete/<int:pk>/", BookingDestroyView.as_view(), name="booking-delete"),
     path("payments/create-order/", CreateCashfreeOrderView.as_view()),
-    path("payments/webhook/", CashfreeWebhookView.as_view()),
+    path("payments/webhook/", CashfreeWebhookView.as_view(), name="cashfree-webhook"),
     
     # Generic pattern last
     path('<int:pk>/', BookingDetailView.as_view(), name='booking-detail'),
