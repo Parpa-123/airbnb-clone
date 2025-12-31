@@ -123,6 +123,10 @@ class Listings(TimeStampedModel):
             models.CheckConstraint(
                 check= Q(price_per_night__gte = 0),
                 name = "price_per_night_must_be_positive"
+            ),
+            models.UniqueConstraint(
+                fields = ["host", "address"],
+                name = "unique_host_address"
             )
         ]
 # ---------------------------
