@@ -9,7 +9,11 @@ type DatePickerRef = {
   getDateObjects: () => { checkIn: Dayjs | null; checkOut: Dayjs | null };
 };
 
-const DatePickerValue = React.forwardRef<DatePickerRef>((_props, ref) => {
+type DatePickerProps = {
+  ref?: React.Ref<DatePickerRef>;
+};
+
+const DatePickerValue = ({ ref }: DatePickerProps) => {
   const [checkIn, setCheckIn] = React.useState<Dayjs | null>(dayjs().add(1, "day"));
   const [checkOut, setCheckOut] = React.useState<Dayjs | null>(
     dayjs().add(6, "day")
@@ -106,8 +110,6 @@ const DatePickerValue = React.forwardRef<DatePickerRef>((_props, ref) => {
       </div>
     </LocalizationProvider>
   );
-});
-
-DatePickerValue.displayName = "DatePickerValue";
+};
 
 export default DatePickerValue;

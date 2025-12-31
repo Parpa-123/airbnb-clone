@@ -94,10 +94,6 @@ class Bookings(TimeStampedModel):
             )
         ]
 
-
-    
-    
-
 class Payment(models.Model):
     INITIATED = "initiated"
     PAID = "paid"
