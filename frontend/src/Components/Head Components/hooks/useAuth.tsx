@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { toast } from "react-toastify";
+import { showSuccess, showError, showInfo, extractErrorMessage, MESSAGES } from "../../../utils/toastMessages";
 import type { UserProfile, LoginType, SignupType } from "../types";
 import * as authService from "../services/auth.service";
 
@@ -28,10 +28,10 @@ export function useAuth() {
     try {
       const profile = await authService.login(data);
       setUser(profile);
-      toast.success("Logged in!");
+      showSuccess(MESSAGES.AUTH.LOGIN_SUCCESS);
       return profile;
     } catch (err: any) {
-      toast.error(err?.response?.data?.detail || "Login failed");
+      showError(extractErrorMessage(err, "Login failed"));
       throw err;
     } finally {
       setLoading(false);
@@ -43,11 +43,10 @@ export function useAuth() {
     try {
       const profile = await authService.signup(data);
       setUser(profile);
-      toast.success("Account created!");
+      showSuccess(MESSAGES.AUTH.SIGNUP_SUCCESS);
       return profile;
     } catch (err: any) {
-      // prefer backend validation message if present
-      toast.error(err?.response?.data?.email?.[0] || "Signup failed");
+      showError(extractErrorMessage(err, "Signup failed"));
       throw err;
     } finally {
       setLoading(false);
@@ -57,8 +56,9 @@ export function useAuth() {
   const logout = useCallback(() => {
     authService.clearTokens();
     setUser(null);
-    toast.info("Logged out");
+    showInfo(MESSAGES.AUTH.LOGOUT);
   }, []);
 
   return { user, loading, doLogin, doSignup, logout, loadProfile, setUser };
 }
+

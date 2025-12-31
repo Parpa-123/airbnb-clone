@@ -1,60 +1,9 @@
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import axiosInstance from "../../../../public/connect"
-import { toast } from "react-toastify"
-import { Link, useSearchParams } from "react-router-dom"
-import CancelBookingButton from "../Buttons/CancelBookingButton"
-
-/* =======================
-   Interfaces
-======================= */
-
-interface Guest {
-  username: string
-  avatar: string | null
-  is_host: boolean
-}
-
-interface Host {
-  username: string
-  avatar: string | null
-}
-
-interface ListingImage {
-  name: string
-  image: string
-}
-
-interface Listing {
-  id: number
-  title: string
-  city: string
-  country: string
-  property_type_display: string
-  title_slug: string
-  price_per_night: string
-  images: ListingImage[]
-  host: Host
-}
-
-interface Booking {
-  id: number,
-  guest: Guest,
-  listing: Listing,
-  start_date: string,
-  end_date: string,
-  total_price: string,
-  status: "confirmed" | "pending" | "cancelled"
-}
-
-/* =======================
-   Helpers
-======================= */
-
-const statusStyles: Record<Booking["status"], string> = {
-  confirmed: "bg-green-100 text-green-700",
-  pending: "bg-yellow-100 text-yellow-700",
-  cancelled: "bg-red-100 text-red-700",
-}
+import { showSuccess, showError, showWarning, extractErrorMessage, MESSAGES } from "../../../utils/toastMessages"
+import { useSearchParams } from "react-router-dom"
+import type { Booking } from "../../../types"
+import BookingCard from "../Cards/BookingCard"
 
 /* =======================
    Component
@@ -73,9 +22,7 @@ const Bookings = () => {
       const response = await axiosInstance.get("bookings/view/")
       setBookings(response.data)
     } catch (error: any) {
-      toast.error(
-        error?.response?.data?.message || "Failed to load bookings"
-      )
+      showError(extractErrorMessage(error, MESSAGES.BOOKING.FETCH_FAILED))
     } finally {
       setLoading(false)
     }
@@ -118,7 +65,7 @@ const Bookings = () => {
 
         if (bookingStatus === "CONFIRMED") {
           clearInterval(intervalId);
-          toast.success("Payment confirmed! Your booking has been created.");
+          showSuccess(MESSAGES.BOOKING.PAYMENT_SUCCESS);
           await fetchBookings(); // Reload bookings after confirmation
           // Remove order_id from URL
           setSearchParams({});
@@ -126,20 +73,20 @@ const Bookings = () => {
 
         if (bookingStatus === "FAILED") {
           clearInterval(intervalId);
-          toast.error("Payment failed. Please try again.");
+          showError(MESSAGES.BOOKING.PAYMENT_FAILED);
           setSearchParams({});
         }
 
         if (bookingStatus === "CANCELLED") {
           clearInterval(intervalId);
-          toast.warning("Payment was cancelled.");
+          showWarning("Payment was cancelled.");
           setSearchParams({});
         }
       } catch (err: any) {
         console.error("Payment status check error:", err);
         console.error("Error response:", err.response?.data);
         clearInterval(intervalId);
-        toast.error("Failed to check payment status.");
+        showError(MESSAGES.BOOKING.PAYMENT_STATUS_FAILED);
       }
     };
 
@@ -194,67 +141,13 @@ const Bookings = () => {
       <h1 className="text-3xl font-semibold mb-8">Your trips</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {bookings.map((booking, index) => {
-          const coverImage =
-            booking.listing.images?.[0]?.image ||
-            "https://via.placeholder.com/400x300"
-
-          return (
-            <div
-              key={index}
-              className="rounded-2xl border hover:shadow-lg transition overflow-hidden"
-            >
-              {/* Image */}
-              <div className="h-48 bg-gray-200">
-                <img
-                  src={coverImage}
-                  alt={booking.listing.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-
-              {/* Content */}
-              <div className="p-4 space-y-2">
-                <div className="flex items-start justify-between gap-2">
-                  <h3 className="font-semibold text-lg leading-tight line-clamp-2">
-                    {booking.listing.title}
-                  </h3>
-
-                  <span
-                    className={`text-xs px-2 py-1 rounded-full capitalize whitespace-nowrap ${statusStyles[booking.status]
-                      }`}
-                  >
-                    {booking.status}
-                  </span>
-                </div>
-
-                <p className="text-sm text-gray-500">
-                  {booking.listing.city}, {booking.listing.country} ·{" "}
-                  {booking.listing.property_type_display}
-                </p>
-
-                <p className="text-sm text-gray-600">
-                  {new Date(booking.start_date).toLocaleDateString()} →{" "}
-                  {new Date(booking.end_date).toLocaleDateString()}
-                </p>
-
-                <div className="pt-2 flex items-center justify-between">
-                  <p className="font-semibold">
-                    ${Math.abs(Number(booking.total_price))}
-                  </p>
-
-                  <button className="text-sm font-medium text-rose-600 hover:underline cursor-pointer">
-                    <Link to={`/bookings/details/${booking.id}`}>View details</Link>
-                  </button>
-                  <CancelBookingButton
-                    bookingId={booking.id}
-                    onSuccess={fetchBookings}
-                  />
-                </div>
-              </div>
-            </div>
-          )
-        })}
+        {bookings.map((booking) => (
+          <BookingCard
+            key={booking.id}
+            booking={booking}
+            onCancelSuccess={fetchBookings}
+          />
+        ))}
       </div>
     </div>
   )

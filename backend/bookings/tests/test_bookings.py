@@ -31,21 +31,23 @@ class BookingTest(TestCase):
             email='test@example.com',
             password='testpass123',
             username='testuser',
+            phone='1234567890',
         )
         # Create a separate host user for listings
         self.host = User.objects.create_host(
             email='host@example.com',
             password='hostpass123',
             username='hostuser',
+            phone='1234567890',
         )
         self.client.force_authenticate(user=self.user)
     
-    def create_sample_listing(self, user):
+    def create_sample_listing(self, user, address_suffix=""):
         return Listings.objects.create(
             host=user,
             title='Sample Listing',
             description='This is a sample listing for testing.',
-            address='123 Sample Street',
+            address=f'123 Sample Street {address_suffix}'.strip(),
             country='USA',
             city='New York',
             property_type='apartment',
@@ -96,6 +98,30 @@ class BookingTest(TestCase):
 
         res = self.client.post(CREATE_BOOKING_URL, payload)
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_no_creation_without_phone_number(self):
+        """Test No Creation Without Phone Number"""
+        # Create user without phone number
+        user_no_phone = User.objects.create_user(
+            email='nophone@example.com',
+            password='testpass123',
+            username='nophoneuser',
+        )
+        self.client.force_authenticate(user=user_no_phone)
+        
+        listing = self.create_sample_listing(self.host, "no-phone-test")
+
+        payload = {
+                "listing": listing.id,
+                "start_date": "2026-01-10",
+                "end_date": "2026-01-15",
+        }
+
+        res = self.client.post(CREATE_BOOKING_URL, payload)
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        
+        # Re-authenticate as original user for other tests
+        self.client.force_authenticate(user=self.user)
         
     
     def test_booking_details(self):
@@ -160,8 +186,8 @@ class BookingTest(TestCase):
 
     def test_shows_only_confirmed_bookings(self):
         """Test Booking List"""
-        listing1 = self.create_sample_listing(self.host)
-        listing2 = self.create_sample_listing(self.host)
+        listing1 = self.create_sample_listing(self.host, "A")
+        listing2 = self.create_sample_listing(self.host, "B")
         booking1 = Bookings.objects.create(
             guest=self.user,
             listing=listing1,

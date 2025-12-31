@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
 
 // Layout
 import Header from "./Components/Head Components/Header";
@@ -9,22 +9,25 @@ import { ToastContainer } from "react-toastify";
 // React Router
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-// Pages
-import AuthView from "./Components/ProfileComponents/AuthView";
-import DetailedPage from "./Components/Main Components/Routed Pages/DetailedPage";
-import PublicListings from "./Components/Main Components/Routed Pages/PublicListings";
-import Bookings from "./Components/Main Components/Routed Pages/Bookings";
-import ListingsDashboard from "./Components/Main Components/Routed Pages/ListingsDashboard";
-
-// Auth
+// Auth (not lazy - needed immediately)
 import LoginContextProvider from "../public/loginContext";
 import ProtectedRoute from "../public/ProtectedRoute";
-import ListingEditPage from "./Components/Main Components/Routed Pages/ListingEdits/ListingPatch";
-import Wishlist from "./Components/Main Components/Wishlist";
-import WishlistDetail from "./Components/Main Components/Routed Pages/WishlistDetail";
-import BookingStatus from "./Components/Main Components/Routed Pages/BookingStatus";
 import { FilterContextProvider } from "./services/filterContext";
-import BookingDetails from "./Components/Main Components/Routed Pages/BookingsDetail";
+
+// Loading component
+import Loading from "./Components/Loading";
+
+// Lazy loaded pages
+const AuthView = lazy(() => import("./Components/ProfileComponents/AuthView"));
+const DetailedPage = lazy(() => import("./Components/Main Components/Routed Pages/DetailedPage"));
+const PublicListings = lazy(() => import("./Components/Main Components/Routed Pages/PublicListings"));
+const Bookings = lazy(() => import("./Components/Main Components/Routed Pages/Bookings"));
+const ListingsDashboard = lazy(() => import("./Components/Main Components/Routed Pages/ListingsDashboard"));
+const ListingEditPage = lazy(() => import("./Components/Main Components/Routed Pages/ListingEdits/ListingPatch"));
+const Wishlist = lazy(() => import("./Components/Main Components/Wishlist"));
+const WishlistDetail = lazy(() => import("./Components/Main Components/Routed Pages/WishlistDetail"));
+const BookingStatus = lazy(() => import("./Components/Main Components/Routed Pages/BookingStatus"));
+const BookingDetails = lazy(() => import("./Components/Main Components/Routed Pages/BookingsDetail"));
 
 // ==============================
 // App Component
@@ -34,65 +37,67 @@ const App: React.FC = () => {
     <LoginContextProvider>
       <FilterContextProvider>
         <Router>
-          <Routes>
-            {/* Layout route */}
-            <Route path="/" element={<Header />}>
-              {/* Home */}
-              <Route index element={<PublicListings />} />
+          <Suspense fallback={<Loading />}>
+            <Routes>
+              {/* Layout route */}
+              <Route path="/" element={<Header />}>
+                {/* Home */}
+                <Route index element={<PublicListings />} />
 
-              {/* Listing detail */}
-              <Route path=":slug" element={<DetailedPage />} />
+                {/* Listing detail */}
+                <Route path=":slug" element={<DetailedPage />} />
 
-              {/* Bookings */}
-              <Route path="bookings" element={<Bookings />} />
+                {/* Bookings */}
+                <Route path="bookings" element={<Bookings />} />
 
-              {/* Profile page */}
-              <Route
-                path="me"
-                element={
-                  <ProtectedRoute>
-                    <AuthView />
-                  </ProtectedRoute>
-                }
-              />
+                {/* Profile page */}
+                <Route
+                  path="me"
+                  element={
+                    <ProtectedRoute>
+                      <AuthView />
+                    </ProtectedRoute>
+                  }
+                />
 
-              {/* Host's listings dashboard - separate protected route */}
-              <Route
-                path="me/listings"
-                element={
-                  <ProtectedRoute>
-                    <ListingsDashboard />
-                  </ProtectedRoute>
-                }
-              />
+                {/* Host's listings dashboard - separate protected route */}
+                <Route
+                  path="me/listings"
+                  element={
+                    <ProtectedRoute>
+                      <ListingsDashboard />
+                    </ProtectedRoute>
+                  }
+                />
 
-              {/* Listing edit */}
-              <Route
-                path="me/listings/:id/edit"
-                element={
-                  <ProtectedRoute>
-                    <ListingEditPage />
-                  </ProtectedRoute>
-                }
-              />
+                {/* Listing edit */}
+                <Route
+                  path="me/listings/:id/edit"
+                  element={
+                    <ProtectedRoute>
+                      <ListingEditPage />
+                    </ProtectedRoute>
+                  }
+                />
 
-              {/* Wishlist */}
-              <Route
-                path="me/wishlist"
-                element={
-                  <ProtectedRoute>
-                    <Wishlist />
-                  </ProtectedRoute>
-                }
-              />
-              <Route path="/wishlist/:slug" element={<WishlistDetail />} />
+                {/* Wishlist */}
+                <Route
+                  path="me/wishlist"
+                  element={
+                    <ProtectedRoute>
+                      <Wishlist />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route path="/wishlist/:slug" element={<WishlistDetail />} />
 
-              {/* Bookings */}
-              <Route path="bookings" element={<Bookings />} />
-              <Route path="bookings/:id" element={<BookingStatus />} />
-              <Route path="bookings/details/:id" element={<BookingDetails />} />
-            </Route>
-          </Routes>
+                {/* Bookings */}
+                <Route path="bookings" element={<Bookings />} />
+                <Route path="bookings/:id" element={<BookingStatus />} />
+                <Route path="bookings/details/:id" element={<BookingDetails />} />
+              </Route>
+            </Routes>
+          </Suspense>
         </Router>
 
         {/* Global Toast */}

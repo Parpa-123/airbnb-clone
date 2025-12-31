@@ -30,11 +30,11 @@ const ListMap = ({ city, country }: MapProps) => {
     <MapContainer
       center={[coords.lat, coords.lng]}
       zoom={12}
-      className="w-full h-80 rounded-xl"
+      className="w-full h-80 rounded-xl z-0"
       style={{ height: "400px", width: "100%" }}
     >
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      
+
       <Marker position={[coords.lat, coords.lng]}>
         <Popup>{city}, {country}</Popup>
       </Marker>

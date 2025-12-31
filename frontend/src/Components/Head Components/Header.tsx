@@ -75,7 +75,7 @@ const Header: React.FC = () => {
 
                     <div className="space-y-3">
                       <input
-                        placeholder="Search destinations"
+                        placeholder="Which Country"
                         className="w-full border border-gray-300 px-4 py-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#FF385C] transition"
                         onChange={(e) =>
                           setFilters((p: any) => ({
@@ -99,14 +99,6 @@ const Header: React.FC = () => {
                   </DropdownMenu.Content>
                 </DropdownMenu.Portal>
               </DropdownMenu.Root>
-
-              {/* Divider */}
-              <div className="h-6 w-px bg-gray-300" />
-
-              {/* Check in placeholder */}
-              <button className="px-6 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-full transition-colors cursor-pointer">
-                Any week
-              </button>
 
               {/* Divider */}
               <div className="h-6 w-px bg-gray-300" />

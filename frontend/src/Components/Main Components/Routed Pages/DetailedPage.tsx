@@ -10,7 +10,7 @@ import "swiper/css/pagination";
 
 import * as Dialog from "@radix-ui/react-dialog";
 import { Cross2Icon } from "@radix-ui/react-icons";
-import { toast } from "react-toastify";
+import { showError, MESSAGES } from "../../../utils/toastMessages";
 
 import ListMap from "../../../services/MapService";
 import DatePickerValue from "../DatePicker";
@@ -21,41 +21,7 @@ import { StarRating } from "../../Review Components/StarRating";
 
 /* --------------------------- TYPES --------------------------- */
 
-interface Host {
-  username: string;
-  avatar: string | null;
-}
-
-interface Amenity {
-  name: string;
-  display_name: string;
-}
-
-interface ListingImage {
-  name: string;
-  image: string;
-}
-
-interface ListingDetail {
-  id: number;
-  host: Host;
-  title: string;
-  city: string;
-  country: string;
-  price_per_night: string;
-  description: string;
-  max_guests: number;
-  bhk_choice: number;
-  bed_choice: number;
-  bathrooms: number;
-  amenities: Amenity[];
-  images: ListingImage[];
-}
-
-type DatePickerRef = {
-  getDates: () => { checkIn: string | null; checkOut: string | null };
-  getDateObjects: () => { checkIn: any | null; checkOut: any | null };
-};
+import type { ListingDetail, DatePickerRef } from "../../../types";
 
 /* --------------------------- COMPONENT --------------------------- */
 
@@ -90,7 +56,7 @@ const DetailedPage: React.FC = () => {
         );
         setListing(res.data);
       } catch {
-        toast.error("Failed to load listing");
+        showError(MESSAGES.LISTING.LOAD_FAILED);
       } finally {
         setLoading(false);
       }
@@ -107,7 +73,7 @@ const DetailedPage: React.FC = () => {
         const res = await axiosInstance.get(`/reviews/${slug}`);
         setReviews(res.data);
       } catch {
-        toast.error("Failed to fetch reviews");
+        showError(MESSAGES.REVIEW.FETCH_FAILED);
       }
     })();
   }, [listing?.id]);
@@ -138,7 +104,7 @@ const DetailedPage: React.FC = () => {
         value: 0,
       });
     } catch {
-      toast.error("Failed to submit review");
+      showError(MESSAGES.REVIEW.SUBMIT_FAILED);
     }
   };
 
@@ -340,7 +306,7 @@ const DetailedPage: React.FC = () => {
                         datePickerRef.current?.getDates()?.checkOut,
                     });
                   } catch (err: any) {
-                    toast.error("Booking failed");
+                    showError(MESSAGES.BOOKING.BOOKING_FAILED);
                   } finally {
                     setBookingLoading(false);
                   }

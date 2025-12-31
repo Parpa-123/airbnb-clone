@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "../../../public/connect";
-import { toast } from "react-toastify";
+import { showSuccess, showError, extractErrorMessage, MESSAGES } from "../../utils/toastMessages";
 import { useForm } from "@mantine/form";
 import { Dropzone } from "@mantine/dropzone";
 
@@ -42,7 +42,7 @@ const AuthView = () => {
           avatar: null,
         });
       } catch {
-        toast.error("Failed to load profile");
+        showError(MESSAGES.AUTH.PROFILE_LOAD_FAILED);
       } finally {
         setLoading(false);
       }
@@ -80,13 +80,9 @@ const AuthView = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-      toast.success("Profile updated!");
+      showSuccess(MESSAGES.AUTH.PROFILE_UPDATED);
     } catch (error: any) {
-      const errorMsg = error?.response?.data?.message ||
-        error?.response?.data?.detail ||
-        JSON.stringify(error?.response?.data) ||
-        "Failed to update profile!";
-      toast.error(errorMsg);
+      showError(extractErrorMessage(error, "Failed to update profile!"));
       console.error("Profile update error:", error?.response?.data);
     } finally {
       setLoading(false);

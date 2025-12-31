@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axiosInstance from "../../../../public/connect";
 import type { Booking } from "../../../types";
 import CancelBookingButton from "../Buttons/CancelBookingButton";
+import Loading from "../../Loading";
 
 const BookingDetails = () => {
     const { id } = useParams<{ id: string }>();
@@ -25,9 +26,7 @@ const BookingDetails = () => {
         fetchBooking();
     }, [id]);
 
-    if (loading) {
-        return <div className="p-8 text-center">Loading booking details...</div>;
-    }
+    if (loading) return <Loading />;
 
     if (!booking) {
         return <div className="p-8 text-center">Booking not found</div>;

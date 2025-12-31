@@ -1,14 +1,15 @@
 from rest_framework import generics
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from django.shortcuts import get_object_or_404
 from .models import Review
 from .serializers import ReviewSerializer
-from listings.views import BaseAuthenticatedView
 from listings.models import Listings
 
 
-class ReviewListCreate(BaseAuthenticatedView, generics.ListCreateAPIView):
+class ReviewListCreate(generics.ListCreateAPIView):
     
     serializer_class = ReviewSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
     
     def get_queryset(self):
         listing = get_object_or_404(Listings, title_slug=self.kwargs["title_slug"])

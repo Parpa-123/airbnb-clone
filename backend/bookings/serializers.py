@@ -35,6 +35,8 @@ class BookingSerializer(serializers.ModelSerializer):
         start_date , end_date = attrs.get("start_date"), attrs.get("end_date")
         listing = attrs.get("listing")
 
+        
+
         now = timezone.localtime(timezone.now()).date()
 
         if start_date < now:
@@ -53,6 +55,9 @@ class BookingSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         if request and hasattr(request, 'user') and request.user == listing.host:
             raise serializers.ValidationError("You cannot book your own listing")
+
+        if request and not request.user.phone:
+            raise serializers.ValidationError("Must have a phone number to book a listing.")
         
         return attrs
 

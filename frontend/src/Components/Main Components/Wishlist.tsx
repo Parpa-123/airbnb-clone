@@ -3,17 +3,9 @@ import * as Dialog from "@radix-ui/react-dialog";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { FaPlusCircle, FaEllipsisH } from "react-icons/fa";
 import axiosInstance from "../../../public/connect";
-import { toast } from "react-toastify";
+import { showSuccess, showError, extractErrorMessage, MESSAGES } from "../../utils/toastMessages";
 import { Link } from "react-router-dom";
-
-/* ---------------- TYPES ---------------- */
-
-interface WishlistItem {
-  slug: string;
-  name: string;
-  count?: number;
-  cover_image?: string | null; // first listing image
-}
+import type { WishlistItem } from "../../types";
 
 /* ---------------- COMPONENT ---------------- */
 
@@ -29,7 +21,7 @@ const Wishlist: React.FC = () => {
         const res = await axiosInstance.get("/wishlist/");
         setWishlists(res.data);
       } catch (err: any) {
-        toast.error(err?.response?.data?.message || err.message);
+        showError(extractErrorMessage(err, "Failed to load wishlists"));
       }
     })();
   }, []);
@@ -42,10 +34,10 @@ const Wishlist: React.FC = () => {
         name: wishlistName,
       });
       setWishlists((prev) => [...prev, res.data]);
-      toast.success(`${wishlistName} created successfully`);
+      showSuccess(MESSAGES.WISHLIST.CREATE_SUCCESS(wishlistName));
       setWishlistName("");
     } catch (err: any) {
-      toast.error(err?.response?.data?.message || err.message);
+      showError(extractErrorMessage(err, "Failed to create wishlist"));
     }
   };
 
@@ -53,9 +45,9 @@ const Wishlist: React.FC = () => {
     try {
       await axiosInstance.delete(`/wishlist/${slug}/`);
       setWishlists((prev) => prev.filter((item) => item.slug !== slug));
-      toast.success("Wishlist deleted successfully");
+      showSuccess(MESSAGES.WISHLIST.DELETE_SUCCESS);
     } catch (err: any) {
-      toast.error(err?.response?.data?.message || err.message);
+      showError(extractErrorMessage(err, "Failed to delete wishlist"));
     }
   };
 

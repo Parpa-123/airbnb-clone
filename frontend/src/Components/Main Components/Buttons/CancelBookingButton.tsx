@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import * as Dialog from "@radix-ui/react-dialog"
 import axiosInstance from "../../../../public/connect"
-import { toast } from "react-toastify"
+import { showSuccess, showError, extractErrorMessage, MESSAGES } from "../../../utils/toastMessages"
 
 interface CancelBookingButtonProps {
     bookingId: number
@@ -23,7 +23,7 @@ const CancelBookingButton: React.FC<CancelBookingButtonProps> = ({
         try {
             setLoading(true)
             await axiosInstance.delete(`bookings/delete/${bookingId}/`)
-            toast.success("Booking cancelled successfully")
+            showSuccess(MESSAGES.BOOKING.CANCEL_SUCCESS)
             setDialogOpen(false)
 
             // Call the callback if provided
@@ -31,7 +31,7 @@ const CancelBookingButton: React.FC<CancelBookingButtonProps> = ({
                 onSuccess()
             }
         } catch (error: any) {
-            toast.error(error?.response?.data?.message || "Failed to cancel booking")
+            showError(extractErrorMessage(error, "Failed to cancel booking"))
         } finally {
             setLoading(false)
         }

@@ -1,11 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import DynamicForm from "./DynamicForm";
 import useOptionsService from "../../services/optionsService";
 import { createFormSteps } from "./formSteps";
 import { useDispatch, useSelector } from "react-redux";
 import { updateForm, type EntireFormData } from "../../../public/redux/slice/slice";
 import axiosInstance from "../../../public/connect";
-import { toast } from "react-toastify";
+import { showSuccess, showError, extractErrorMessage, MESSAGES } from "../../utils/toastMessages";
+import { AuthContext } from "../../../public/loginContext";
 
 interface RootState {
     form: EntireFormData;
@@ -17,10 +18,11 @@ const MultiStepController = () => {
 
     const formData = useSelector((state: RootState) => state.form);
     const dispatch = useDispatch();
+    const { login } = useContext(AuthContext);
 
     const { options, loading, error, fetchOptions } = useOptionsService();
 
-    useEffect(() => { fetchOptions(); }, []);
+    useEffect(() => { if (login) fetchOptions(); }, [login]);
 
     const handleFormSubmit = async (data: EntireFormData) => {
         try {
@@ -55,31 +57,21 @@ const MultiStepController = () => {
             }
 
 
-            // Debug: Log FormData contents
-            console.log("=== Submitting Listing Form ===");
-            console.log("Form data:", data);
-            for (const [key, value] of formData.entries()) {
-                console.log(`${key}:`, value);
-            }
+
 
             await axiosInstance.post("/listings/", formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
             });
-            toast.success("Listing created successfully");
+            showSuccess(MESSAGES.LISTING.CREATE_SUCCESS);
         } catch (error: any) {
             console.error("=== Listing Creation Error ===");
             console.error("Full error:", error);
             console.error("Response data:", error?.response?.data);
             console.error("Response status:", error?.response?.status);
 
-            const errorMsg = error?.response?.data?.message ||
-                error?.response?.data?.detail ||
-                JSON.stringify(error?.response?.data) ||
-                "Failed to create listing";
-            console.log(errorMsg);
-            toast.error(errorMsg);
+            showError(extractErrorMessage(error, "Failed to create listing"));
         }
     };
 
@@ -108,6 +100,15 @@ const MultiStepController = () => {
         setCurrentStep((prev) => prev - 1);
 
     };
+
+    if (!login) {
+        return (
+            <div className="flex flex-col items-center justify-center py-20 text-gray-600">
+                <p className="text-xl font-medium mb-2">Please login to register a property</p>
+                <p className="text-sm text-gray-400">You need to be logged in to list your property</p>
+            </div>
+        );
+    }
 
     if (loading) return <p className="text-center py-10">Loading...</p>;
 

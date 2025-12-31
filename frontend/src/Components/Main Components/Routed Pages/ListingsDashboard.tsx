@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../../../../public/connect";
-import type { Listing } from "./PublicListings";
-import { toast } from "react-toastify";
+import type { Listing } from "../../../types";
+import { showSuccess, showError, MESSAGES } from "../../../utils/toastMessages";
 import { NavLink, useNavigate } from "react-router-dom";
+import Loading from "../../Loading";
 
 const ListingsDashboard: React.FC = () => {
   const [listings, setListings] = useState<Listing[]>([]);
@@ -15,7 +16,7 @@ const ListingsDashboard: React.FC = () => {
         const res = await axiosInstance.get("/listings/private/");
         setListings(res.data);
       } catch (error: any) {
-        toast.error("Failed to fetch listings");
+        showError(MESSAGES.LISTING.FETCH_FAILED);
       } finally {
         setLoading(false);
       }
@@ -34,19 +35,13 @@ const ListingsDashboard: React.FC = () => {
     try {
       await axiosInstance.delete(`/listings/${id}/delete/`);
       setListings((prev) => prev.filter((l) => l.id !== id));
-      toast.success("Listing removed successfully");
+      showSuccess(MESSAGES.LISTING.DELETE_SUCCESS);
     } catch (error) {
-      toast.error("Failed to remove listing");
+      showError("Failed to remove listing");
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-[60vh] text-gray-500">
-        Loading your listings...
-      </div>
-    );
-  }
+  if (loading) return <Loading />;
 
   if (listings.length === 0) {
     return (

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axiosInstance from "../../../../../public/connect";
-import { toast } from "react-toastify";
+import { showSuccess, showError, MESSAGES } from "../../../../utils/toastMessages";
 import { EditableSection, ListingImagesComponents } from "./Components";
 import useOptionsService from "../../../../services/optionsService";
 import type { ListingEditData, ListingUpdatePayload } from "./types";
@@ -54,7 +54,7 @@ const ListingEditPage = () => {
                     : undefined
             );
 
-            toast.success("Listing updated");
+            showSuccess(MESSAGES.LISTING.UPDATE_SUCCESS);
 
             // Refetch listing data after FormData updates (for images)
             if (payload instanceof FormData) {
@@ -63,7 +63,7 @@ const ListingEditPage = () => {
         }
         catch (err) {
             setListing(previous);
-            toast.error("Failed to update listing");
+            showError(MESSAGES.LISTING.UPDATE_FAILED);
         }
     };
 

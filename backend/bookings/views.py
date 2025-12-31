@@ -109,7 +109,7 @@ class CreateCashfreeOrderView(AuthAPIView, APIView):
             customer_details={
                 "customer_id": f"user_{request.user.id}",
                 "customer_email": request.user.email,
-                "customer_phone": str(request.user.phone)[-10:] if request.user.phone else "9999999999",
+                "customer_phone": str(request.user.phone.national_number),
             },
             order_meta={
                 "return_url": f"http://localhost:5173/bookings/?order_id={order_id}"
@@ -138,9 +138,7 @@ class CreateCashfreeOrderView(AuthAPIView, APIView):
             return Response({"error": str(e)}, status=500)
 
 
-# =========================
-# Cashfree Webhook
-# =========================
+
 
 class CashfreeWebhookView(APIView):
     authentication_classes = []
