@@ -71,6 +71,8 @@ class Bookings(TimeStampedModel):
             not hasattr(self, "review")
         )
 
+    
+
     class Meta:
         verbose_name = "Booking"
         verbose_name_plural = "Bookings"
@@ -121,6 +123,9 @@ class Payment(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES)
 
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+    
 
     def __str__(self):
         return f"{self.booking.guest.username} : {self.booking.listing.title} for {self.booking.start_date} to {self.booking.end_date}"

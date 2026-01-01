@@ -9,6 +9,10 @@ import {
   FaQuestionCircle,
   FaTimes,
 } from "react-icons/fa";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker as MUIDatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs, { Dayjs } from "dayjs";
 
 import Img from "../../assets/image.png";
 import { resetForm } from "../../../public/redux/slice/slice";
@@ -31,6 +35,8 @@ const Header: React.FC = () => {
   const [logoutOpen, setLogoutOpen] = useState(false);
   const [hostingOpen, setHostingOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [checkIn, setCheckIn] = useState<Dayjs | null>(null);
+  const [checkOut, setCheckOut] = useState<Dayjs | null>(null);
 
   useEffect(() => {
     if (!hostingOpen) dispatch(resetForm());
@@ -96,6 +102,73 @@ const Header: React.FC = () => {
                         }
                       />
                     </div>
+                  </DropdownMenu.Content>
+                </DropdownMenu.Portal>
+              </DropdownMenu.Root>
+
+              {/* Divider */}
+              <div className="h-6 w-px bg-gray-300" />
+
+              {/* Dates */}
+              <DropdownMenu.Root>
+                <DropdownMenu.Trigger asChild>
+                  <button className="px-6 py-2 text-sm text-gray-500 hover:bg-gray-100 rounded-full transition-colors cursor-pointer">
+                    {checkIn || checkOut
+                      ? `${checkIn?.format("MMM D") || "Check-in"} - ${checkOut?.format("MMM D") || "Check-out"}`
+                      : "Any week"}
+                  </button>
+                </DropdownMenu.Trigger>
+
+                <DropdownMenu.Portal>
+                  <DropdownMenu.Content
+                    sideOffset={8}
+                    align="center"
+                    className="z-50 w-80 p-6 bg-white border border-gray-200 rounded-3xl shadow-xl"
+                  >
+                    <DropdownMenu.Label className="text-xs font-semibold text-gray-900 mb-4">
+                      When's your trip?
+                    </DropdownMenu.Label>
+
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <div className="space-y-4">
+                        <MUIDatePicker
+                          label="Check-in"
+                          value={checkIn}
+                          onChange={(newValue: Dayjs | null) => {
+                            setCheckIn(newValue);
+                            setFilters((p: any) => ({
+                              ...p,
+                              check_in: newValue ? newValue.format("YYYY-MM-DD") : undefined,
+                            }));
+                          }}
+                          minDate={dayjs()}
+                          slotProps={{
+                            textField: {
+                              fullWidth: true,
+                              size: "small",
+                            },
+                          }}
+                        />
+                        <MUIDatePicker
+                          label="Check-out"
+                          value={checkOut}
+                          onChange={(newValue: Dayjs | null) => {
+                            setCheckOut(newValue);
+                            setFilters((p: any) => ({
+                              ...p,
+                              check_out: newValue ? newValue.format("YYYY-MM-DD") : undefined,
+                            }));
+                          }}
+                          minDate={checkIn ?? dayjs()}
+                          slotProps={{
+                            textField: {
+                              fullWidth: true,
+                              size: "small",
+                            },
+                          }}
+                        />
+                      </div>
+                    </LocalizationProvider>
                   </DropdownMenu.Content>
                 </DropdownMenu.Portal>
               </DropdownMenu.Root>

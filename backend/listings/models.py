@@ -4,6 +4,8 @@ from django.utils.text import slugify
 from django.core.exceptions import ValidationError
 from django.db.models import Q
 from users.base_models import TimeStampedModel
+from django.utils import timezone
+from .queryset import ListingsQuerySet
 
 
 
@@ -99,6 +101,8 @@ class Listings(TimeStampedModel):
 
     title_slug = models.SlugField(unique=True, blank=True, max_length=255, null=True)
 
+    objects = ListingsQuerySet.as_manager()
+
     def save(self, *args, **kwargs):
         if not self.title_slug:
             base_slug = slugify(self.title)
@@ -129,6 +133,16 @@ class Listings(TimeStampedModel):
                 name = "unique_host_address"
             )
         ]
+
+    @property
+    def remove_prev_bookings(self):
+        now = timezone.now()
+        return self.bookings.filter(
+            Q(start_date__lte = now) & Q(end_date__gte = now)
+            & Q(status = "confirmed")
+        )
+
+    
 # ---------------------------
 # Listing Images
 # ---------------------------

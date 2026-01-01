@@ -1,7 +1,8 @@
 from django.db import models
 from users.base_models import TimeStampedModel
 from django.conf import settings
-
+from django.utils import timezone
+from django.db.models import Q
 
 class Review(TimeStampedModel):
     review = models.TextField()
@@ -26,3 +27,8 @@ class Review(TimeStampedModel):
         verbose_name = "Review"
         verbose_name_plural = "Reviews"
         unique_together = ("listing", "user")
+
+
+    
+
+

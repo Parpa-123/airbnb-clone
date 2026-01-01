@@ -8,6 +8,8 @@ export interface ListingFilters {
     price_per_night__gte?: number;
     max_guests__lte?: number;
     max_guests__gte?: number;
+    check_in?: string;
+    check_out?: string;
 }
 
 interface FilterContextType {

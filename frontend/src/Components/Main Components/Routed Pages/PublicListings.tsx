@@ -54,6 +54,10 @@ const PublicListings: React.FC = () => {
             "max_guests__lte",
             filters.max_guests__lte.toString()
           );
+        if (filters.check_in)
+          params.append("check_in", filters.check_in.toString());
+        if (filters.check_out)
+          params.append("check_out", filters.check_out.toString());
 
         const url = params.toString()
           ? `/listings/public/?${params.toString()}`

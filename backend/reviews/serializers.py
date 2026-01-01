@@ -10,6 +10,9 @@ class ReviewSerializer(serializers.ModelSerializer):
 
     def get_avg_rating(self,obj):
         return obj.get_avg_rating()
+
+
+    
     
     class Meta:
         model = Review
