@@ -56,6 +56,11 @@ class BookingTest(TestCase):
             bed_choice=3,
             bathrooms=2.0,
             price_per_night=Decimal('100.00'),
+            # Guest policies
+            allows_children=True,
+            allows_infants=True,
+            allows_pets=True,
+            pet_fee=Decimal('15.00'),
         )
 
     def test_failure_to_create_booking_on_own_property(self):
@@ -209,3 +214,92 @@ class BookingTest(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(len(res.data), 1)
         self.assertEqual(res.data[0]['id'], booking1.id)
+
+    def test_create_booking_with_guest_breakdown(self):
+        """Test creating booking with adults, children, infants, pets"""
+        listing = self.create_sample_listing(self.host)
+
+        payload = {
+            "listing": listing.id,
+            "start_date": "2026-02-01",
+            "end_date": "2026-02-05",
+            "adults": 2,
+            "children": 1,
+            "infants": 1,
+            "pets": 1,
+        }
+
+        res = self.client.post(CREATE_BOOKING_URL, payload)
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+
+    def test_booking_fails_when_pets_not_allowed(self):
+        """Test booking fails when bringing pets to no-pets listing"""
+        listing = Listings.objects.create(
+            host=self.host,
+            title='No Pets Listing',
+            description='Pets not allowed here.',
+            address='456 No Pets Street',
+            country='USA',
+            city='Boston',
+            property_type='apartment',
+            max_guests=2,
+            bhk_choice=1,
+            bed_choice=1,
+            bathrooms=1.0,
+            price_per_night=Decimal('80.00'),
+            allows_pets=False,  # No pets
+        )
+
+        payload = {
+            "listing": listing.id,
+            "start_date": "2026-02-10",
+            "end_date": "2026-02-15",
+            "adults": 1,
+            "pets": 1,  # Trying to bring pet
+        }
+
+        res = self.client.post(CREATE_BOOKING_URL, payload)
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_booking_fails_when_children_not_allowed(self):
+        """Test booking fails when bringing children to no-children listing"""
+        listing = Listings.objects.create(
+            host=self.host,
+            title='Adults Only Listing',
+            description='No children allowed.',
+            address='789 Adults Only Ave',
+            country='USA',
+            city='Miami',
+            property_type='apartment',
+            max_guests=2,
+            bhk_choice=1,
+            bed_choice=1,
+            bathrooms=1.0,
+            price_per_night=Decimal('120.00'),
+            allows_children=False,  # No children
+        )
+
+        payload = {
+            "listing": listing.id,
+            "start_date": "2026-02-20",
+            "end_date": "2026-02-25",
+            "adults": 1,
+            "children": 2,  # Trying to bring children
+        }
+
+        res = self.client.post(CREATE_BOOKING_URL, payload)
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_booking_fails_when_adults_exceed_capacity(self):
+        """Test booking fails when adults exceed max_guests"""
+        listing = self.create_sample_listing(self.host)  # max_guests = 4
+
+        payload = {
+            "listing": listing.id,
+            "start_date": "2026-03-01",
+            "end_date": "2026-03-05",
+            "adults": 6,  # Exceeds max_guests of 4
+        }
+
+        res = self.client.post(CREATE_BOOKING_URL, payload)
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)

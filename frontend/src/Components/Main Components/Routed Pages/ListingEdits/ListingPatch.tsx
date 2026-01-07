@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, NavLink } from "react-router-dom";
 import axiosInstance from "../../../../../public/connect";
 import { showSuccess, showError, MESSAGES } from "../../../../utils/toastMessages";
 import { EditableSection, ListingImagesComponents } from "./Components";
@@ -84,6 +84,21 @@ const ListingEditPage = () => {
             <div className="max-w-5xl mx-auto px-4 py-8">
                 {/* Header */}
                 <div className="mb-8">
+                    <NavLink
+                        to=".."
+                        className="inline-flex items-center gap-2 text-gray-600 hover:text-[#FF385C] transition-colors mb-4 group"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5 group-hover:-translate-x-1 transition-transform"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                        <span className="font-medium">Back</span>
+                    </NavLink>
                     <h1 className="text-3xl font-bold text-gray-900 mb-2">Edit Your Listing</h1>
                     <p className="text-gray-600">Update your property details and information</p>
                 </div>
@@ -96,7 +111,7 @@ const ListingEditPage = () => {
                         listing={listing}
                         onPatch={onPatch}
                     >
-                        {(register) => (
+                        {(register, watch) => (
                             <>
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">Title</label>
@@ -134,7 +149,7 @@ const ListingEditPage = () => {
                         listing={listing}
                         onPatch={onPatch}
                     >
-                        {(register) => (
+                        {(register, watch) => (
                             <>
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">Max guests</label>
@@ -196,12 +211,56 @@ const ListingEditPage = () => {
                     </EditableSection>
 
                     <EditableSection
+                        title="Guest policies"
+                        fields={[
+                            "allows_children",
+                            "allows_infants",
+                            "allows_pets",
+                        ]}
+                        listing={listing}
+                        onPatch={onPatch}
+                    >
+                        {(register, watch) => (
+                            <>
+                                <div className="md:col-span-2 space-y-4">
+                                    <label className="flex items-center gap-3 p-3 border border-gray-300 rounded-lg hover:border-[#FF385C] hover:bg-gray-50 transition-all cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            {...register("allows_children")}
+                                            className="w-4 h-4 text-[#FF385C] border-gray-300 rounded focus:ring-[#FF385C] focus:ring-2"
+                                        />
+                                        <span className="text-sm text-gray-700">Allows children</span>
+                                    </label>
+
+                                    <label className="flex items-center gap-3 p-3 border border-gray-300 rounded-lg hover:border-[#FF385C] hover:bg-gray-50 transition-all cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            {...register("allows_infants")}
+                                            className="w-4 h-4 text-[#FF385C] border-gray-300 rounded focus:ring-[#FF385C] focus:ring-2"
+                                        />
+                                        <span className="text-sm text-gray-700">Allows infants</span>
+                                    </label>
+
+                                    <label className="flex items-center gap-3 p-3 border border-gray-300 rounded-lg hover:border-[#FF385C] hover:bg-gray-50 transition-all cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            {...register("allows_pets")}
+                                            className="w-4 h-4 text-[#FF385C] border-gray-300 rounded focus:ring-[#FF385C] focus:ring-2"
+                                        />
+                                        <span className="text-sm text-gray-700">Allows pets</span>
+                                    </label>
+                                </div>
+                            </>
+                        )}
+                    </EditableSection>
+
+                    <EditableSection
                         title="Location"
                         fields={["country", "city", "address"]}
                         listing={listing}
                         onPatch={onPatch}
                     >
-                        {(register) => (
+                        {(register, watch) => (
                             <>
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">Country</label>
@@ -236,7 +295,7 @@ const ListingEditPage = () => {
                         listing={listing}
                         onPatch={onPatch}
                     >
-                        {(register) => (
+                        {(register, watch) => (
                             <div className="md:col-span-2">
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Price Per Night ($)</label>
                                 <input
@@ -254,7 +313,7 @@ const ListingEditPage = () => {
                         listing={listing}
                         onPatch={onPatch}
                     >
-                        {(register) => (
+                        {(register, watch) => (
                             <div className="md:col-span-2">
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
                                 <textarea
@@ -272,7 +331,7 @@ const ListingEditPage = () => {
                         listing={listing}
                         onPatch={onPatch}
                     >
-                        {(register) => (
+                        {(register, watch) => (
                             <div className="md:col-span-2">
                                 <label className="block text-sm font-medium text-gray-700 mb-3">Amenities</label>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">

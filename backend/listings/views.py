@@ -111,6 +111,7 @@ class OptionsView(BaseAuthenticatedView, views.APIView):
             'bed_options' : [
                 {'value':v[0],'label':v[1]} for v in Listings.BED_CHOICES
             ],
+            
         })
 
 class PrivateListingView(BaseAuthenticatedView, generics.ListAPIView):

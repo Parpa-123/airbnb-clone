@@ -58,6 +58,10 @@ const PublicListings: React.FC = () => {
           params.append("check_in", filters.check_in.toString());
         if (filters.check_out)
           params.append("check_out", filters.check_out.toString());
+        if (filters.has_pets)
+          params.append("has_pets", filters.has_pets.toString());
+        if (filters.has_children)
+          params.append("has_children", filters.has_children.toString());
 
         const url = params.toString()
           ? `/listings/public/?${params.toString()}`

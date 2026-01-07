@@ -10,6 +10,8 @@ export interface ListingFilters {
     max_guests__gte?: number;
     check_in?: string;
     check_out?: string;
+    has_pets?: boolean;
+    has_children?: boolean;
 }
 
 interface FilterContextType {

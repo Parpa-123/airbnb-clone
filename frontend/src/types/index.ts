@@ -101,3 +101,4 @@ export type DatePickerRef = {
     getDates: () => { checkIn: string | null; checkOut: string | null };
     getDateObjects: () => { checkIn: any | null; checkOut: any | null };
 };
+

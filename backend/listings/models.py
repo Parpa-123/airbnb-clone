@@ -35,7 +35,6 @@ class Amenities(models.Model):
         ("first_aid_kit", "First Aid Kit"),
         ("fire_extinguisher", "Fire Extinguisher"),
         ("breakfast", "Breakfast Provided"),
-        ("pets_allowed", "Pets Allowed"),
         ("long_term_stays", "Long-Term Stays Allowed"),
     ]
 
@@ -98,6 +97,11 @@ class Listings(TimeStampedModel):
     price_per_night = models.DecimalField(max_digits=10, decimal_places=2)
 
     amenities = models.ManyToManyField(Amenities, blank=True)
+
+    # Guest policies
+    allows_children = models.BooleanField(default=True)
+    allows_infants = models.BooleanField(default=True)
+    allows_pets = models.BooleanField(default=False)
 
     title_slug = models.SlugField(unique=True, blank=True, max_length=255, null=True)
 

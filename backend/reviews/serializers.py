@@ -31,3 +31,5 @@ class ReviewSerializer(serializers.ModelSerializer):
 
             if booking.guest != user:
                 raise serializers.ValidationError('You are not the guest of this booking')
+
+            

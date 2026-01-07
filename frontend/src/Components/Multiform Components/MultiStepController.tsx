@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import DynamicForm from "./DynamicForm";
 import useOptionsService from "../../services/optionsService";
 import { createFormSteps } from "./formSteps";
@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateForm, type EntireFormData } from "../../../public/redux/slice/slice";
 import axiosInstance from "../../../public/connect";
 import { showSuccess, showError, extractErrorMessage, MESSAGES } from "../../utils/toastMessages";
-import { AuthContext } from "../../../public/loginContext";
+import { useAuth } from "../Head Components/hooks/useAuth";
 
 interface RootState {
     form: EntireFormData;
@@ -18,11 +18,11 @@ const MultiStepController = () => {
 
     const formData = useSelector((state: RootState) => state.form);
     const dispatch = useDispatch();
-    const { login } = useContext(AuthContext);
+    const { user } = useAuth();
 
     const { options, loading, error, fetchOptions } = useOptionsService();
 
-    useEffect(() => { if (login) fetchOptions(); }, [login]);
+    useEffect(() => { if (user) fetchOptions(); }, [user]);
 
     const handleFormSubmit = async (data: EntireFormData) => {
         try {
@@ -40,6 +40,11 @@ const MultiStepController = () => {
             formData.append("bed_choice", data.bed_choice.toString());
             formData.append("bathrooms", data.bathrooms.toString());
             formData.append("price_per_night", data.price_per_night.toString());
+
+            // Guest policies
+            formData.append("allows_children", String(data.allows_children ?? true));
+            formData.append("allows_infants", String(data.allows_infants ?? true));
+            formData.append("allows_pets", String(data.allows_pets ?? false));
 
             // Append amenities as JSON array
             if (data.amenities && data.amenities.length > 0) {
@@ -101,7 +106,7 @@ const MultiStepController = () => {
 
     };
 
-    if (!login) {
+    if (!user) {
         return (
             <div className="flex flex-col items-center justify-center py-20 text-gray-600">
                 <p className="text-xl font-medium mb-2">Please login to register a property</p>

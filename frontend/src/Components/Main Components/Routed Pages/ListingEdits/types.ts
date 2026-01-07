@@ -32,7 +32,7 @@ export interface ListingImage {
 export interface Amenity {
     name: string;
     display_name: string;
-    
+
 }
 
 /**
@@ -63,6 +63,11 @@ export interface ListingEditData {
     address: string;
     updated_at: string;  // ISO datetime string
     amenities: Amenity[];
+
+    // Guest policy fields
+    allows_children: boolean;
+    allows_infants: boolean;
+    allows_pets: boolean;
 }
 
 /**
@@ -82,5 +87,9 @@ export interface ListingUpdatePayload {
     bathrooms?: number;
     price_per_night?: number | string;
     amenities?: string[];  // Array of amenity name codes (e.g., ["wifi", "parking"])
+    // Guest policy fields
+    allows_children?: boolean;
+    allows_infants?: boolean;
+    allows_pets?: boolean;
     // Note: images are handled separately via FormData with multipart/form-data
 }

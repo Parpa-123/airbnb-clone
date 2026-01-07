@@ -3,6 +3,7 @@ import dayjs, { Dayjs } from "dayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker as MUIDatePicker } from "@mui/x-date-pickers/DatePicker";
+import { useFilterContext } from "../../services/filterContext";
 
 type DatePickerRef = {
   getDates: () => { checkIn: string | null; checkOut: string | null };
@@ -14,10 +15,32 @@ type DatePickerProps = {
 };
 
 const DatePickerValue = ({ ref }: DatePickerProps) => {
-  const [checkIn, setCheckIn] = React.useState<Dayjs | null>(dayjs().add(1, "day"));
-  const [checkOut, setCheckOut] = React.useState<Dayjs | null>(
-    dayjs().add(6, "day")
-  );
+  const { filters } = useFilterContext();
+
+  // Initialize dates from filter context if available, otherwise use defaults
+  const [checkIn, setCheckIn] = React.useState<Dayjs | null>(() => {
+    if (filters.check_in) {
+      return dayjs(filters.check_in);
+    }
+    return dayjs().add(1, "day");
+  });
+
+  const [checkOut, setCheckOut] = React.useState<Dayjs | null>(() => {
+    if (filters.check_out) {
+      return dayjs(filters.check_out);
+    }
+    return dayjs().add(6, "day");
+  });
+
+  // Update dates when filters change
+  React.useEffect(() => {
+    if (filters.check_in) {
+      setCheckIn(dayjs(filters.check_in));
+    }
+    if (filters.check_out) {
+      setCheckOut(dayjs(filters.check_out));
+    }
+  }, [filters.check_in, filters.check_out]);
 
   React.useImperativeHandle(
     ref,

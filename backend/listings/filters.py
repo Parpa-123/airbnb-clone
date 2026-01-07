@@ -41,6 +41,10 @@ class ListingFilter(df.FilterSet):
         method="filter_available_listings"
     )
 
+    # Guest policy filters
+    has_pets = df.BooleanFilter(method="filter_allows_pets")
+    has_children = df.BooleanFilter(method="filter_allows_children")
+
     class Meta:
         model = Listings
         fields = [
@@ -51,16 +55,34 @@ class ListingFilter(df.FilterSet):
             "price_per_night__lte",
             "max_guests__gte",
             "max_guests__lte",
+            "has_pets",        
+            "has_children",    
         ]
 
     def filter_available_listings(self, queryset, name, value):
-        check_in = value.get("check_in")
-        check_out = value.get("check_out")
+        # Get both dates from the filter data
+        check_in = self.data.get("check_in")
+        check_out = self.data.get("check_out")
         
-        if check_in and check_out:
-            return queryset.exclude(
-                Q(bookings__start_date__gte = check_out)
-                & Q(bookings__end_date__lte = check_in)
-            )
+        # Only filter if both dates are provided
+        if not check_in or not check_out:
+            return queryset
+        
+        # Exclude listings that have overlapping confirmed bookings
+        return queryset.exclude(
+            Q(bookings__start_date__lt=check_out) &
+            Q(bookings__end_date__gt=check_in) &
+            Q(bookings__status__in=["confirmed", "paid"])
+        )
 
+    def filter_allows_pets(self, queryset, name, value):
+        """Filter listings that allow pets when user has pets"""
+        if value:
+            return queryset.filter(allows_pets=True)
+        return queryset
+
+    def filter_allows_children(self, queryset, name, value):
+        """Filter listings that allow children when user has children"""
+        if value:
+            return queryset.filter(allows_children=True)
         return queryset

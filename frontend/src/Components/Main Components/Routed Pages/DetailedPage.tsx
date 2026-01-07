@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, NavLink } from "react-router-dom";
 import axiosInstance from "../../../../public/connect";
 
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -122,6 +122,23 @@ const DetailedPage: React.FC = () => {
 
   return (
     <div className="max-w-[1120px] mx-auto px-6 py-8">
+      {/* Back Button */}
+      <NavLink
+        to=".."
+        className="inline-flex items-center gap-2 text-gray-600 hover:text-[#FF385C] transition-colors mb-4 group"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-5 w-5 group-hover:-translate-x-1 transition-transform"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        <span className="font-medium">Back</span>
+      </NavLink>
+
       {/* Title */}
       <h1 className="text-2xl font-semibold text-gray-900">
         {listing.title}

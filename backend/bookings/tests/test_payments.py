@@ -39,7 +39,7 @@ class PaymentTest(TestCase):
             host=self.host,
             title='Sample Listing',
             description='This is a sample listing for testing.',
-            address='123 Sample Street',
+            address='123 Payment Test Street',
             country='USA',
             city='New York',
             property_type='apartment',
@@ -48,6 +48,11 @@ class PaymentTest(TestCase):
             bed_choice=3,
             bathrooms=2.0,
             price_per_night=Decimal('100.00'),
+            # Guest policies
+            allows_children=True,
+            allows_infants=True,
+            allows_pets=True,
+            pet_fee=Decimal('10.00'),
         )
         
         self.url = reverse("bookings:cashfree-webhook")

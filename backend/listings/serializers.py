@@ -61,6 +61,9 @@ class ListingSerializer(serializers.ModelSerializer):
             "bathrooms",
             "price_per_night",
             "images",
+            "allows_children",
+            "allows_infants",
+            "allows_pets",
             "created_at",
         ]
         read_only_fields = ["created_at"]
@@ -146,6 +149,9 @@ class CreateUpdateListSerializer(serializers.ModelSerializer):
             "price_per_night",
             "amenities",
             "images",
+            "allows_children",
+            "allows_infants",
+            "allows_pets",
         ]
 
     # -----------------------------------------

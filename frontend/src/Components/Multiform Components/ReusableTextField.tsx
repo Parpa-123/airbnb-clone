@@ -116,7 +116,7 @@ const ReusableTextField = ({
               />
             )}
 
-            {/* CHECKBOX FIELD */}
+            {/* CHECKBOX FIELD (multiple selection) */}
             {type === "checkbox" && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
 
@@ -144,6 +144,19 @@ const ReusableTextField = ({
                   );
                 })}
               </div>
+            )}
+
+            {/* CHECKBOX SINGLE FIELD (boolean toggle) */}
+            {type === "checkbox_single" && (
+              <label className="flex items-center gap-3 cursor-pointer bg-white border-2 border-gray-200 rounded-xl p-4 hover:shadow-md hover:border-[#FF385C] transition-all">
+                <input
+                  type="checkbox"
+                  checked={field.value === true}
+                  onChange={(e) => field.onChange(e.target.checked)}
+                  className="w-5 h-5 rounded border-gray-300 text-[#FF385C] focus:ring-[#FF385C] cursor-pointer"
+                />
+                <span className="text-gray-800 font-medium">{label}</span>
+              </label>
             )}
 
             {/* FILE UPLOAD FIELD */}

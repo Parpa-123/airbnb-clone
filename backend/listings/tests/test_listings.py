@@ -1,4 +1,5 @@
 from decimal import Decimal
+import uuid
 from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
@@ -22,9 +23,9 @@ def create_estate(user, params={}):
     
 
     default = {
-        "title": "Sea View Apartment",
+        "title": f"Sea View Apartment {uuid.uuid4().hex[:8]}",
         "description": "Beautiful apartment overlooking the sea with modern interiors.",
-        "address": "Marine Drive, Mumbai",
+        "address": f"Marine Drive, Mumbai {uuid.uuid4().hex[:8]}",
         "country": "India",
         "city": "Mumbai",
         "property_type": "apartment",
@@ -33,6 +34,11 @@ def create_estate(user, params={}):
         "bed_choice": 3,
         "bathrooms": 2.0,
         "price_per_night": Decimal("59.99"),
+        # Guest policies
+        "allows_children": True,
+        "allows_infants": True,
+        "allows_pets": True,
+        "pet_fee": Decimal("10.00"),
     }
 
     default.update(params)

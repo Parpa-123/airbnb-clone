@@ -138,6 +138,29 @@ export const createFormSteps = (apiOptions: any): Step[] => {
             ]
         },
         {
+            title: "Guest Policies",
+            fields: [
+                {
+                    name: "allows_children",
+                    label: "Allow Children (Ages 2-12)",
+                    type: "checkbox_single",
+                    rules: { required: false }
+                },
+                {
+                    name: "allows_infants",
+                    label: "Allow Infants (Under 2)",
+                    type: "checkbox_single",
+                    rules: { required: false }
+                },
+                {
+                    name: "allows_pets",
+                    label: "Allow Pets",
+                    type: "checkbox_single",
+                    rules: { required: false }
+                },
+            ]
+        },
+        {
             title: "Property Images",
             fields: [
                 {

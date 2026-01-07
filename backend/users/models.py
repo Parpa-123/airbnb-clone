@@ -41,7 +41,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_superuser = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
 
-    avatar = models.ImageField(null=True, blank=True)
+    avatar = models.ImageField(null=True, blank=True, upload_to="users/")
     phone = PhoneNumberField(null=True, blank=True)
 
     # LOGIN FIELD

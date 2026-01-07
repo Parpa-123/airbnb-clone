@@ -28,6 +28,10 @@ export interface EntireFormData {
     amenities: string[];
     price_per_night: number;
     images: ImageWithName[];
+    // Guest policies
+    allows_children: boolean;
+    allows_infants: boolean;
+    allows_pets: boolean;
 }
 
 const initialState: EntireFormData = {
@@ -44,6 +48,10 @@ const initialState: EntireFormData = {
     amenities: [],
     price_per_night: 0,
     images: [],
+
+    allows_children: true,
+    allows_infants: true,
+    allows_pets: false,
 };
 
 const slice = createSlice({
@@ -57,7 +65,7 @@ const slice = createSlice({
             }
         },
 
-        
+
 
         resetForm: () => initialState
     }

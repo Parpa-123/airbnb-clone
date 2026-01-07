@@ -35,6 +35,12 @@ class Bookings(TimeStampedModel):
 
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
 
+    # Guest breakdown
+    adults = models.PositiveIntegerField(default=1)
+    children = models.PositiveIntegerField(default=0)
+    infants = models.PositiveIntegerField(default=0)
+    pets = models.PositiveIntegerField(default=0)
+
     STATUS_CHOICES = [
         (STATUS_PENDING, "Pending"),
         (STATUS_CONFIRMED, "Confirmed"),

@@ -6,12 +6,12 @@ interface EditableSectionProps {
     fields: string[];
     listing: any;
     onPatch: (data: any) => Promise<void>;
-    children: (register: any) => React.ReactNode;
+    children: (register: any, watch: any) => React.ReactNode;
 }
 
 
 export function EditableSection({ title, fields, listing, onPatch, children }: EditableSectionProps) {
-    const { register, handleSubmit, reset } = useForm();
+    const { register, handleSubmit, reset, watch } = useForm();
 
     useEffect(() => {
         const defaults: Record<string, any> = {};
@@ -34,7 +34,7 @@ export function EditableSection({ title, fields, listing, onPatch, children }: E
 
             <form onSubmit={handleSubmit(submitHandler)} className="space-y-5">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    {children(register)}
+                    {children(register, watch)}
                 </div>
 
                 <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">

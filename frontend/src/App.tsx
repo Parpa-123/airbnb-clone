@@ -91,6 +91,7 @@ const App: React.FC = () => {
                 />
                 <Route path="/wishlist/:slug" element={<WishlistDetail />} />
 
+
                 {/* Bookings */}
                 <Route path="bookings" element={<Bookings />} />
                 <Route path="bookings/:id" element={<BookingStatus />} />

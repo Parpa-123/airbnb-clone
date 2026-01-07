@@ -75,11 +75,13 @@ const AuthView = () => {
 
     try {
       setLoading(true);
-      await axiosInstance.patch("/me/", data, {
+      const res = await axiosInstance.patch("/me/", data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
+      setDets(res.data);
+      form.setFieldValue("avatar", null);
       showSuccess(MESSAGES.AUTH.PROFILE_UPDATED);
     } catch (error: any) {
       showError(extractErrorMessage(error, "Failed to update profile!"));
@@ -101,7 +103,7 @@ const AuthView = () => {
         {/* ================= HEADER ================= */}
         <div className="flex flex-col items-center space-y-3">
           <img
-            src={preview || dets.avatar || "https://via.placeholder.com/150"}
+            src={dets.avatar || "https://via.placeholder.com/150"}
             className="w-32 h-32 rounded-full object-cover border"
             alt="profile"
           />
@@ -155,10 +157,10 @@ const AuthView = () => {
             </Dropzone>
 
             {/* ================= PROFILE PREVIEW ================= */}
-            {(preview || dets.avatar) && (
-              <div className="mt-6 p-4 border rounded-xl flex items-center gap-4 bg-gray-50">
+            {preview && (
+              <div className="mt-6 p-4 border rounded-xl flex items-center justify-center gap-4 bg-gray-50">
                 <img
-                  src={preview || dets.avatar}
+                  src={preview}
                   alt="preview"
                   className="w-20 h-20 rounded-full object-cover border"
                 />

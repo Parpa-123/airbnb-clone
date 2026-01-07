@@ -5,20 +5,20 @@ import { FaSpinner } from "react-icons/fa";
 
 type Props = {
   open: boolean;
-  setOpen: (v: boolean) => void;
+  onOpenChange: (v: boolean) => void;
   onSubmit: (formData: FormData) => Promise<void>;
   loading: boolean;
 };
 
-const SignupDialog: React.FC<Props> = ({ open, setOpen, onSubmit, loading }) => {
+const SignupDialog: React.FC<Props> = ({ open, onOpenChange, onSubmit, loading }) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
-    await onSubmit(fd).then(() => setOpen(false)).catch(() => { });
+    await onSubmit(fd).then(() => onOpenChange(false)).catch(() => { });
   };
 
   return (
-    <ReusableDialog open={open} setOpen={setOpen}>
+    <ReusableDialog open={open} onOpenChange={onOpenChange}>
       <div>
         <h3 className="text-lg font-semibold mb-3">Create Account</h3>
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>

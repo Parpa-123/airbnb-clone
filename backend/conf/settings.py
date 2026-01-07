@@ -48,8 +48,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
-    'django_countries',
-    "cities_light",
     'rest_framework_simplejwt',
     'users',
     'listings',
@@ -178,3 +176,4 @@ CASHFREE_APP_ID = os.getenv("CASHFREE_APP_ID")
 CASHFREE_SECRET_KEY = os.getenv("CASHFREE_SECRET_KEY")
 CASHFREE_ENV = os.getenv("CASHFREE_ENV", "TEST")  # Default to TEST if not set
 CASHFREE_BASE_URL = os.getenv("CASHFREE_BASE_URL")
+
