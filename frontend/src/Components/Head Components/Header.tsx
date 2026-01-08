@@ -1,5 +1,5 @@
 import React, { useEffect, useState, type FormEvent } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import * as Dialog from "@radix-ui/react-dialog";
@@ -32,6 +32,13 @@ const Header: React.FC = () => {
   const { user, loading, doLogin, doSignup, logout } = useAuth();
   const { setFilters } = useFilterContext();
   const navigate = useNavigate();
+
+  const location = useLocation();
+
+  const searchHide = ['/bookings', '/me']
+
+  const shouldHideSearch = searchHide.some(path => location.pathname.startsWith(path));
+
 
   // dialogs
   const [loginOpen, setLoginOpen] = useState(false);
@@ -179,46 +186,216 @@ const Header: React.FC = () => {
             {/* Central Search Bar - Mobile-First Responsive */}
 
             {/* Mobile Search Button - Shows on mobile, hidden on smd+ */}
-            <div className="flex smd:hidden flex-1 justify-center">
-              <Dialog.Root>
-                <Dialog.Trigger asChild>
-                  <button className="flex items-center gap-3 w-full max-w-sm px-4 py-2.5 border border-gray-300 rounded-full shadow-sm hover:shadow-md transition-shadow cursor-pointer">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 32 32"
-                      className="w-5 h-5 text-gray-600"
-                      fill="currentColor"
+            {!shouldHideSearch && (
+              <div className="flex smd:hidden flex-1 justify-center">
+                <Dialog.Root>
+                  <Dialog.Trigger asChild>
+                    <button className="flex items-center gap-3 w-full max-w-sm px-4 py-2.5 border border-gray-300 rounded-full shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 32 32"
+                        className="w-5 h-5 text-gray-600"
+                        fill="currentColor"
+                      >
+                        <path d="M13 0c7.18 0 13 5.82 13 13 0 2.868-.929 5.519-2.502 7.669l7.916 7.917-2.828 2.828-7.917-7.916A12.942 12.942 0 0 1 13 26C5.82 26 0 20.18 0 13S5.82 0 13 0zm0 4a9 9 0 1 0 0 18 9 9 0 0 0 0-18z"></path>
+                      </svg>
+                      <div className="flex-1 text-left">
+                        <div className="text-sm font-semibold text-gray-900">Where to?</div>
+                        <div className="text-xs text-gray-500">Anywhere · Any week · Add guests</div>
+                      </div>
+                    </button>
+                  </Dialog.Trigger>
+
+                  <Dialog.Portal>
+                    {/* Overlay with pointer-events: none - allows portaled DatePicker/Popover to receive events */}
+                    <Dialog.Overlay className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 pointer-events-none" />
+
+                    {/* Content panel with pointer-events: auto - only this layer is interactive */}
+                    <Dialog.Content className="fixed inset-x-4 top-20 z-50 max-w-lg mx-auto bg-white rounded-2xl shadow-2xl p-6 space-y-5 pointer-events-auto"
                     >
-                      <path d="M13 0c7.18 0 13 5.82 13 13 0 2.868-.929 5.519-2.502 7.669l7.916 7.917-2.828 2.828-7.917-7.916A12.942 12.942 0 0 1 13 26C5.82 26 0 20.18 0 13S5.82 0 13 0zm0 4a9 9 0 1 0 0 18 9 9 0 0 0 0-18z"></path>
-                    </svg>
-                    <div className="flex-1 text-left">
-                      <div className="text-sm font-semibold text-gray-900">Where to?</div>
-                      <div className="text-xs text-gray-500">Anywhere · Any week · Add guests</div>
-                    </div>
-                  </button>
-                </Dialog.Trigger>
+                      <div className="flex items-center justify-between mb-4">
+                        <Dialog.Title className="text-xl font-semibold">Search</Dialog.Title>
+                        <Dialog.Close className="p-2 hover:bg-gray-100 rounded-full cursor-pointer">
+                          <Cross2Icon className="w-5 h-5" />
+                        </Dialog.Close>
+                      </div>
 
-                <Dialog.Portal>
-                  {/* Overlay with pointer-events: none - allows portaled DatePicker/Popover to receive events */}
-                  <Dialog.Overlay className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 pointer-events-none" />
+                      {/* Mobile Search Form - Stacked Layout */}
+                      <div className="space-y-4">
+                        {/* Location */}
+                        <div>
+                          <label className="block text-xs font-semibold text-gray-900 mb-2">Where</label>
+                          <input
+                            placeholder="Country"
+                            className="w-full border border-gray-300 px-4 py-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#FF385C] transition"
+                            onChange={(e) =>
+                              setFilters((p: any) => ({
+                                ...p,
+                                country: e.target.value || undefined,
+                              }))
+                            }
+                          />
+                          <input
+                            placeholder="City"
+                            className="w-full border border-gray-300 px-4 py-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#FF385C] transition mt-2"
+                            onChange={(e) =>
+                              setFilters((p: any) => ({
+                                ...p,
+                                city: e.target.value || undefined,
+                              }))
+                            }
+                          />
+                        </div>
 
-                  {/* Content panel with pointer-events: auto - only this layer is interactive */}
-                  <Dialog.Content className="fixed inset-x-4 top-20 z-50 max-w-lg mx-auto bg-white rounded-2xl shadow-2xl p-6 space-y-5 pointer-events-auto"
-                  >
-                    <div className="flex items-center justify-between mb-4">
-                      <Dialog.Title className="text-xl font-semibold">Search</Dialog.Title>
-                      <Dialog.Close className="p-2 hover:bg-gray-100 rounded-full cursor-pointer">
-                        <Cross2Icon className="w-5 h-5" />
-                      </Dialog.Close>
-                    </div>
+                        {/* Dates */}
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <div>
+                            <label className="block text-xs font-semibold text-gray-900 mb-2">When</label>
+                            <div className="space-y-2">
+                              <DatePicker
+                                label="Check in"
+                                value={checkIn}
+                                onChange={(date) => {
+                                  if (date && checkOut && (date.isAfter(checkOut) || date.isSame(checkOut))) {
+                                    alert("Check-in date must be before check-out date");
+                                    return;
+                                  }
+                                  setCheckIn(date);
+                                  setFilters((p: any) => ({
+                                    ...p,
+                                    check_in: date ? date.format("YYYY-MM-DD") : undefined,
+                                  }));
+                                }}
+                                minDate={dayjs()}
+                                slotProps={{
+                                  textField: {
+                                    fullWidth: true,
+                                    size: "small",
+                                  },
+                                  popper: {
+                                    disablePortal: true,
+                                  },
+                                }}
+                              />
+                              <DatePicker
+                                label="Check out"
+                                value={checkOut}
+                                onChange={(date) => {
+                                  if (date && checkIn && (date.isBefore(checkIn) || date.isSame(checkIn))) {
+                                    alert("Check-out date must be after check-in date");
+                                    return;
+                                  }
+                                  setCheckOut(date);
+                                  setFilters((p: any) => ({
+                                    ...p,
+                                    check_out: date ? date.format("YYYY-MM-DD") : undefined,
+                                  }));
+                                }}
+                                minDate={checkIn ? checkIn.add(1, "day") : dayjs()}
+                                slotProps={{
+                                  textField: {
+                                    fullWidth: true,
+                                    size: "small",
+                                  },
+                                  popper: {
+                                    disablePortal: true,
+                                  },
+                                }}
+                              />
+                            </div>
+                          </div>
+                        </LocalizationProvider>
 
-                    {/* Mobile Search Form - Stacked Layout */}
-                    <div className="space-y-4">
-                      {/* Location */}
-                      <div>
-                        <label className="block text-xs font-semibold text-gray-900 mb-2">Where</label>
+                        {/* Guests */}
+                        <div>
+                          <label className="block text-xs font-semibold text-gray-900 mb-2">Who</label>
+                          <GuestSelector
+                            guests={guests}
+                            onGuestsChange={(newGuests) => {
+                              setGuests(newGuests);
+                              setFilters((p: any) => ({
+                                ...p,
+                                max_guests__gte: newGuests.adults > 0 ? newGuests.adults : undefined,
+                                has_pets: newGuests.pets > 0 ? true : undefined,
+                                has_children: newGuests.children > 0 ? true : undefined,
+                              }));
+                            }}
+                          />
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="flex gap-3 pt-2">
+                          {/* Clear Filters Button */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              // Reset all filters
+                              setCheckIn(null);
+                              setCheckOut(null);
+                              setGuests({
+                                adults: 1,
+                                children: 0,
+                                infants: 0,
+                                pets: 0,
+                              });
+                              setFilters({});
+                            }}
+                            className="flex-1 border-2 border-gray-300 text-gray-700 py-3.5 rounded-lg font-semibold hover:bg-gray-50 transition-colors cursor-pointer"
+                          >
+                            Clear filters
+                          </button>
+
+                          {/* Search Button */}
+                          <Dialog.Close asChild>
+                            <button
+                              onClick={() => navigate("/")}
+                              className="flex-1 bg-[#FF385C] text-white py-3.5 rounded-lg font-semibold hover:bg-[#E31C5F] transition-colors cursor-pointer"
+                            >
+                              <div className="flex items-center justify-center gap-2">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 32 32"
+                                  className="w-4 h-4"
+                                  fill="currentColor"
+                                >
+                                  <path d="M13 0c7.18 0 13 5.82 13 13 0 2.868-.929 5.519-2.502 7.669l7.916 7.917-2.828 2.828-7.917-7.916A12.942 12.942 0 0 1 13 26C5.82 26 0 20.18 0 13S5.82 0 13 0zm0 4a9 9 0 1 0 0 18 9 9 0 0 0 0-18z"></path>
+                                </svg>
+                                Search
+                              </div>
+                            </button>
+                          </Dialog.Close>
+                        </div>
+                      </div>
+                    </Dialog.Content>
+                  </Dialog.Portal>
+                </Dialog.Root>
+              </div>
+            )}
+
+            {/* Tablet/Desktop Search Bar - Hidden on mobile, shows on smd+ */}
+            {!shouldHideSearch && (
+              <div className="hidden smd:flex items-center gap-0 border border-gray-300 rounded-full shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer">
+                {/* Where */}
+                <DropdownMenu.Root>
+                  <DropdownMenu.Trigger asChild>
+                    <button className="px-4 xz:px-6 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-full transition-colors cursor-pointer">
+                      Anywhere
+                    </button>
+                  </DropdownMenu.Trigger>
+
+                  <DropdownMenu.Portal>
+                    <DropdownMenu.Content
+                      sideOffset={8}
+                      align="start"
+                      className="z-50 w-80 p-6 bg-white border border-gray-200 rounded-3xl shadow-xl"
+                    >
+                      <DropdownMenu.Label className="text-xs font-semibold text-gray-900 mb-4">
+                        Where to?
+                      </DropdownMenu.Label>
+
+                      <div className="space-y-3">
                         <input
-                          placeholder="Country"
+                          placeholder="Which Country"
                           className="w-full border border-gray-300 px-4 py-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#FF385C] transition"
                           onChange={(e) =>
                             setFilters((p: any) => ({
@@ -227,9 +404,10 @@ const Header: React.FC = () => {
                             }))
                           }
                         />
+
                         <input
                           placeholder="City"
-                          className="w-full border border-gray-300 px-4 py-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#FF385C] transition mt-2"
+                          className="w-full border border-gray-300 px-4 py-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#FF385C] transition"
                           onChange={(e) =>
                             setFilters((p: any) => ({
                               ...p,
@@ -238,392 +416,231 @@ const Header: React.FC = () => {
                           }
                         />
                       </div>
+                    </DropdownMenu.Content>
+                  </DropdownMenu.Portal>
+                </DropdownMenu.Root>
 
-                      {/* Dates */}
-                      <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <div>
-                          <label className="block text-xs font-semibold text-gray-900 mb-2">When</label>
-                          <div className="space-y-2">
-                            <DatePicker
-                              label="Check in"
-                              value={checkIn}
-                              onChange={(date) => {
-                                if (date && checkOut && (date.isAfter(checkOut) || date.isSame(checkOut))) {
-                                  alert("Check-in date must be before check-out date");
-                                  return;
-                                }
-                                setCheckIn(date);
-                                setFilters((p: any) => ({
-                                  ...p,
-                                  check_in: date ? date.format("YYYY-MM-DD") : undefined,
-                                }));
-                              }}
-                              minDate={dayjs()}
-                              slotProps={{
-                                textField: {
-                                  fullWidth: true,
-                                  size: "small",
-                                },
-                                popper: {
-                                  disablePortal: true,
-                                },
-                              }}
-                            />
-                            <DatePicker
-                              label="Check out"
-                              value={checkOut}
-                              onChange={(date) => {
-                                if (date && checkIn && (date.isBefore(checkIn) || date.isSame(checkIn))) {
-                                  alert("Check-out date must be after check-in date");
-                                  return;
-                                }
-                                setCheckOut(date);
-                                setFilters((p: any) => ({
-                                  ...p,
-                                  check_out: date ? date.format("YYYY-MM-DD") : undefined,
-                                }));
-                              }}
-                              minDate={checkIn ? checkIn.add(1, "day") : dayjs()}
-                              slotProps={{
-                                textField: {
-                                  fullWidth: true,
-                                  size: "small",
-                                },
-                                popper: {
-                                  disablePortal: true,
-                                },
-                              }}
-                            />
-                          </div>
-                        </div>
-                      </LocalizationProvider>
+                {/* Divider */}
+                <div className="h-6 w-px bg-gray-300" />
 
-                      {/* Guests */}
-                      <div>
-                        <label className="block text-xs font-semibold text-gray-900 mb-2">Who</label>
-                        <GuestSelector
-                          guests={guests}
-                          onGuestsChange={(newGuests) => {
-                            setGuests(newGuests);
-                            setFilters((p: any) => ({
-                              ...p,
-                              max_guests__gte: newGuests.adults > 0 ? newGuests.adults : undefined,
-                              has_pets: newGuests.pets > 0 ? true : undefined,
-                              has_children: newGuests.children > 0 ? true : undefined,
-                            }));
-                          }}
-                        />
-                      </div>
-
-                      {/* Action Buttons */}
-                      <div className="flex gap-3 pt-2">
-                        {/* Clear Filters Button */}
-                        <button
-                          type="button"
-                          onClick={() => {
-                            // Reset all filters
-                            setCheckIn(null);
-                            setCheckOut(null);
-                            setGuests({
-                              adults: 1,
-                              children: 0,
-                              infants: 0,
-                              pets: 0,
-                            });
-                            setFilters({});
-                          }}
-                          className="flex-1 border-2 border-gray-300 text-gray-700 py-3.5 rounded-lg font-semibold hover:bg-gray-50 transition-colors cursor-pointer"
-                        >
-                          Clear filters
-                        </button>
-
-                        {/* Search Button */}
-                        <Dialog.Close asChild>
-                          <button className="flex-1 bg-[#FF385C] text-white py-3.5 rounded-lg font-semibold hover:bg-[#E31C5F] transition-colors cursor-pointer">
-                            <div className="flex items-center justify-center gap-2">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 32 32"
-                                className="w-4 h-4"
-                                fill="currentColor"
-                              >
-                                <path d="M13 0c7.18 0 13 5.82 13 13 0 2.868-.929 5.519-2.502 7.669l7.916 7.917-2.828 2.828-7.917-7.916A12.942 12.942 0 0 1 13 26C5.82 26 0 20.18 0 13S5.82 0 13 0zm0 4a9 9 0 1 0 0 18 9 9 0 0 0 0-18z"></path>
-                              </svg>
-                              Search
-                            </div>
-                          </button>
-                        </Dialog.Close>
-                      </div>
-                    </div>
-                  </Dialog.Content>
-                </Dialog.Portal>
-              </Dialog.Root>
-            </div>
-
-            {/* Tablet/Desktop Search Bar - Hidden on mobile, shows on smd+ */}
-            <div className="hidden smd:flex items-center gap-0 border border-gray-300 rounded-full shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer">
-              {/* Where */}
-              <DropdownMenu.Root>
-                <DropdownMenu.Trigger asChild>
-                  <button className="px-4 xz:px-6 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-full transition-colors cursor-pointer">
-                    Anywhere
-                  </button>
-                </DropdownMenu.Trigger>
-
-                <DropdownMenu.Portal>
-                  <DropdownMenu.Content
-                    sideOffset={8}
-                    align="start"
-                    className="z-50 w-80 p-6 bg-white border border-gray-200 rounded-3xl shadow-xl"
-                  >
-                    <DropdownMenu.Label className="text-xs font-semibold text-gray-900 mb-4">
-                      Where to?
-                    </DropdownMenu.Label>
-
-                    <div className="space-y-3">
-                      <input
-                        placeholder="Which Country"
-                        className="w-full border border-gray-300 px-4 py-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#FF385C] transition"
-                        onChange={(e) =>
-                          setFilters((p: any) => ({
-                            ...p,
-                            country: e.target.value || undefined,
-                          }))
+                {/* Dates - Check-in & Check-out */}
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <div className="flex items-center gap-0">
+                    {/* Check-in DatePicker */}
+                    <DatePicker
+                      label=""
+                      value={checkIn}
+                      onChange={(date) => {
+                        if (date && checkOut && (date.isAfter(checkOut) || date.isSame(checkOut))) {
+                          alert("Check-in date must be before check-out date");
+                          return;
                         }
-                      />
-
-                      <input
-                        placeholder="City"
-                        className="w-full border border-gray-300 px-4 py-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#FF385C] transition"
-                        onChange={(e) =>
-                          setFilters((p: any) => ({
-                            ...p,
-                            city: e.target.value || undefined,
-                          }))
-                        }
-                      />
-                    </div>
-                  </DropdownMenu.Content>
-                </DropdownMenu.Portal>
-              </DropdownMenu.Root>
-
-              {/* Divider */}
-              <div className="h-6 w-px bg-gray-300" />
-
-              {/* Dates - Check-in & Check-out */}
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <div className="flex items-center gap-0">
-                  {/* Check-in DatePicker */}
-                  <DatePicker
-                    label=""
-                    value={checkIn}
-                    onChange={(date) => {
-                      if (date && checkOut && (date.isAfter(checkOut) || date.isSame(checkOut))) {
-                        alert("Check-in date must be before check-out date");
-                        return;
-                      }
-                      setCheckIn(date);
-                      setFilters((p: any) => ({
-                        ...p,
-                        check_in: date ? date.format("YYYY-MM-DD") : undefined,
-                      }));
-                    }}
-                    minDate={dayjs()}
-                    maxDate={checkOut ? checkOut.subtract(1, "day") : undefined}
-                    slotProps={{
-                      textField: {
-                        placeholder: "Add date",
-                        variant: "standard",
-                        InputProps: {
-                          disableUnderline: true,
-                        },
-                        sx: {
-                          width: "110px",
-                          "& .MuiInputBase-root": {
-                            flexDirection: "column",
-                            alignItems: "flex-start",
-                            padding: "8px 16px",
-                            cursor: "pointer",
-                            "&:hover": {
-                              backgroundColor: "rgba(0, 0, 0, 0.04)",
-                              borderRadius: "24px",
-                            },
+                        setCheckIn(date);
+                        setFilters((p: any) => ({
+                          ...p,
+                          check_in: date ? date.format("YYYY-MM-DD") : undefined,
+                        }));
+                      }}
+                      minDate={dayjs()}
+                      maxDate={checkOut ? checkOut.subtract(1, "day") : undefined}
+                      slotProps={{
+                        textField: {
+                          placeholder: "Add date",
+                          variant: "standard",
+                          InputProps: {
+                            disableUnderline: true,
                           },
-                          "& .MuiInputBase-input": {
-                            fontSize: "0.875rem",
-                            padding: 0,
-                            cursor: "pointer",
-                            color: checkIn ? "#222" : "#717171",
-                            "&::placeholder": {
-                              color: "#717171",
-                              opacity: 1,
-                            },
-                          },
-                          "&::before": {
-                            content: '"Check in"',
-                            fontSize: "0.75rem",
-                            fontWeight: 600,
-                            color: "#222",
-                            marginBottom: "2px",
-                          },
-                        },
-                      },
-                      popper: {
-                        sx: {
-                          "& .MuiPaper-root": {
-                            borderRadius: "24px",
-                            boxShadow: "0 4px 32px rgba(0,0,0,0.15)",
-                            marginTop: "8px",
-                          },
-                          "& .MuiPickersDay-root": {
-                            "&.Mui-selected": {
-                              backgroundColor: "#FF385C",
+                          sx: {
+                            width: "110px",
+                            "& .MuiInputBase-root": {
+                              flexDirection: "column",
+                              alignItems: "flex-start",
+                              padding: "8px 16px",
+                              cursor: "pointer",
                               "&:hover": {
-                                backgroundColor: "#E31C5F",
+                                backgroundColor: "rgba(0, 0, 0, 0.04)",
+                                borderRadius: "24px",
+                              },
+                            },
+                            "& .MuiInputBase-input": {
+                              fontSize: "0.875rem",
+                              padding: 0,
+                              cursor: "pointer",
+                              color: checkIn ? "#222" : "#717171",
+                              "&::placeholder": {
+                                color: "#717171",
+                                opacity: 1,
+                              },
+                            },
+                            "&::before": {
+                              content: '"Check in"',
+                              fontSize: "0.75rem",
+                              fontWeight: 600,
+                              color: "#222",
+                              marginBottom: "2px",
+                            },
+                          },
+                        },
+                        popper: {
+                          sx: {
+                            "& .MuiPaper-root": {
+                              borderRadius: "24px",
+                              boxShadow: "0 4px 32px rgba(0,0,0,0.15)",
+                              marginTop: "8px",
+                            },
+                            "& .MuiPickersDay-root": {
+                              "&.Mui-selected": {
+                                backgroundColor: "#FF385C",
+                                "&:hover": {
+                                  backgroundColor: "#E31C5F",
+                                },
                               },
                             },
                           },
                         },
-                      },
-                    }}
-                  />
+                      }}
+                    />
 
-                  {/* Divider */}
-                  <div className="h-6 w-px bg-gray-300" />
+                    {/* Divider */}
+                    <div className="h-6 w-px bg-gray-300" />
 
-                  {/* Check-out DatePicker */}
-                  <DatePicker
-                    label=""
-                    value={checkOut}
-                    onChange={(date) => {
-                      if (date && checkIn && (date.isBefore(checkIn) || date.isSame(checkIn))) {
-                        alert("Check-out date must be after check-in date");
-                        return;
-                      }
-                      setCheckOut(date);
-                      setFilters((p: any) => ({
-                        ...p,
-                        check_out: date ? date.format("YYYY-MM-DD") : undefined,
-                      }));
-                    }}
-                    minDate={checkIn ? checkIn.add(1, "day") : dayjs()}
-                    slotProps={{
-                      textField: {
-                        placeholder: "Add date",
-                        variant: "standard",
-                        InputProps: {
-                          disableUnderline: true,
-                        },
-                        sx: {
-                          width: "110px",
-                          "& .MuiInputBase-root": {
-                            flexDirection: "column",
-                            alignItems: "flex-start",
-                            padding: "8px 16px",
-                            cursor: "pointer",
-                            "&:hover": {
-                              backgroundColor: "rgba(0, 0, 0, 0.04)",
-                              borderRadius: "24px",
-                            },
+                    {/* Check-out DatePicker */}
+                    <DatePicker
+                      label=""
+                      value={checkOut}
+                      onChange={(date) => {
+                        if (date && checkIn && (date.isBefore(checkIn) || date.isSame(checkIn))) {
+                          alert("Check-out date must be after check-in date");
+                          return;
+                        }
+                        setCheckOut(date);
+                        setFilters((p: any) => ({
+                          ...p,
+                          check_out: date ? date.format("YYYY-MM-DD") : undefined,
+                        }));
+                      }}
+                      minDate={checkIn ? checkIn.add(1, "day") : dayjs()}
+                      slotProps={{
+                        textField: {
+                          placeholder: "Add date",
+                          variant: "standard",
+                          InputProps: {
+                            disableUnderline: true,
                           },
-                          "& .MuiInputBase-input": {
-                            fontSize: "0.875rem",
-                            padding: 0,
-                            cursor: "pointer",
-                            color: checkOut ? "#222" : "#717171",
-                            "&::placeholder": {
-                              color: "#717171",
-                              opacity: 1,
-                            },
-                          },
-                          "&::before": {
-                            content: '"Check out"',
-                            fontSize: "0.75rem",
-                            fontWeight: 600,
-                            color: "#222",
-                            marginBottom: "2px",
-                          },
-                        },
-                      },
-                      popper: {
-                        sx: {
-                          "& .MuiPaper-root": {
-                            borderRadius: "24px",
-                            boxShadow: "0 4px 32px rgba(0,0,0,0.15)",
-                            marginTop: "8px",
-                          },
-                          "& .MuiPickersDay-root": {
-                            "&.Mui-selected": {
-                              backgroundColor: "#FF385C",
+                          sx: {
+                            width: "110px",
+                            "& .MuiInputBase-root": {
+                              flexDirection: "column",
+                              alignItems: "flex-start",
+                              padding: "8px 16px",
+                              cursor: "pointer",
                               "&:hover": {
-                                backgroundColor: "#E31C5F",
+                                backgroundColor: "rgba(0, 0, 0, 0.04)",
+                                borderRadius: "24px",
+                              },
+                            },
+                            "& .MuiInputBase-input": {
+                              fontSize: "0.875rem",
+                              padding: 0,
+                              cursor: "pointer",
+                              color: checkOut ? "#222" : "#717171",
+                              "&::placeholder": {
+                                color: "#717171",
+                                opacity: 1,
+                              },
+                            },
+                            "&::before": {
+                              content: '"Check out"',
+                              fontSize: "0.75rem",
+                              fontWeight: 600,
+                              color: "#222",
+                              marginBottom: "2px",
+                            },
+                          },
+                        },
+                        popper: {
+                          sx: {
+                            "& .MuiPaper-root": {
+                              borderRadius: "24px",
+                              boxShadow: "0 4px 32px rgba(0,0,0,0.15)",
+                              marginTop: "8px",
+                            },
+                            "& .MuiPickersDay-root": {
+                              "&.Mui-selected": {
+                                backgroundColor: "#FF385C",
+                                "&:hover": {
+                                  backgroundColor: "#E31C5F",
+                                },
                               },
                             },
                           },
                         },
-                      },
-                    }}
-                  />
-                </div>
-              </LocalizationProvider>
+                      }}
+                    />
+                  </div>
+                </LocalizationProvider>
 
-              {/* Divider */}
-              <div className="h-6 w-px bg-gray-300" />
+                {/* Divider */}
+                <div className="h-6 w-px bg-gray-300" />
 
-              {/* Guests - Using GuestSelector */}
-              <GuestSelector
-                guests={guests}
-                onGuestsChange={(newGuests) => {
-                  setGuests(newGuests);
+                {/* Guests - Using GuestSelector */}
+                <GuestSelector
+                  guests={guests}
+                  onGuestsChange={(newGuests) => {
+                    setGuests(newGuests);
 
-                  setFilters((p: any) => ({
-                    ...p,
-                    max_guests__gte: newGuests.adults > 0 ? newGuests.adults : undefined,
-                    has_pets: newGuests.pets > 0 ? true : undefined,
-                    has_children: newGuests.children > 0 ? true : undefined,
-                  }));
-                }}
-              />
+                    setFilters((p: any) => ({
+                      ...p,
+                      max_guests__gte: newGuests.adults > 0 ? newGuests.adults : undefined,
+                      has_pets: newGuests.pets > 0 ? true : undefined,
+                      has_children: newGuests.children > 0 ? true : undefined,
+                    }));
+                  }}
+                />
 
-              {/* Clear Filters Button - Only show if any filters are active */}
-              {(checkIn || checkOut || guests.adults > 1 || guests.children > 0 || guests.infants > 0 || guests.pets > 0) && (
-                <>
-                  <div className="h-6 w-px bg-gray-300" />
-                  <button
-                    onClick={() => {
-                      setCheckIn(null);
-                      setCheckOut(null);
-                      setGuests({
-                        adults: 1,
-                        children: 0,
-                        infants: 0,
-                        pets: 0,
-                      });
-                      setFilters({});
-                    }}
-                    className="px-3 py-2 text-xs font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
-                    title="Clear all filters"
-                  >
-                    Clear
-                  </button>
-                </>
-              )}
+                {/* Clear Filters Button - Only show if any filters are active */}
+                {(checkIn || checkOut || guests.adults > 1 || guests.children > 0 || guests.infants > 0 || guests.pets > 0) && (
+                  <>
+                    <div className="h-6 w-px bg-gray-300" />
+                    <button
+                      onClick={() => {
+                        setCheckIn(null);
+                        setCheckOut(null);
+                        setGuests({
+                          adults: 1,
+                          children: 0,
+                          infants: 0,
+                          pets: 0,
+                        });
+                        setFilters({});
+                      }}
+                      className="px-3 py-2 text-xs font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
+                      title="Clear all filters"
+                    >
+                      Clear
+                    </button>
+                  </>
+                )}
 
-              {/* Search Button */}
-              <button className="bg-[#FF385C] text-white p-2 rounded-full m-1 hover:bg-[#E31C5F] transition-colors cursor-pointer">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 32 32"
-                  aria-hidden="true"
-                  role="presentation"
-                  focusable="false"
-                  className="w-4 h-4"
-                  fill="currentColor"
+                {/* Search Button */}
+                <button
+                  onClick={() => navigate("/")}
+                  className="bg-[#FF385C] text-white p-2 rounded-full m-1 hover:bg-[#E31C5F] transition-colors cursor-pointer"
                 >
-                  <path d="M13 0c7.18 0 13 5.82 13 13 0 2.868-.929 5.519-2.502 7.669l7.916 7.917-2.828 2.828-7.917-7.916A12.942 12.942 0 0 1 13 26C5.82 26 0 20.18 0 13S5.82 0 13 0zm0 4a9 9 0 1 0 0 18 9 9 0 0 0 0-18z"></path>
-                </svg>
-              </button>
-            </div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 32 32"
+                    aria-hidden="true"
+                    role="presentation"
+                    focusable="false"
+                    className="w-4 h-4"
+                    fill="currentColor"
+                  >
+                    <path d="M13 0c7.18 0 13 5.82 13 13 0 2.868-.929 5.519-2.502 7.669l7.916 7.917-2.828 2.828-7.917-7.916A12.942 12.942 0 0 1 13 26C5.82 26 0 20.18 0 13S5.82 0 13 0zm0 4a9 9 0 1 0 0 18 9 9 0 0 0 0-18z"></path>
+                  </svg>
+                </button>
+              </div>
+            )}
 
 
 

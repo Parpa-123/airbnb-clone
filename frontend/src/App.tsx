@@ -7,7 +7,7 @@ import Header from "./Components/Head Components/Header";
 import { ToastContainer } from "react-toastify";
 
 // React Router
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
 // Auth (not lazy - needed immediately)
 import LoginContextProvider from "../public/loginContext";
@@ -21,13 +21,17 @@ import Loading from "./Components/Loading";
 const AuthView = lazy(() => import("./Components/ProfileComponents/AuthView"));
 const DetailedPage = lazy(() => import("./Components/Main Components/Routed Pages/DetailedPage"));
 const PublicListings = lazy(() => import("./Components/Main Components/Routed Pages/PublicListings"));
-const Bookings = lazy(() => import("./Components/Main Components/Routed Pages/Bookings"));
 const ListingsDashboard = lazy(() => import("./Components/Main Components/Routed Pages/ListingsDashboard"));
 const ListingEditPage = lazy(() => import("./Components/Main Components/Routed Pages/ListingEdits/ListingPatch"));
 const Wishlist = lazy(() => import("./Components/Main Components/Wishlist"));
 const WishlistDetail = lazy(() => import("./Components/Main Components/Routed Pages/WishlistDetail"));
 const BookingStatus = lazy(() => import("./Components/Main Components/Routed Pages/BookingStatus"));
 const BookingDetails = lazy(() => import("./Components/Main Components/Routed Pages/BookingsDetail"));
+const Booking = lazy(() => import("./Components/Main Components/Routed Pages/Booking"));
+const BookingsOverview = lazy(() => import("./Components/Main Components/Routed Pages/Booking Routes/BookingsOverview"));
+const UpcomingBookings = lazy(() => import("./Components/Main Components/Routed Pages/Booking Routes/UpcomingBookings"));
+const PastBookings = lazy(() => import("./Components/Main Components/Routed Pages/Booking Routes/PastBookings"));
+const CancelledBookings = lazy(() => import("./Components/Main Components/Routed Pages/Booking Routes/CancelledBookings"));
 
 // ==============================
 // App Component
@@ -47,8 +51,7 @@ const App: React.FC = () => {
                 {/* Listing detail */}
                 <Route path=":slug" element={<DetailedPage />} />
 
-                {/* Bookings */}
-                <Route path="bookings" element={<Bookings />} />
+
 
                 {/* Profile page */}
                 <Route
@@ -92,8 +95,15 @@ const App: React.FC = () => {
                 <Route path="/wishlist/:slug" element={<WishlistDetail />} />
 
 
-                {/* Bookings */}
-                <Route path="bookings" element={<Bookings />} />
+
+                {/* Bookings with nested routes */}
+                <Route path="bookings" element={<Booking />}>
+                  <Route index element={<Navigate to="overview" replace />} />
+                  <Route path="overview" element={<BookingsOverview />} />
+                  <Route path="upcoming" element={<UpcomingBookings />} />
+                  <Route path="past" element={<PastBookings />} />
+                  <Route path="cancelled" element={<CancelledBookings />} />
+                </Route>
                 <Route path="bookings/:id" element={<BookingStatus />} />
                 <Route path="bookings/details/:id" element={<BookingDetails />} />
               </Route>

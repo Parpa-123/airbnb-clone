@@ -57,7 +57,7 @@ export interface ListingDetail extends Listing {
 }
 
 
-export type BookingStatus = "confirmed" | "pending" | "cancelled" | "failed" | "paid" | "refunded";
+export type BookingStatus = "confirmed" | "pending" | "cancelled" | "failed" | "paid" | "refunded" | "CONFIRMED" | "PENDING" | "CANCELLED" | "FAILED" | "COMPLETED";
 
 export interface Booking {
     id: number;

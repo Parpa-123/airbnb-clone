@@ -2,12 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { useParams, NavLink } from "react-router-dom";
 import axiosInstance from "../../../../public/connect";
 
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-
 import * as Dialog from "@radix-ui/react-dialog";
 import { Cross2Icon } from "@radix-ui/react-icons";
 import { showError, MESSAGES } from "../../../utils/toastMessages";
@@ -19,11 +13,13 @@ import { reserveAndPay } from "../../../services/reserveAndPay";
 import ReviewSlider, { type Review } from "../../Review Components/ReviewSlider";
 import { StarRating } from "../../Review Components/StarRating";
 
-/* --------------------------- TYPES --------------------------- */
+
+
 
 import type { ListingDetail, DatePickerRef } from "../../../types";
+import dayjs from "dayjs";
 
-/* --------------------------- COMPONENT --------------------------- */
+
 
 const DetailedPage: React.FC = () => {
   const { slug } = useParams();
@@ -35,6 +31,8 @@ const DetailedPage: React.FC = () => {
   const [bookingLoading, setBookingLoading] = useState(false);
 
   const [openReviewDialog, setOpenReviewDialog] = useState(false);
+  const [openPhotoGallery, setOpenPhotoGallery] = useState(false);
+  const [selectedDates, setSelectedDates] = useState<{ checkIn: string | null, checkOut: string | null }>({ checkIn: null, checkOut: null });
   const [ratings, setRatings] = useState({
     accuracy: 0,
     communication: 0,
@@ -108,6 +106,14 @@ const DetailedPage: React.FC = () => {
     }
   };
 
+  /* ----------------------- INITIALIZE DATES ----------------------- */
+
+  useEffect(() => {
+    const tomorrow = dayjs().add(1, 'day').format('YYYY-MM-DD');
+    const sixDaysLater = dayjs().add(6, 'day').format('YYYY-MM-DD');
+    setSelectedDates({ checkIn: tomorrow, checkOut: sixDaysLater });
+  }, []);
+
   /* ----------------------- LOADING ----------------------- */
 
   if (loading || !listing) {
@@ -147,19 +153,74 @@ const DetailedPage: React.FC = () => {
         {listing.city}, {listing.country}
       </p>
 
-      {/* Images */}
-      <div className="mt-6">
-        <Swiper modules={[Navigation, Pagination]} pagination={{ clickable: true }}>
-          {listing.images.map((img, idx) => (
-            <SwiperSlide key={idx}>
+      {/* Images Grid - Airbnb Style */}
+      <div className="mt-6 relative">
+        <div className="grid grid-cols-4 gap-2 h-[420px] rounded-xl overflow-hidden">
+          {/* Main Large Image */}
+          <div className="col-span-2 row-span-2">
+            <img
+              src={listing.images[0]?.image}
+              alt={listing.images[0]?.name || 'Main'}
+              className="w-full h-full object-cover cursor-pointer hover:brightness-90 transition"
+              onClick={() => setOpenPhotoGallery(true)}
+            />
+          </div>
+
+          {/* Four Smaller Images */}
+          {listing.images.slice(1, 5).map((img, idx) => (
+            <div key={idx} className="col-span-1 row-span-1">
               <img
                 src={img.image}
                 alt={img.name}
-                className="w-full h-[420px] object-cover rounded-xl"
+                className="w-full h-full object-cover cursor-pointer hover:brightness-90 transition"
+                onClick={() => setOpenPhotoGallery(true)}
               />
-            </SwiperSlide>
+            </div>
           ))}
-        </Swiper>
+        </div>
+
+        {/* View All Photos Button */}
+        <button
+          onClick={() => setOpenPhotoGallery(true)}
+          className="absolute bottom-4 right-4 bg-white border border-gray-800 px-4 py-2 rounded-lg font-medium hover:bg-gray-50 transition cursor-pointer flex items-center gap-2"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          View all photos
+        </button>
+
+        {/* Photo Gallery Dialog */}
+        <Dialog.Root open={openPhotoGallery} onOpenChange={setOpenPhotoGallery}>
+          <Dialog.Portal>
+            <Dialog.Overlay className="fixed inset-0 bg-black/90 z-50" />
+            <Dialog.Content className="fixed inset-0 z-50 overflow-y-auto">
+              <div className="min-h-screen px-4 py-8">
+                <div className="max-w-5xl mx-auto">
+                  <div className="flex items-center justify-between mb-6">
+                    <Dialog.Title className="text-2xl font-semibold text-white">
+                      {listing.title}
+                    </Dialog.Title>
+                    <Dialog.Close className="text-white hover:text-gray-300 transition cursor-pointer">
+                      <Cross2Icon className="w-6 h-6" />
+                    </Dialog.Close>
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-4">
+                    {listing.images.map((img, idx) => (
+                      <img
+                        key={idx}
+                        src={img.image}
+                        alt={img.name}
+                        className="w-full rounded-lg"
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </Dialog.Content>
+          </Dialog.Portal>
+        </Dialog.Root>
       </div>
 
       {/* Main layout */}
@@ -185,7 +246,7 @@ const DetailedPage: React.FC = () => {
             </p>
           </div>
 
-          <div className="py-6 border-b">
+          <div id="amenities" className="py-6 border-b">
             <h2 className="text-xl font-semibold mb-4">
               Amenities
             </h2>
@@ -198,7 +259,7 @@ const DetailedPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="py-6 border-b">
+          <div id="location" className="py-6 border-b">
             <h2 className="text-xl font-semibold mb-4">
               Location
             </h2>
@@ -206,7 +267,7 @@ const DetailedPage: React.FC = () => {
           </div>
 
           {/* ---------------- REVIEWS ---------------- */}
-          <div className="py-10 border-t mt-10 relative">
+          <div id="reviews" className="py-10 border-t mt-10 relative">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-semibold">Reviews</h2>
               <button
@@ -307,7 +368,10 @@ const DetailedPage: React.FC = () => {
             </h2>
 
             <div className="mt-5 border rounded-lg overflow-hidden">
-              <DatePickerValue ref={datePickerRef} />
+              <DatePickerValue
+                ref={datePickerRef}
+                onChange={(dates) => setSelectedDates(dates)}
+              />
             </div>
 
             <div className="mt-5">
@@ -339,6 +403,22 @@ const DetailedPage: React.FC = () => {
               You won’t be charged yet
             </p>
           </div>
+          {/* Price Calculation */}
+          {selectedDates.checkIn && selectedDates.checkOut && (() => {
+            const { checkIn, checkOut } = selectedDates;
+            if (!checkIn || !checkOut) return null;
+            const nights = dayjs(checkOut).diff(dayjs(checkIn), 'day');
+            const pricePerNight = Number(listing.price_per_night);
+            const totalPrice = pricePerNight * nights;
+            return (
+              <div className="mt-4 pt-4 border-t space-y-2 text-sm">
+                <div className="flex justify-between"><span>Check-in:</span><span>{dayjs(checkIn).format('MMM D, YYYY')}</span></div>
+                <div className="flex justify-between"><span>Check-out:</span><span>{dayjs(checkOut).format('MMM D, YYYY')}</span></div>
+                <div className="flex justify-between pt-2 border-t"><span>${pricePerNight.toFixed(2)} × {nights} nights</span><span>${totalPrice.toFixed(2)}</span></div>
+                <div className="flex justify-between font-semibold pt-2 border-t"><span>Total</span><span>${totalPrice.toFixed(2)}</span></div>
+              </div>
+            );
+          })()}
         </div>
       </div>
     </div>

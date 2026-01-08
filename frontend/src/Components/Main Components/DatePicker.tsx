@@ -12,9 +12,10 @@ type DatePickerRef = {
 
 type DatePickerProps = {
   ref?: React.Ref<DatePickerRef>;
+  onChange?: (dates: { checkIn: string | null; checkOut: string | null }) => void;
 };
 
-const DatePickerValue = ({ ref }: DatePickerProps) => {
+const DatePickerValue = ({ ref, onChange }: DatePickerProps) => {
   const { filters } = useFilterContext();
 
   // Initialize dates from filter context if available, otherwise use defaults
@@ -65,7 +66,13 @@ const DatePickerValue = ({ ref }: DatePickerProps) => {
           <MUIDatePicker
             label="CHECK-IN"
             value={checkIn}
-            onChange={(newValue: Dayjs | null) => setCheckIn(newValue)}
+            onChange={(newValue: Dayjs | null) => {
+              setCheckIn(newValue);
+              onChange?.({
+                checkIn: newValue ? newValue.format("YYYY-MM-DD") : null,
+                checkOut: checkOut ? checkOut.format("YYYY-MM-DD") : null,
+              });
+            }}
             slotProps={{
               textField: {
                 variant: "standard",
@@ -100,7 +107,13 @@ const DatePickerValue = ({ ref }: DatePickerProps) => {
           <MUIDatePicker
             label="CHECKOUT"
             value={checkOut}
-            onChange={(newValue: Dayjs | null) => setCheckOut(newValue)}
+            onChange={(newValue: Dayjs | null) => {
+              setCheckOut(newValue);
+              onChange?.({
+                checkIn: checkIn ? checkIn.format("YYYY-MM-DD") : null,
+                checkOut: newValue ? newValue.format("YYYY-MM-DD") : null,
+              });
+            }}
             minDate={checkIn ?? undefined}
             slotProps={{
               textField: {

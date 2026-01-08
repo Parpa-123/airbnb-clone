@@ -6,6 +6,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 import { StarRating } from "./StarRating";
+import dayjs from "dayjs";
 
 /* --------------------------- TYPES --------------------------- */
 
@@ -63,7 +64,7 @@ const ReviewSlider: React.FC<ReviewSliderProps> = ({ reviews }) => {
                                 {r.user.username}
                             </span>
                             <span className="text-sm text-gray-400">
-                                {new Date(r.created_at).toLocaleDateString()}
+                                {dayjs(r.created_at).format('MMM D, YYYY')}
                             </span>
                         </div>
 

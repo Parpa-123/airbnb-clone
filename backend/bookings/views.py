@@ -46,7 +46,6 @@ class BookingListView(AuthAPIView, generics.ListAPIView):
     def get_queryset(self):
         return Bookings.objects.filter(
             guest=self.request.user,
-            status=Bookings.STATUS_CONFIRMED
         )
 
 

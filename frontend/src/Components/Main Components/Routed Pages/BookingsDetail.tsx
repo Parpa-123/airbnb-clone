@@ -4,6 +4,7 @@ import axiosInstance from "../../../../public/connect";
 import type { Booking } from "../../../types";
 import CancelBookingButton from "../Buttons/CancelBookingButton";
 import Loading from "../../Loading";
+import dayjs from "dayjs";
 
 const BookingDetails = () => {
     const { id } = useParams<{ id: string }>();
@@ -32,10 +33,7 @@ const BookingDetails = () => {
         return <div className="p-8 text-center">Booking not found</div>;
     }
 
-    const nights =
-        (new Date(booking.end_date).getTime() -
-            new Date(booking.start_date).getTime()) /
-        (1000 * 60 * 60 * 24);
+    const nights = dayjs(booking.end_date).diff(dayjs(booking.start_date), 'day');
 
     const totalPrice =
         Number(booking.listing.price_per_night) * nights;
@@ -72,8 +70,8 @@ const BookingDetails = () => {
             {/* Booking Info */}
             <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
                 {[
-                    { label: "Check-in", value: booking.start_date },
-                    { label: "Check-out", value: booking.end_date },
+                    { label: "Check-in", value: dayjs(booking.start_date).format('MMM D, YYYY') },
+                    { label: "Check-out", value: dayjs(booking.end_date).format('MMM D, YYYY') },
                     { label: "Duration", value: `${nights} nights` },
                     { label: "Guests", value: booking.listing.max_guests },
                 ].map((item) => (
@@ -123,6 +121,60 @@ const BookingDetails = () => {
                         buttonText="Cancel booking"
                         onSuccess={() => navigate('/bookings')}
                     />
+                </div>
+            </div>
+
+            {/* Detailed Price Calculation */}
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 shadow-sm border border-blue-100">
+                <h3 className="font-semibold text-lg mb-4 text-gray-900">Price Calculation Details</h3>
+
+                <div className="space-y-3">
+                    {/* Date Range */}
+                    <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Check-in Date:</span>
+                        <span className="font-medium text-gray-900">
+                            {dayjs(booking.start_date).format('MMMM D, YYYY')}
+                        </span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Check-out Date:</span>
+                        <span className="font-medium text-gray-900">
+                            {dayjs(booking.end_date).format('MMMM D, YYYY')}
+                        </span>
+                    </div>
+
+                    <div className="border-t border-blue-200 my-3"></div>
+
+                    {/* Calculation */}
+                    <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Number of Nights:</span>
+                        <span className="font-medium text-gray-900">{nights}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Price per Night:</span>
+                        <span className="font-medium text-gray-900">
+                            ${Number(booking.listing.price_per_night).toFixed(2)}
+                        </span>
+                    </div>
+
+                    <div className="border-t border-blue-200 my-3"></div>
+
+                    {/* Formula */}
+                    <div className="bg-white/60 rounded-lg p-3 text-sm">
+                        <div className="text-gray-600 mb-1">Calculation:</div>
+                        <div className="font-mono text-indigo-700">
+                            ${Number(booking.listing.price_per_night).toFixed(2)} × {nights} nights = ${totalPrice.toFixed(2)}
+                        </div>
+                    </div>
+
+                    {/* Total */}
+                    <div className="border-t border-blue-200 my-3"></div>
+                    <div className="flex justify-between items-center">
+                        <span className="font-semibold text-lg text-gray-900">Total Amount:</span>
+                        <span className="font-bold text-2xl text-indigo-600">
+                            ${totalPrice.toFixed(2)}
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
