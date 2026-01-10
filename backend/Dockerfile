@@ -25,7 +25,6 @@ COPY . /app
 
 ENV DJANGO_SETTINGS_MODULE=conf.deployment_settings
 
-RUN python manage.py collectstatic --noinput
 
 COPY build.sh /build.sh
 RUN chmod +x /build.sh
