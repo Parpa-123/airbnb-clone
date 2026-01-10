@@ -386,7 +386,7 @@ const DetailedPage: React.FC = () => {
                       checkOut:
                         datePickerRef.current?.getDates()?.checkOut,
                     });
-                  } catch (err: any) {
+                  } catch (err: unknown) {
                     showError(MESSAGES.BOOKING.BOOKING_FAILED);
                   } finally {
                     setBookingLoading(false);

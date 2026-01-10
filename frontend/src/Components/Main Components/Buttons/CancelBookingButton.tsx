@@ -30,7 +30,7 @@ const CancelBookingButton: React.FC<CancelBookingButtonProps> = ({
             if (onSuccess) {
                 onSuccess()
             }
-        } catch (error: any) {
+        } catch (error: unknown) {
             showError(extractErrorMessage(error, "Failed to cancel booking"))
         } finally {
             setLoading(false)

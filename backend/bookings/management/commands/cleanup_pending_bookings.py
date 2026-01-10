@@ -1,12 +1,3 @@
-"""
-Django management command to cleanup abandoned pending bookings.
-
-Usage:
-    python manage.py cleanup_pending_bookings
-
-This command auto-cancels pending bookings that are older than 30 minutes.
-Should be run periodically via cron job or task scheduler.
-"""
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 from datetime import timedelta
@@ -14,39 +5,27 @@ from bookings.models import Bookings
 
 
 class Command(BaseCommand):
-    help = "Cancel pending bookings older than 30 minutes"
-
-    def add_arguments(self, parser):
-        parser.add_argument(
-            '--minutes',
-            type=int,
-            default=30,
-            help='Age threshold in minutes (default: 30)',
-        )
+    help = 'Cancel pending bookings older than 2 minutes'
 
     def handle(self, *args, **options):
-        threshold_minutes = options['minutes']
-        cutoff_time = timezone.now() - timedelta(minutes=threshold_minutes)
+        # Calculate cutoff time (2 minutes ago)
+        cutoff_time = timezone.now() - timedelta(minutes=2)
         
-        # Find pending bookings older than threshold
-        old_pending_bookings = Bookings.objects.filter(
+        # Find pending bookings older than cutoff
+        pending_bookings = Bookings.objects.filter(
             status=Bookings.STATUS_PENDING,
             created_at__lt=cutoff_time
         )
         
-        count = old_pending_bookings.count()
+        count = pending_bookings.count()
         
-        if count == 0:
+        if count > 0:
+            # Update status to cancelled
+            pending_bookings.update(status=Bookings.STATUS_CANCELLED)
             self.stdout.write(
-                self.style.SUCCESS(f'No pending bookings older than {threshold_minutes} minutes')
+                self.style.SUCCESS(f'Successfully cancelled {count} pending booking(s)')
             )
-            return
-        
-        # Update status to cancelled
-        old_pending_bookings.update(status=Bookings.STATUS_CANCELLED)
-        
-        self.stdout.write(
-            self.style.SUCCESS(
-                f'Successfully cancelled {count} abandoned booking(s) older than {threshold_minutes} minutes'
+        else:
+            self.stdout.write(
+                self.style.SUCCESS('No pending bookings to cancel')
             )
-        )

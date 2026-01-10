@@ -75,7 +75,7 @@ export const reserveAndPay = async ({
 
         // ❗ Payment confirmation happens via webhook
         // User will be redirected back after payment
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Payment error:", error);
         console.error("Error response:", error.response?.data);
         throw error;

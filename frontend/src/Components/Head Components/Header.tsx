@@ -21,6 +21,7 @@ import { resetForm } from "../../../public/redux/slice/slice";
 import MultiStepController from "../Multiform Components/MultiStepController";
 import { useAuth } from "./hooks/useAuth";
 import { useFilterContext } from "../../services/filterContext";
+import type { ListingFilters } from "../../services/filterContext";
 import SignupDialog from "./components/dialogs/SignupDialog";
 import ReusableDialog from "./components/ui/ReusableDialog";
 import { useNavigate, Link } from "react-router-dom";
@@ -47,6 +48,7 @@ const Header: React.FC = () => {
   const [hostingOpen, setHostingOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [resetPasswordOpen, setResetPasswordOpen] = useState(false);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
 
   const [checkIn, setCheckIn] = useState<Dayjs | null>(null);
   const [checkOut, setCheckOut] = useState<Dayjs | null>(null);
@@ -60,6 +62,18 @@ const Header: React.FC = () => {
   useEffect(() => {
     if (!hostingOpen) dispatch(resetForm());
   }, [hostingOpen, dispatch]);
+
+  // Close mobile search dialog when resizing to desktop (1024px breakpoint)
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024 && mobileSearchOpen) {
+        setMobileSearchOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [mobileSearchOpen]);
 
   const confirmLogout = () => {
     logout();
@@ -188,7 +202,7 @@ const Header: React.FC = () => {
             {/* Mobile Search Button - Shows on mobile, hidden on smd+ */}
             {!shouldHideSearch && (
               <div className="flex smd:hidden flex-1 justify-center">
-                <Dialog.Root>
+                <Dialog.Root open={mobileSearchOpen} onOpenChange={setMobileSearchOpen}>
                   <Dialog.Trigger asChild>
                     <button className="flex items-center gap-3 w-full max-w-sm px-4 py-2.5 border border-gray-300 rounded-full shadow-sm hover:shadow-md transition-shadow cursor-pointer">
                       <svg
@@ -229,8 +243,8 @@ const Header: React.FC = () => {
                             placeholder="Country"
                             className="w-full border border-gray-300 px-4 py-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#FF385C] transition"
                             onChange={(e) =>
-                              setFilters((p: any) => ({
-                                ...p,
+                              setFilters((prev: ListingFilters) => ({
+                                ...prev,
                                 country: e.target.value || undefined,
                               }))
                             }
@@ -239,8 +253,8 @@ const Header: React.FC = () => {
                             placeholder="City"
                             className="w-full border border-gray-300 px-4 py-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#FF385C] transition mt-2"
                             onChange={(e) =>
-                              setFilters((p: any) => ({
-                                ...p,
+                              setFilters((prev: ListingFilters) => ({
+                                ...prev,
                                 city: e.target.value || undefined,
                               }))
                             }
@@ -261,8 +275,8 @@ const Header: React.FC = () => {
                                     return;
                                   }
                                   setCheckIn(date);
-                                  setFilters((p: any) => ({
-                                    ...p,
+                                  setFilters((prev: ListingFilters) => ({
+                                    ...prev,
                                     check_in: date ? date.format("YYYY-MM-DD") : undefined,
                                   }));
                                 }}
@@ -286,8 +300,8 @@ const Header: React.FC = () => {
                                     return;
                                   }
                                   setCheckOut(date);
-                                  setFilters((p: any) => ({
-                                    ...p,
+                                  setFilters((prev: ListingFilters) => ({
+                                    ...prev,
                                     check_out: date ? date.format("YYYY-MM-DD") : undefined,
                                   }));
                                 }}
@@ -313,8 +327,8 @@ const Header: React.FC = () => {
                             guests={guests}
                             onGuestsChange={(newGuests) => {
                               setGuests(newGuests);
-                              setFilters((p: any) => ({
-                                ...p,
+                              setFilters((prev: ListingFilters) => ({
+                                ...prev,
                                 max_guests__gte: newGuests.adults > 0 ? newGuests.adults : undefined,
                                 has_pets: newGuests.pets > 0 ? true : undefined,
                                 has_children: newGuests.children > 0 ? true : undefined,
@@ -398,8 +412,8 @@ const Header: React.FC = () => {
                           placeholder="Which Country"
                           className="w-full border border-gray-300 px-4 py-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#FF385C] transition"
                           onChange={(e) =>
-                            setFilters((p: any) => ({
-                              ...p,
+                            setFilters((prev: ListingFilters) => ({
+                              ...prev,
                               country: e.target.value || undefined,
                             }))
                           }
@@ -409,8 +423,8 @@ const Header: React.FC = () => {
                           placeholder="City"
                           className="w-full border border-gray-300 px-4 py-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#FF385C] transition"
                           onChange={(e) =>
-                            setFilters((p: any) => ({
-                              ...p,
+                            setFilters((prev: ListingFilters) => ({
+                              ...prev,
                               city: e.target.value || undefined,
                             }))
                           }
@@ -436,8 +450,8 @@ const Header: React.FC = () => {
                           return;
                         }
                         setCheckIn(date);
-                        setFilters((p: any) => ({
-                          ...p,
+                        setFilters((prev: ListingFilters) => ({
+                          ...prev,
                           check_in: date ? date.format("YYYY-MM-DD") : undefined,
                         }));
                       }}
@@ -514,8 +528,8 @@ const Header: React.FC = () => {
                           return;
                         }
                         setCheckOut(date);
-                        setFilters((p: any) => ({
-                          ...p,
+                        setFilters((prev: ListingFilters) => ({
+                          ...prev,
                           check_out: date ? date.format("YYYY-MM-DD") : undefined,
                         }));
                       }}
@@ -589,8 +603,8 @@ const Header: React.FC = () => {
                   onGuestsChange={(newGuests) => {
                     setGuests(newGuests);
 
-                    setFilters((p: any) => ({
-                      ...p,
+                    setFilters((prev: ListingFilters) => ({
+                      ...prev,
                       max_guests__gte: newGuests.adults > 0 ? newGuests.adults : undefined,
                       has_pets: newGuests.pets > 0 ? true : undefined,
                       has_children: newGuests.children > 0 ? true : undefined,

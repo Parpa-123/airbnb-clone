@@ -1,7 +1,5 @@
 FROM python:3.12-alpine
 
-LABEL maintainer="paritosh2004.singh@gmail.com"
-
 ENV PYTHONUNBUFFERED=1 \
     PATH="/py/bin:$PATH"
 
@@ -25,6 +23,13 @@ RUN python -m venv /py && \
 
 COPY ./app /app
 
+RUN python manage.py collectstatic --noinput
+
+COPY build.sh /build.sh
+RUN chmod +x /build.sh
+
 EXPOSE 8000
 
 USER django-user
+
+ENTRYPOINT ["./build.sh"]

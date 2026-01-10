@@ -46,6 +46,9 @@ class BookingListView(AuthAPIView, generics.ListAPIView):
     def get_queryset(self):
         return Bookings.objects.filter(
             guest=self.request.user,
+            status__in=[
+                Bookings.STATUS_CONFIRMED,
+            ]
         )
 
 
@@ -111,7 +114,7 @@ class CreateCashfreeOrderView(AuthAPIView, APIView):
                 "customer_phone": str(request.user.phone.national_number),
             },
             order_meta={
-                "return_url": f"http://localhost:5173/bookings/?order_id={order_id}"
+                "return_url": f"http://localhost:5173/bookings/overview"
             },
         )
 

@@ -30,7 +30,7 @@ export function useAuth() {
       setUser(profile);
       showSuccess(MESSAGES.AUTH.LOGIN_SUCCESS);
       return profile;
-    } catch (err: any) {
+    } catch (err: unknown) {
       showError(extractErrorMessage(err, "Login failed"));
       throw err;
     } finally {
@@ -45,7 +45,7 @@ export function useAuth() {
       setUser(profile);
       showSuccess(MESSAGES.AUTH.SIGNUP_SUCCESS);
       return profile;
-    } catch (err: any) {
+    } catch (err: unknown) {
       showError(extractErrorMessage(err, "Signup failed"));
       throw err;
     } finally {

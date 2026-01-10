@@ -69,7 +69,7 @@ const PublicListings: React.FC = () => {
 
         const res = await axiosInstance.get<Listing[]>(url);
         setListings(res.data);
-      } catch (err: any) {
+      } catch (err: unknown) {
         showError(extractErrorMessage(err, "Failed to load listings"));
         setError(extractErrorMessage(err, "Failed to load listings"));
       } finally {

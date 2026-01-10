@@ -83,7 +83,7 @@ const AuthView = () => {
       setDets(res.data);
       form.setFieldValue("avatar", null);
       showSuccess(MESSAGES.AUTH.PROFILE_UPDATED);
-    } catch (error: any) {
+    } catch (error: unknown) {
       showError(extractErrorMessage(error, "Failed to update profile!"));
       console.error("Profile update error:", error?.response?.data);
     } finally {

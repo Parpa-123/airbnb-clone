@@ -20,7 +20,7 @@ const Wishlist: React.FC = () => {
       try {
         const res = await axiosInstance.get("/wishlist/");
         setWishlists(res.data);
-      } catch (err: any) {
+      } catch (err: unknown) {
         showError(extractErrorMessage(err, "Failed to load wishlists"));
       }
     })();
@@ -36,7 +36,7 @@ const Wishlist: React.FC = () => {
       setWishlists((prev) => [...prev, res.data]);
       showSuccess(MESSAGES.WISHLIST.CREATE_SUCCESS(wishlistName));
       setWishlistName("");
-    } catch (err: any) {
+    } catch (err: unknown) {
       showError(extractErrorMessage(err, "Failed to create wishlist"));
     }
   };
@@ -46,7 +46,7 @@ const Wishlist: React.FC = () => {
       await axiosInstance.delete(`/wishlist/${slug}/`);
       setWishlists((prev) => prev.filter((item) => item.slug !== slug));
       showSuccess(MESSAGES.WISHLIST.DELETE_SUCCESS);
-    } catch (err: any) {
+    } catch (err: unknown) {
       showError(extractErrorMessage(err, "Failed to delete wishlist"));
     }
   };

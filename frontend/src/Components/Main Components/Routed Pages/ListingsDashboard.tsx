@@ -15,7 +15,7 @@ const ListingsDashboard: React.FC = () => {
       try {
         const res = await axiosInstance.get("/listings/private/");
         setListings(res.data);
-      } catch (error: any) {
+      } catch (error: unknown) {
         showError(MESSAGES.LISTING.FETCH_FAILED);
       } finally {
         setLoading(false);

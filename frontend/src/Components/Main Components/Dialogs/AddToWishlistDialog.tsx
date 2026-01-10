@@ -65,7 +65,7 @@ const AddToWishlistDialog: React.FC<AddToWishlistDialogProps> = ({
             showSuccess(MESSAGES.WISHLIST.ADD_SUCCESS);
             onOpenChange(false);
             setSelectedWishlists([]);
-        } catch (err: any) {
+        } catch (err: unknown) {
             showError(extractErrorMessage(err, "Failed to add to wishlist"));
         }
     };
