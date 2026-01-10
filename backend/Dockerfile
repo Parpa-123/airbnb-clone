@@ -29,6 +29,10 @@ ENV DJANGO_SETTINGS_MODULE=conf.deployment_settings
 COPY build.sh /app/build.sh
 RUN chmod +x /app/build.sh
 
+# Create static and media directories with proper permissions
+RUN mkdir -p /app/static /app/media && \
+    chown -R django-user:django-user /app/static /app/media
+
 EXPOSE 8000
 
 USER django-user
