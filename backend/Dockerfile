@@ -21,7 +21,7 @@ RUN python -m venv /py && \
     rm -rf /tmp && \
     adduser --disabled-password --no-create-home django-user
 
-COPY ./app /app
+COPY . /app
 
 RUN python manage.py collectstatic --noinput
 
