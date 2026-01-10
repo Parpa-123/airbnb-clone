@@ -26,8 +26,8 @@ COPY . /app
 ENV DJANGO_SETTINGS_MODULE=conf.deployment_settings
 
 
-COPY build.sh /build.sh
-RUN chmod +x /build.sh
+COPY build.sh /app/build.sh
+RUN chmod +x /app/build.sh
 
 EXPOSE 8000
 
