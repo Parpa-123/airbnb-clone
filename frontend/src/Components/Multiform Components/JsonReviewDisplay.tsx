@@ -1,3 +1,6 @@
+import React from "react";
+import { FaMapMarkerAlt, FaHome, FaUsers, FaBed, FaBath, FaPaw, FaChild, FaBaby, FaCheck, FaDollarSign } from "react-icons/fa";
+
 interface JsonReviewDisplayProps {
     data: any;
     title?: string;
@@ -15,18 +18,105 @@ const JsonReviewDisplay = ({
     submitLabel = "Submit ✓",
     backLabel = "← Back"
 }: JsonReviewDisplayProps) => {
+
+    const {
+        title: propTitle,
+        description,
+        country,
+        city,
+        address,
+        property_type,
+        max_guests,
+        bhk_choice,
+        bed_choice,
+        bathrooms,
+        price_per_night,
+        allows_children,
+        allows_infants,
+        allows_pets,
+        amenities = [],
+        images = []
+    } = data;
+
     return (
-        <div className="max-w-3xl mx-auto p-8 bg-linear-to-br from-white to-gray-50 
-            border border-gray-100 rounded-2xl shadow-2xl space-y-6">
-            <h2 className="text-3xl font-bold bg-linear-to-r from-gray-900 to-gray-600 
-                bg-clip-text text-transparent">{title}</h2>
+        <div className="max-w-4xl mx-auto p-4 sm:p-8 space-y-8">
+            <h2 className="text-3xl font-bold text-gray-900">{title}</h2>
 
-            <pre className="bg-linear-to-br from-gray-50 to-gray-100 p-6 rounded-xl 
-                border-2 border-gray-200 shadow-inner text-sm overflow-auto max-h-96 
-                custom-scrollbar">
-                {JSON.stringify(data, null, 2)}
-            </pre>
+            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+                {/* Images Preview */}
+                {images.length > 0 && (
+                    <div className="h-64 sm:h-80 w-full bg-gray-100 relative overflow-hidden group">
+                        <img
+                            src={URL.createObjectURL(images[0].image)}
+                            alt="Main preview"
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                        <div className="absolute bottom-4 right-4 bg-black/70 text-white px-3 py-1 rounded-full text-sm font-medium">
+                            +{images.length - 1} more photos
+                        </div>
+                    </div>
+                )}
 
+                <div className="p-6 sm:p-8 space-y-8">
+                    {/* Header Section */}
+                    <div className="flex flex-col sm:flex-row justify-between items-start gap-4 border-b border-gray-100 pb-6">
+                        <div>
+                            <div className="flex items-center gap-2 text-rose-500 font-semibold text-sm uppercase tracking-wider mb-2">
+                                <FaHome /> {property_type}
+                            </div>
+                            <h3 className="text-2xl font-bold text-gray-900 mb-2">{propTitle}</h3>
+                            <div className="flex items-center text-gray-500">
+                                <FaMapMarkerAlt className="mr-2" />
+                                {address}, {city}, {country}
+                            </div>
+                        </div>
+                        <div className="text-right">
+                            <div className="text-3xl font-bold text-gray-900 flex items-center justify-end">
+                                <FaDollarSign className="text-xl text-gray-400" />{price_per_night}
+                            </div>
+                            <span className="text-gray-500 text-sm">per night</span>
+                        </div>
+                    </div>
+
+                    {/* Description */}
+                    <div className="prose prose-gray max-w-none text-gray-600 leading-relaxed">
+                        {description}
+                    </div>
+
+                    {/* Key Stats Grid */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 py-6 border-y border-gray-100">
+                        <StatItem icon={<FaUsers />} label="Guests" value={max_guests} />
+                        <StatItem icon={<FaHome />} label="Bedrooms" value={bhk_choice} />
+                        <StatItem icon={<FaBed />} label="Beds" value={bed_choice} />
+                        <StatItem icon={<FaBath />} label="Baths" value={bathrooms} />
+                    </div>
+
+                    {/* Policies & Amenities */}
+                    <div className="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 className="font-bold text-gray-900 mb-4 text-lg">Guest Policies</h4>
+                            <div className="space-y-3">
+                                <PolicyItem allowed={allows_children} label="Children allowed" icon={<FaChild />} />
+                                <PolicyItem allowed={allows_infants} label="Infants allowed" icon={<FaBaby />} />
+                                <PolicyItem allowed={allows_pets} label="Pets allowed" icon={<FaPaw />} />
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 className="font-bold text-gray-900 mb-4 text-lg">Amenities</h4>
+                            <div className="flex flex-wrap gap-2">
+                                {amenities.length > 0 ? amenities.map((am: string, i: number) => (
+                                    <span key={i} className="px-3 py-1 bg-gray-50 text-gray-600 rounded-full text-sm border border-gray-200 flex items-center gap-2">
+                                        <FaCheck className="text-green-500 text-xs" /> {am}
+                                    </span>
+                                )) : <span className="text-gray-400 italic">No amenities selected</span>}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Action Buttons */}
             <div className="flex justify-between gap-4 pt-4">
                 <button
                     onClick={onBack}
@@ -50,5 +140,22 @@ const JsonReviewDisplay = ({
         </div>
     );
 };
+
+// Helper Components
+const StatItem = ({ icon, label, value }: { icon: any, label: string, value: any }) => (
+    <div className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl text-center">
+        <div className="text-2xl text-rose-500 mb-2">{icon}</div>
+        <div className="font-bold text-gray-900 text-lg">{value}</div>
+        <div className="text-xs text-gray-500 uppercase tracking-wide">{label}</div>
+    </div>
+);
+
+const PolicyItem = ({ allowed, label, icon }: { allowed: any, label: string, icon: any }) => (
+    <div className={`flex items-center gap-3 p-3 rounded-lg border ${allowed ? 'bg-green-50 border-green-100' : 'bg-red-50 border-red-100'}`}>
+        <div className={`${allowed ? 'text-green-600' : 'text-red-500'}`}>{icon}</div>
+        <span className={`flex-1 font-medium ${allowed ? 'text-green-800' : 'text-red-800'}`}>{label}</span>
+        {allowed ? <FaCheck className="text-green-600" /> : <div className="text-red-500 text-sm font-bold">✕</div>}
+    </div>
+);
 
 export default JsonReviewDisplay;
