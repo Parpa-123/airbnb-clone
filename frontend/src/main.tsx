@@ -11,15 +11,19 @@ import '@mantine/core/styles.css';
 
 import './leafletIcons';
 
+const isDev = import.meta.env.MODE === 'development';
+
+const AppWrapper = isDev ? React.StrictMode : React.Fragment;
+
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <React.StrictMode>
+  <AppWrapper>
     <Provider store={store}>
       <MantineProvider
-        
+
       >
         <App />
       </MantineProvider>
     </Provider>
-  </React.StrictMode>
+  </AppWrapper>
 );
 
