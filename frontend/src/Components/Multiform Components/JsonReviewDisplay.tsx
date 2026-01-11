@@ -1,4 +1,4 @@
-import React from "react";
+
 import { FaMapMarkerAlt, FaHome, FaUsers, FaBed, FaBath, FaPaw, FaChild, FaBaby, FaCheck, FaDollarSign } from "react-icons/fa";
 
 interface JsonReviewDisplayProps {
