@@ -107,10 +107,12 @@ class ListingModelTest(TestCase):
             price_per_night=59.99
         )
 
+        # CloudinaryField accepts string paths for testing
+        # In production, it would be a file upload, but in tests we can use a path
         listing_image = ListingImages.objects.create(
             listings=listing,
             name="Sample Listing Image",
-            image="test_image.jpg"
+            image="test_image.jpg"  # CloudinaryField accepts strings in tests
         )
 
         self.assertEqual(str(listing_image),listing_image.name)

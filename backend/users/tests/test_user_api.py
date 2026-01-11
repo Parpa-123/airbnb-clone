@@ -137,6 +137,7 @@ class PrivateUserApiTests(TestCase):
         self.assertEqual(res.data['username'], self.testUser.username)
         self.assertEqual(res.data['email'], self.testUser.email)
         self.assertIn('phone', res.data)
+        # Avatar field exists even if None - CloudinaryField is serialized via SerializerMethodField
         self.assertIn('avatar', res.data)
         self.assertNotIn('password', res.data)
 

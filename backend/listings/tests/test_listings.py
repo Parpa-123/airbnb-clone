@@ -38,7 +38,6 @@ def create_estate(user, params={}):
         "allows_children": True,
         "allows_infants": True,
         "allows_pets": True,
-        "pet_fee": Decimal("10.00"),
     }
 
     default.update(params)
@@ -70,6 +69,8 @@ class PublicListingsTest(TestCase):
         # Use title_slug instead of id since the URL expects a slug
         res = self.client.get(detailed_list_url(property_dets.title_slug))
 
+        # Note: CloudinaryField URLs are serialized via SerializerMethodField
+        # The serializer will return proper URLs even if no actual images exist in tests
         serialized_data = ListingDetailSerializer(property_dets).data
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(serialized_data, res.data)

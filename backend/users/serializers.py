@@ -22,15 +22,24 @@ class UserSerializer(serializers.ModelSerializer):
         return User.objects.create_user(**validated_data)
 
 class UserProfileSerializer(serializers.ModelSerializer):
+    avatar = serializers.SerializerMethodField(read_only=True)
+    
     class Meta:
         model = User
         fields = ['email', 'username', 'phone', 'avatar','password','is_host']
         read_only_fields = ['username','is_host']
         extra_kwargs = {
             'password' : {'write_only':True,'min_length':8},
-            'avatar' : {'required':False},
             'phone' : {'required':False},
         }
+    
+    def get_avatar(self, obj):
+        """Return the Cloudinary URL as a string"""
+        if obj.avatar:
+            # CloudinaryField returns a CloudinaryResource object
+            # .url gives us the full Cloudinary URL
+            return obj.avatar.url if hasattr(obj.avatar, 'url') else str(obj.avatar)
+        return None
 
     def validate_phone(self, value):
     

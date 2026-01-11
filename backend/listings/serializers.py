@@ -12,15 +12,35 @@ from users.models import User
 # ============================================================
 
 class HostSerializer(serializers.ModelSerializer):
+    avatar = serializers.SerializerMethodField()
+    
     class Meta:
         model = User
         fields = ["username", "avatar"]
+    
+    def get_avatar(self, obj):
+        """Return the Cloudinary URL as a string"""
+        if obj.avatar:
+            # CloudinaryField returns a CloudinaryResource object
+            # .url gives us the full Cloudinary URL
+            return obj.avatar.url if hasattr(obj.avatar, 'url') else str(obj.avatar)
+        return None
 
 
 class ListingImageSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+    
     class Meta:
         model = ListingImages
         fields = ["name", "image"]
+    
+    def get_image(self, obj):
+        """Return the Cloudinary URL as a string"""
+        if obj.image:
+            # CloudinaryField returns a CloudinaryResource object
+            # .url gives us the full Cloudinary URL
+            return obj.image.url if hasattr(obj.image, 'url') else str(obj.image)
+        return None
 
 
 
