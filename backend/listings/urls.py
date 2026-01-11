@@ -1,7 +1,5 @@
 from django.urls import path
 from .views import ListingView, ListingDetailView, PublicListingView, OptionsView, PrivateListingView, ListingEditView
-from django.conf import settings
-from django.conf.urls.static import static
 
 app_name = "listing"
 
@@ -12,4 +10,4 @@ urlpatterns = [
     path("choices/form-option/", OptionsView.as_view(), name="form-options"),
     path("<int:id>/edit/", ListingEditView.as_view(), name="property-edit"),
     path("<slug:title_slug>/", ListingDetailView.as_view(), name="property-details"),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
