@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { fetchListings } from "../services/listing.service";
+import { fetchListings } from "../services/listing_service";
 import { useFilterContext } from "../../../services/filterContext";
 
 export function useListings() {

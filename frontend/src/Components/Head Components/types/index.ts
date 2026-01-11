@@ -6,6 +6,7 @@ export interface LoginType {
 
 export interface SignupType extends LoginType {
   email: string;
+  phone: string;
 }
 
 export interface UserProfile {

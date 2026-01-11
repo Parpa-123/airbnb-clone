@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { showSuccess, showError, showInfo, extractErrorMessage, MESSAGES } from "../../../utils/toastMessages";
 import type { UserProfile, LoginType, SignupType } from "../types";
-import * as authService from "../services/auth.service";
+import * as authService from "../services/auth_service";
 
 export function useAuth() {
   const [user, setUser] = useState<UserProfile | null>(null);
@@ -41,10 +41,8 @@ export function useAuth() {
   const doSignup = useCallback(async (data: SignupType) => {
     setLoading(true);
     try {
-      const profile = await authService.signup(data);
-      setUser(profile);
-      showSuccess(MESSAGES.AUTH.SIGNUP_SUCCESS);
-      return profile;
+      await authService.signup(data);
+      showInfo(MESSAGES.AUTH.SIGNUP_SUCCESS);
     } catch (err: unknown) {
       showError(extractErrorMessage(err, "Signup failed"));
       throw err;

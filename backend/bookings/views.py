@@ -5,6 +5,8 @@ import base64
 import logging
 
 from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -142,6 +144,7 @@ class CreateCashfreeOrderView(AuthAPIView, APIView):
 
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class CashfreeWebhookView(APIView):
     authentication_classes = []
     permission_classes = []
@@ -236,3 +239,95 @@ class CashfreeWebhookView(APIView):
             return Response({"status": "ignored"}, status=200)
 
         return Response({"status": "ok"}, status=200)
+
+
+class VerifyPaymentView(AuthAPIView, APIView):
+    """
+    Manually verify payment status by fetching from Cashfree API.
+    Used as fallback when webhook delivery fails.
+    """
+    def post(self, request):
+        booking_id = request.data.get("booking_id")
+        
+        if not booking_id:
+            return Response({"error": "booking_id is required"}, status=400)
+        
+        try:
+            # Get the booking and associated payment
+            booking = Bookings.objects.get(
+                id=booking_id,
+                guest=request.user
+            )
+            
+            payment = Payment.objects.filter(booking=booking).first()
+            
+            if not payment:
+                return Response({"error": "Payment not found"}, status=404)
+            
+            # If already paid, return success
+            if payment.status == Payment.PAID:
+                return Response({
+                    "status": "paid",
+                    "booking_status": booking.status
+                })
+            
+            # Configure Cashfree
+            Cashfree.XClientId = settings.CASHFREE_APP_ID
+            Cashfree.XClientSecret = settings.CASHFREE_SECRET_KEY
+            Cashfree.XEnvironment = (
+                Cashfree.SANDBOX
+                if settings.CASHFREE_ENV == "TEST"
+                else Cashfree.PRODUCTION
+            )
+            
+            # Fetch order details from Cashfree
+            cashfree_client = Cashfree()
+            order_response = cashfree_client.PGFetchOrder(
+                "2025-01-01",
+                payment.order_id
+            )
+            
+            if not order_response or not order_response.data:
+                return Response({"error": "Failed to fetch order from Cashfree"}, status=500)
+            
+            order_status = order_response.data.order_status
+            
+            # Update payment and booking based on Cashfree status
+            if order_status in ("PAID", "ACTIVE"):
+                payment.status = Payment.PAID
+                payment.save(update_fields=["status"])
+                
+                booking.status = Bookings.STATUS_CONFIRMED
+                booking.save(update_fields=["status"])
+                logger.info(f"Payment manually verified and confirmed: {payment.order_id}")
+                
+                return Response({
+                    "status": "paid",
+                    "booking_status": booking.status
+                })
+            
+            elif order_status in ("EXPIRED", "TERMINATED"):
+                payment.status = Payment.FAILED
+                payment.save(update_fields=["status"])
+                
+                booking.status = Bookings.STATUS_FAILED
+                booking.save(update_fields=["status"])
+                
+                return Response({
+                    "status": "failed",
+                    "booking_status": booking.status
+                })
+            
+            else:
+                # Still pending or processing
+                return Response({
+                    "status": "pending",
+                    "booking_status": booking.status,
+                    "order_status": order_status
+                })
+                
+        except Bookings.DoesNotExist:
+            return Response({"error": "Booking not found"}, status=404)
+        except Exception as e:
+            logger.exception("Payment verification failed")
+            return Response({"error": str(e)}, status=500)

@@ -75,7 +75,7 @@ export const MESSAGES = {
     AUTH: {
         LOGIN_SUCCESS: "Logged in!",
         LOGOUT: "Logged out",
-        SIGNUP_SUCCESS: "Account created!",
+        SIGNUP_SUCCESS: "Account created successfully! You can now login.",
         PROFILE_UPDATED: "Profile updated!",
         PROFILE_LOAD_FAILED: "Failed to load profile",
     },

@@ -30,9 +30,7 @@ export async function login(data: LoginType): Promise<UserProfile> {
   return fetchProfile();
 }
 
-export async function signup(data: SignupType): Promise<UserProfile> {
-  // create user then get tokens & profile
+export async function signup(data: SignupType): Promise<void> {
+  // create user (no auto-login)
   await axiosInstance.post("/create/", data);
-  // reuse login/token flow
-  return login({ username: data.username, password: data.password });
 }

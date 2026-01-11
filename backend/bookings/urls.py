@@ -1,5 +1,14 @@
 from django.urls import path
-from .views import BookingCreateView, BookingListView, BookingDestroyView,CreateCashfreeOrderView,CashfreeWebhookView,BookingDetailView,BookingDetailRetrieveView
+from .views import (
+    BookingCreateView, 
+    BookingListView, 
+    BookingDestroyView,
+    CreateCashfreeOrderView,
+    CashfreeWebhookView,
+    BookingDetailView,
+    BookingDetailRetrieveView,
+    VerifyPaymentView
+)
 
 app_name = "bookings"
 
@@ -11,6 +20,7 @@ urlpatterns = [
     path("delete/<int:pk>/", BookingDestroyView.as_view(), name="booking-delete"),
     path("payments/create-order/", CreateCashfreeOrderView.as_view()),
     path("payments/webhook/", CashfreeWebhookView.as_view(), name="cashfree-webhook"),
+    path("payments/verify/", VerifyPaymentView.as_view(), name="verify-payment"),
     
     # Generic pattern last
     path('<int:pk>/', BookingDetailView.as_view(), name='booking-detail'),

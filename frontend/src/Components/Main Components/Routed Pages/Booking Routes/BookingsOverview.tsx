@@ -27,37 +27,66 @@ const BookingsOverview = () => {
 
         const bookingId = bookingIdMatch[1];
         let intervalId: number;
+        let attemptCount = 0;
+        const MAX_ATTEMPTS_BEFORE_VERIFY = 5; // Try 5 times (10 seconds) before using verify endpoint
 
         const checkPaymentStatus = async () => {
             try {
-                const res = await axiosInstance.get(`/bookings/${bookingId}/`);
-                const booking = res.data;
+                attemptCount++;
 
-                // Check if booking and status exist
-                if (!booking || !booking.status) {
-                    console.warn("Booking or status not found in response:", booking);
-                    return;
-                }
+                // After MAX_ATTEMPTS_BEFORE_VERIFY, use the verify endpoint as fallback
+                if (attemptCount > MAX_ATTEMPTS_BEFORE_VERIFY) {
+                    console.log("Webhook may have failed, using manual verification...");
+                    const verifyRes = await axiosInstance.post(`/bookings/payments/verify/`, {
+                        booking_id: bookingId
+                    });
 
-                const bookingStatus = booking.status.toUpperCase();
+                    const verifyStatus = verifyRes.data.status;
 
-                if (bookingStatus === "CONFIRMED") {
-                    clearInterval(intervalId);
-                    showSuccess(MESSAGES.BOOKING.PAYMENT_SUCCESS);
-                    refetch(); // Reload bookings after confirmation using RTK Query
-                    setSearchParams({});
-                }
+                    if (verifyStatus === "paid") {
+                        clearInterval(intervalId);
+                        showSuccess(MESSAGES.BOOKING.PAYMENT_SUCCESS);
+                        refetch();
+                        setSearchParams({});
+                        return;
+                    } else if (verifyStatus === "failed") {
+                        clearInterval(intervalId);
+                        showError(MESSAGES.BOOKING.PAYMENT_FAILED);
+                        setSearchParams({});
+                        return;
+                    }
+                    // If still pending, continue polling
+                } else {
+                    // Normal polling - check booking status (webhook should update it)
+                    const res = await axiosInstance.get(`/bookings/${bookingId}/`);
+                    const booking = res.data;
 
-                if (bookingStatus === "FAILED") {
-                    clearInterval(intervalId);
-                    showError(MESSAGES.BOOKING.PAYMENT_FAILED);
-                    setSearchParams({});
-                }
+                    // Check if booking and status exist
+                    if (!booking || !booking.status) {
+                        console.warn("Booking or status not found in response:", booking);
+                        return;
+                    }
 
-                if (bookingStatus === "CANCELLED") {
-                    clearInterval(intervalId);
-                    showWarning("Payment was cancelled.");
-                    setSearchParams({});
+                    const bookingStatus = booking.status.toUpperCase();
+
+                    if (bookingStatus === "CONFIRMED") {
+                        clearInterval(intervalId);
+                        showSuccess(MESSAGES.BOOKING.PAYMENT_SUCCESS);
+                        refetch(); // Reload bookings after confirmation using RTK Query
+                        setSearchParams({});
+                    }
+
+                    if (bookingStatus === "FAILED") {
+                        clearInterval(intervalId);
+                        showError(MESSAGES.BOOKING.PAYMENT_FAILED);
+                        setSearchParams({});
+                    }
+
+                    if (bookingStatus === "CANCELLED") {
+                        clearInterval(intervalId);
+                        showWarning("Payment was cancelled.");
+                        setSearchParams({});
+                    }
                 }
             } catch (err: any) {
                 console.error("Payment status check error:", err);
