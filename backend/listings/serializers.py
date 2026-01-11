@@ -319,9 +319,30 @@ class CreateUpdateListSerializer(serializers.ModelSerializer):
         # Delete specified images
         if delete_images:
             for image_url in delete_images:
-                if '/media/' in image_url:
+                # Extract the image identifier from the URL
+                # For Cloudinary: extract public_id from URL
+                # For local media: extract path from /media/
+                
+                if 'cloudinary.com' in image_url:
+                    # Cloudinary URL - extract public_id from the URL
+                    # Example: https://res.cloudinary.com/.../upload/v123/listings/abc123.jpg
+                    # We'll match by the full URL or try to find by name
+                    try:
+                        # Try to find by matching the URL
+                        instance.listingimages.filter(image__icontains=image_url.split('/')[-1].split('.')[0]).delete()
+                    except:
+                        pass
+                elif '/media/' in image_url:
+                    # Local file storage
                     image_path = image_url.split('/media/')[-1]
                     instance.listingimages.filter(image=image_path).delete()
+                else:
+                    # Try to delete by image name matching
+                    try:
+                        filename = image_url.split('/')[-1]
+                        instance.listingimages.filter(name__icontains=filename).delete()
+                    except:
+                        pass
 
         # Append new images (don't delete existing ones)
         if images_data is not None:
