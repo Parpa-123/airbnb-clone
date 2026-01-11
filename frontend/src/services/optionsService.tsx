@@ -33,8 +33,8 @@ const useOptionsService = () => {
             setLoading(false);
             return response.data;
 
-        } catch (err: unknown) {
-            toast.info(err)
+        } catch (err: any) {
+            toast.info(String(err));
             throw err;
         }
     };

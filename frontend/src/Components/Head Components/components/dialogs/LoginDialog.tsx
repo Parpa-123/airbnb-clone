@@ -24,7 +24,7 @@ const LoginDialog: React.FC<Props> = ({ open, setOpen }) => {
   };
 
   return (
-    <ReusableDialog open={open} setOpen={setOpen}>
+    <ReusableDialog open={open} onOpenChange={setOpen}>
       <div>
         <h3 className="text-lg font-semibold mb-3">Log In</h3>
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>

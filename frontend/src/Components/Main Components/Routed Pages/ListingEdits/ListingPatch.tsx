@@ -4,7 +4,7 @@ import axiosInstance from "../../../../../public/connect";
 import { showSuccess, showError, MESSAGES } from "../../../../utils/toastMessages";
 import { EditableSection, ListingImagesComponents } from "./Components";
 import useOptionsService from "../../../../services/optionsService";
-import type { ListingEditData, ListingUpdatePayload } from "./types";
+import type { ListingEditData } from "./types";
 
 const ListingEditPage = () => {
     const { id } = useParams<{ id: string }>();
@@ -111,7 +111,7 @@ const ListingEditPage = () => {
                         listing={listing}
                         onPatch={onPatch}
                     >
-                        {(register, watch) => (
+                        {(register) => (
                             <>
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">Title</label>
@@ -149,7 +149,7 @@ const ListingEditPage = () => {
                         listing={listing}
                         onPatch={onPatch}
                     >
-                        {(register, watch) => (
+                        {(register) => (
                             <>
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">Max guests</label>
@@ -220,7 +220,7 @@ const ListingEditPage = () => {
                         listing={listing}
                         onPatch={onPatch}
                     >
-                        {(register, watch) => (
+                        {(register) => (
                             <>
                                 <div className="md:col-span-2 space-y-4">
                                     <label className="flex items-center gap-3 p-3 border border-gray-300 rounded-lg hover:border-[#FF385C] hover:bg-gray-50 transition-all cursor-pointer">
@@ -260,7 +260,7 @@ const ListingEditPage = () => {
                         listing={listing}
                         onPatch={onPatch}
                     >
-                        {(register, watch) => (
+                        {(register) => (
                             <>
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">Country</label>
@@ -295,7 +295,7 @@ const ListingEditPage = () => {
                         listing={listing}
                         onPatch={onPatch}
                     >
-                        {(register, watch) => (
+                        {(register) => (
                             <div className="md:col-span-2">
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Price Per Night ($)</label>
                                 <input
@@ -313,7 +313,7 @@ const ListingEditPage = () => {
                         listing={listing}
                         onPatch={onPatch}
                     >
-                        {(register, watch) => (
+                        {(register) => (
                             <div className="md:col-span-2">
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
                                 <textarea
@@ -331,7 +331,7 @@ const ListingEditPage = () => {
                         listing={listing}
                         onPatch={onPatch}
                     >
-                        {(register, watch) => (
+                        {(register) => (
                             <div className="md:col-span-2">
                                 <label className="block text-sm font-medium text-gray-700 mb-3">Amenities</label>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">

@@ -70,7 +70,7 @@ const MultiStepController = () => {
                 },
             });
             showSuccess(MESSAGES.LISTING.CREATE_SUCCESS);
-        } catch (error: unknown) {
+        } catch (error: any) {
             console.error("=== Listing Creation Error ===");
             console.error("Full error:", error);
             console.error("Response data:", error?.response?.data);

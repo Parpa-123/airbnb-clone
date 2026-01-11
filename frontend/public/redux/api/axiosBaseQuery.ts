@@ -1,4 +1,4 @@
-import axios, { type AxiosInstance } from "axios";
+import { type AxiosInstance } from "axios";
 
 export const axiosBaseQuery = ({ axiosInstance }: { axiosInstance: AxiosInstance }) =>
     async ({ url, method, data, params }: { url: string; method: string; data?: any; params?: any }) => {

@@ -59,7 +59,7 @@ const BookingsOverview = () => {
                     showWarning("Payment was cancelled.");
                     setSearchParams({});
                 }
-            } catch (err: unknown) {
+            } catch (err: any) {
                 console.error("Payment status check error:", err);
                 console.error("Error response:", err.response?.data);
                 clearInterval(intervalId);

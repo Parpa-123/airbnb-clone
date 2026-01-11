@@ -1,16 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axiosInstance from "../../../../public/connect";
 
 const BookingStatus = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [status, setStatus] = useState("pending");
 
   useEffect(() => {
     const interval = setInterval(async () => {
       const res = await axiosInstance.get(`/bookings/${id}/`);
-      setStatus(res.data.status);
 
       if (res.data.status === "confirmed") {
         clearInterval(interval);
