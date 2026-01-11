@@ -6,6 +6,11 @@ from .settings import BASE_DIR
 ALLOWED_HOSTS = [os.environ.get('RENDER_EXTERNAL_HOSTNAME')] if os.environ.get('RENDER_EXTERNAL_HOSTNAME') else []
 CSRF_TRUSTED_ORIGINS = [f"https://{os.environ.get('RENDER_EXTERNAL_HOSTNAME')}"] if os.environ.get('RENDER_EXTERNAL_HOSTNAME') else []
 
+# CORS settings for frontend
+CORS_ALLOWED_ORIGINS = [
+    "https://airbnb-clone-2-ogpo.onrender.com",
+]
+
 DEBUG = False
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
