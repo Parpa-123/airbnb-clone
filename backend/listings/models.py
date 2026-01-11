@@ -6,6 +6,7 @@ from django.db.models import Q
 from users.base_models import TimeStampedModel
 from django.utils import timezone
 from .queryset import ListingsQuerySet
+from cloudinary.models import CloudinaryField
 
 
 
@@ -157,7 +158,7 @@ class ListingImages(TimeStampedModel):
         related_name='listingimages'
     )
     name = models.CharField(max_length=100)
-    image = models.ImageField(upload_to='listings/', blank=True, null=True)
+    image = CloudinaryField('image', blank=True, null=True)
 
     class Meta:
         verbose_name_plural = "Listing Images"

@@ -171,8 +171,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 PHONENUMBER_DEFAULT_REGION = "IN"
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'listings')
-MEDIA_URL = '/listings/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 
 CASHFREE_APP_ID = os.getenv("CASHFREE_APP_ID")
 CASHFREE_SECRET_KEY = os.getenv("CASHFREE_SECRET_KEY")
