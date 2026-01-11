@@ -179,3 +179,7 @@ CASHFREE_SECRET_KEY = os.getenv("CASHFREE_SECRET_KEY")
 CASHFREE_ENV = os.getenv("CASHFREE_ENV", "TEST")  # Default to TEST if not set
 CASHFREE_BASE_URL = os.getenv("CASHFREE_BASE_URL")
 
+# Frontend URL for redirects
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
+
+

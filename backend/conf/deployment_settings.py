@@ -14,6 +14,10 @@ CORS_ALLOWED_ORIGINS = [
 DEBUG = False
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
+# Frontend URL for Cashfree redirects
+FRONTEND_URL = os.environ.get('FRONTEND_URL', 'https://airbnb-clone-2-ogpo.onrender.com')
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

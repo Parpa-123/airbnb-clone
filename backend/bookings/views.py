@@ -114,7 +114,7 @@ class CreateCashfreeOrderView(AuthAPIView, APIView):
                 "customer_phone": str(request.user.phone.national_number),
             },
             order_meta={
-                "return_url": f"http://localhost:5173/bookings/overview"
+                "return_url": f"{settings.FRONTEND_URL}/bookings/overview"
             },
         )
 
