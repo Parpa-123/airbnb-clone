@@ -126,5 +126,14 @@ class ListingEditView(BaseAuthenticatedView, generics.RetrieveUpdateAPIView):
     """Update a specific listing for the authenticated user"""
     serializer_class = CreateUpdateListSerializer
     
+
     def get_object(self):
         return Listings.objects.get(id=self.kwargs["id"])
+
+
+class ListingDeleteView(BaseAuthenticatedView, generics.DestroyAPIView):
+    """Delete a specific listing for the authenticated user"""
+    serializer_class = ListingSerializer
+    
+    def get_queryset(self):
+        return Listings.objects.filter(host=self.request.user)
