@@ -62,3 +62,8 @@ CLOUDINARY_STORAGE = {
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
+CASHFREE_APP_ID = os.environ.get("CASHFREE_APP_ID")
+CASHFREE_SECRET_KEY = os.environ.get("CASHFREE_SECRET_KEY")
+CASHFREE_ENV = os.environ.get("CASHFREE_ENV", "TEST")
+CASHFREE_BASE_URL = os.environ.get("CASHFREE_BASE_URL")
+

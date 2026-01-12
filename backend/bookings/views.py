@@ -144,190 +144,57 @@ class CreateCashfreeOrderView(AuthAPIView, APIView):
 
 
 
-@method_decorator(csrf_exempt, name='dispatch')
+@method_decorator(csrf_exempt, name="dispatch")
 class CashfreeWebhookView(APIView):
     authentication_classes = []
     permission_classes = []
 
     def post(self, request):
-        """
-        Cashfree Webhook Handler
-        - Base64 HMAC verification including timestamp
-        - Idempotent
-        - Booking confirmation only here
-        """
-
-        # 1. Extract timestamp & signature
-        timestamp = (
-            request.headers.get("x-webhook-timestamp")
-            or request.headers.get("X-Webhook-Timestamp")
-        )
-        signature = (
-            request.headers.get("x-webhook-signature")
-            or request.headers.get("X-Webhook-Signature")
-        )
+        timestamp = request.headers.get("x-webhook-timestamp")
+        signature = request.headers.get("x-webhook-signature")
 
         if not timestamp or not signature:
-            logger.error("Webhook missing signature or timestamp header")
             return Response({"error": "Missing headers"}, status=400)
 
-        # 2. Compute expected signature
-        signed_payload = timestamp + request.body.decode("utf-8")
+        raw_body = request.body.decode("utf-8")
+        signed_payload = timestamp + raw_body
+
         computed_hmac = hmac.new(
-            settings.CASHFREE_SECRET_KEY.encode(),
+            settings.CASHFREE_WEBHOOK_SECRET.encode(),
             signed_payload.encode(),
-            hashlib.sha256
+            hashlib.sha256,
         ).digest()
+
         expected_signature = base64.b64encode(computed_hmac).decode()
 
         if not hmac.compare_digest(signature, expected_signature):
-            logger.error("Signature mismatch")
+            logger.error("Cashfree webhook signature mismatch")
             return Response({"error": "Invalid signature"}, status=400)
 
-        # 3. Parse payload
-        payload = request.data
+        payload = json.loads(raw_body)
         event_type = payload.get("type")
 
-        try:
-            order_id = payload["data"]["order"]["order_id"]
-        except KeyError:
-            logger.error("Invalid payload structure")
-            return Response({"error": "Invalid payload"}, status=400)
+        order_id = payload["data"]["order"]["order_id"]
 
-        try:
-            payment = Payment.objects.select_related("booking").get(
-                order_id=order_id
-            )
-        except Payment.DoesNotExist:
-            return Response({"error": "Payment not found"}, status=404)
-
+        payment = Payment.objects.select_related("booking").get(order_id=order_id)
         booking = payment.booking
 
-        # 4. Idempotency
         if payment.status == Payment.PAID:
             return Response({"status": "already processed"}, status=200)
 
-        # 5. Handle events
-        if event_type in ("PAYMENT_SUCCESS", "PAYMENT_SUCCESS_WEBHOOK"):
+        if event_type.startswith("PAYMENT_SUCCESS"):
             payment.status = Payment.PAID
-            payment.transaction_id = payload["data"]["payment"].get("cf_payment_id")
+            payment.transaction_id = payload["data"]["payment"]["cf_payment_id"]
             payment.save(update_fields=["status", "transaction_id"])
 
             booking.status = Bookings.STATUS_CONFIRMED
             booking.save(update_fields=["status"])
-            logger.info(f"Payment confirmed: {order_id}")
 
-        elif event_type in (
-            "PAYMENT_FAILED",
-            "PAYMENT_FAILED_WEBHOOK",
-            "PAYMENT_USER_DROPPED",
-            "PAYMENT_USER_DROPPED_WEBHOOK",
-        ):
+        elif event_type.startswith("PAYMENT_FAILED"):
             payment.status = Payment.FAILED
             payment.save(update_fields=["status"])
 
-            booking.status = (
-                Bookings.STATUS_CANCELLED
-                if "USER_DROPPED" in event_type
-                else Bookings.STATUS_FAILED
-            )
+            booking.status = Bookings.STATUS_FAILED
             booking.save(update_fields=["status"])
-            logger.info(f"Payment failed/dropped: {order_id}")
-
-        else:
-            logger.warning(f"Unhandled webhook event: {event_type}")
-            return Response({"status": "ignored"}, status=200)
 
         return Response({"status": "ok"}, status=200)
-
-
-class VerifyPaymentView(AuthAPIView, APIView):
-    """
-    Manually verify payment status by fetching from Cashfree API.
-    Used as fallback when webhook delivery fails.
-    """
-    def post(self, request):
-        booking_id = request.data.get("booking_id")
-        
-        if not booking_id:
-            return Response({"error": "booking_id is required"}, status=400)
-        
-        try:
-            # Get the booking and associated payment
-            booking = Bookings.objects.get(
-                id=booking_id,
-                guest=request.user
-            )
-            
-            payment = Payment.objects.filter(booking=booking).first()
-            
-            if not payment:
-                return Response({"error": "Payment not found"}, status=404)
-            
-            # If already paid, return success
-            if payment.status == Payment.PAID:
-                return Response({
-                    "status": "paid",
-                    "booking_status": booking.status
-                })
-            
-            # Configure Cashfree
-            Cashfree.XClientId = settings.CASHFREE_APP_ID
-            Cashfree.XClientSecret = settings.CASHFREE_SECRET_KEY
-            Cashfree.XEnvironment = (
-                Cashfree.SANDBOX
-                if settings.CASHFREE_ENV == "TEST"
-                else Cashfree.PRODUCTION
-            )
-            
-            # Fetch order details from Cashfree
-            cashfree_client = Cashfree()
-            order_response = cashfree_client.PGFetchOrder(
-                "2025-01-01",
-                payment.order_id
-            )
-            
-            if not order_response or not order_response.data:
-                return Response({"error": "Failed to fetch order from Cashfree"}, status=500)
-            
-            order_status = order_response.data.order_status
-            
-            # Update payment and booking based on Cashfree status
-            if order_status in ("PAID", "ACTIVE"):
-                payment.status = Payment.PAID
-                payment.save(update_fields=["status"])
-                
-                booking.status = Bookings.STATUS_CONFIRMED
-                booking.save(update_fields=["status"])
-                logger.info(f"Payment manually verified and confirmed: {payment.order_id}")
-                
-                return Response({
-                    "status": "paid",
-                    "booking_status": booking.status
-                })
-            
-            elif order_status in ("EXPIRED", "TERMINATED"):
-                payment.status = Payment.FAILED
-                payment.save(update_fields=["status"])
-                
-                booking.status = Bookings.STATUS_FAILED
-                booking.save(update_fields=["status"])
-                
-                return Response({
-                    "status": "failed",
-                    "booking_status": booking.status
-                })
-            
-            else:
-                # Still pending or processing
-                return Response({
-                    "status": "pending",
-                    "booking_status": booking.status,
-                    "order_status": order_status
-                })
-                
-        except Bookings.DoesNotExist:
-            return Response({"error": "Booking not found"}, status=404)
-        except Exception as e:
-            logger.exception("Payment verification failed")
-            return Response({"error": str(e)}, status=500)
