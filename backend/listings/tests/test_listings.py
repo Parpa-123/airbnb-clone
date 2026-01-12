@@ -17,6 +17,9 @@ PUBLIC_LISTING_URL = reverse('listing:public-listings')
 def detailed_list_url(title_slug):
     return reverse('listing:property-details', args=[title_slug])
 
+def delete_list_url(id):
+    return reverse('listing:property-delete', args=[id])
+
 
 def create_estate(user, params={}):
     """Helper function to create a listing."""
@@ -168,3 +171,11 @@ class PrivateListingsTest(TestCase):
         res = self.client.post(LIST_API_URL, invalid_params)
 
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+
+    def test_delete_list(self):
+        estate = create_estate(user=self.testuser)
+        res = self.client.delete(delete_list_url(estate.id))
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
+        
+        self.assertEqual(Listings.objects.count(), 0)
