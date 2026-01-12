@@ -39,10 +39,14 @@ const JsonReviewDisplay = ({
     } = data;
 
     return (
-        <div className="max-w-4xl mx-auto p-4 sm:p-8 space-y-8">
-            <h2 className="text-3xl font-bold text-gray-900">{title}</h2>
+        <div className="w-full max-w-4xl mx-auto bg-white rounded-2xl shadow-xl border border-gray-100 h-[650px] flex flex-col overflow-hidden">
+            {/* Fixed Header */}
+            <div className="p-6 sm:p-8 pb-4 shrink-0 border-b border-gray-100 bg-white">
+                <h2 className="text-3xl font-bold text-gray-900">{title}</h2>
+            </div>
 
-            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+            {/* Scrollable Content */}
+            <div className="flex-1 overflow-y-auto custom-scrollbar">
                 {/* Images Preview */}
                 {images.length > 0 && (
                     <div className="h-64 sm:h-80 w-full bg-gray-100 relative overflow-hidden group">
@@ -116,8 +120,8 @@ const JsonReviewDisplay = ({
                 </div>
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex justify-between gap-4 pt-4">
+            {/* Fixed Footer Actions */}
+            <div className="p-6 sm:p-8 pt-4 shrink-0 border-t border-gray-100 bg-white flex justify-between gap-4">
                 <button
                     onClick={onBack}
                     className="px-8 py-3 border-2 border-gray-300 text-gray-700 font-medium 

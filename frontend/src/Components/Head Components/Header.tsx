@@ -69,14 +69,14 @@ const Header: React.FC = () => {
       {/* ================= HEADER ================= */}
       <nav className="sticky top-0 z-50 bg-white border-b border-gray-200">
         <div className="max-w-screen-2xl mx-auto px-6 lg:px-12 py-4">
-          <div className="flex flex-wrap lg:flex-nowrap items-center justify-between gap-y-4 gap-x-4">
+          <div className="flex flex-wrap md:flex-nowrap items-center justify-between gap-y-4 gap-x-4">
             {/* Logo */}
-            <Link to="/" className="shrink-0 order-1 lg:order-1">
+            <Link to="/" className="shrink-0 order-1 md:order-1">
               <img src={Img} alt="Logo" className="h-8 cursor-pointer" />
             </Link>
 
-            
-            <div className="order-3 lg:order-2 w-full lg:w-auto flex justify-center">
+
+            <div className="order-3 md:order-2 w-full md:w-auto flex justify-center">
               <SearchBar
                 shouldHide={shouldHideSearch}
                 checkIn={searchState.checkIn}
@@ -94,8 +94,8 @@ const Header: React.FC = () => {
               />
             </div>
 
-            
-            <div className="order-2 lg:order-3">
+
+            <div className="order-2 md:order-3">
               <UserMenu
                 user={user}
                 menuOpen={dialogState.menuOpen}
