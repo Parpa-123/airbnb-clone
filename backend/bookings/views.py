@@ -90,9 +90,9 @@ class CreateCashfreeOrderView(AuthAPIView, APIView):
             status=Bookings.STATUS_PENDING
         )
 
-        # Cashfree configuration
+        # Configure Cashfree (API ONLY)
         Cashfree.XClientId = settings.CASHFREE_APP_ID
-        Cashfree.XClientSecret = settings.CASHFREE_SECRET_KEY
+        Cashfree.XClientSecret = settings.CASHFREE_CLIENT_SECRET
         Cashfree.XEnvironment = (
             Cashfree.SANDBOX
             if settings.CASHFREE_ENV == "TEST"
@@ -101,8 +101,7 @@ class CreateCashfreeOrderView(AuthAPIView, APIView):
 
         order_id = f"booking_{booking.id}_{uuid.uuid4().hex[:8]}"
 
-        # Convert USD → INR (temporary, dev-only)
-        USD_TO_INR = 90
+        USD_TO_INR = 90  # dev-only
         amount_in_inr = float(booking.total_price) * USD_TO_INR
 
         order_request = CreateOrderRequest(
@@ -123,22 +122,23 @@ class CreateCashfreeOrderView(AuthAPIView, APIView):
             cashfree_client = Cashfree()
             response = cashfree_client.PGCreateOrder("2025-01-01", order_request)
 
-            payment = Payment.objects.create(
-                booking=booking,
-                order_id=order_id,
-                payment_session_id=response.data.payment_session_id,
-                amount=amount_in_inr,
-                status=Payment.INITIATED,
-            )
+            with transaction.atomic():
+                payment = Payment.objects.create(
+                    booking=booking,
+                    order_id=order_id,
+                    payment_session_id=response.data.payment_session_id,
+                    amount=amount_in_inr,
+                    status=Payment.INITIATED,
+                )
 
             return Response({
                 "order_id": order_id,
                 "payment_session_id": payment.payment_session_id,
             })
 
-        except Exception as e:
+        except Exception:
             logger.exception("Cashfree order creation failed")
-            return Response({"error": str(e)}, status=500)
+            return Response({"error": "Unable to create payment order"}, status=500)
 
 
 
@@ -158,13 +158,13 @@ class CashfreeWebhookView(APIView):
         raw_body = request.body.decode("utf-8")
         signed_payload = timestamp + raw_body
 
-        computed_hmac = hmac.new(
-            settings.CASHFREE_WEBHOOK_SECRET.encode(),
-            signed_payload.encode(),
-            hashlib.sha256,
-        ).digest()
-
-        expected_signature = base64.b64encode(computed_hmac).decode()
+        expected_signature = base64.b64encode(
+            hmac.new(
+                settings.CASHFREE_WEBHOOK_SECRET.encode(),
+                signed_payload.encode(),
+                hashlib.sha256,
+            ).digest()
+        ).decode()
 
         if not hmac.compare_digest(signature, expected_signature):
             logger.error("Cashfree webhook signature mismatch")
@@ -174,40 +174,46 @@ class CashfreeWebhookView(APIView):
             payload = json.loads(raw_body)
             event_type = payload.get("type")
             order_id = payload["data"]["order"]["order_id"]
-        except (json.JSONDecodeError, KeyError, TypeError) as e:
-            logger.error(f"Invalid webhook payload: {e}")
+        except Exception:
+            logger.error("Invalid Cashfree webhook payload")
             return Response({"error": "Invalid payload"}, status=400)
 
         try:
             with transaction.atomic():
-                
-                try:
-                    payment = Payment.objects.select_for_update().select_related("booking").get(order_id=order_id)
-                    booking = payment.booking
-                except Payment.DoesNotExist:
-                    logger.error(f"Payment with order_id {order_id} not found")
-                    return Response({"error": "Order not found"}, status=404)
+                payment = (
+                    Payment.objects
+                    .select_for_update()
+                    .select_related("booking")
+                    .get(order_id=order_id)
+                )
 
                 if payment.status == Payment.PAID:
                     return Response({"status": "already processed"}, status=200)
 
+                booking = payment.booking
+
                 if event_type.startswith("PAYMENT_SUCCESS"):
                     payment.status = Payment.PAID
-                    payment.transaction_id = payload["data"].get("payment", {}).get("cf_payment_id")
-                    payment.save(update_fields=["status", "transaction_id"])
-
+                    payment.transaction_id = payload["data"]["payment"].get("cf_payment_id")
                     booking.status = Bookings.STATUS_CONFIRMED
-                    booking.save(update_fields=["status"])
 
                 elif event_type.startswith("PAYMENT_FAILED"):
                     payment.status = Payment.FAILED
-                    payment.save(update_fields=["status"])
-
                     booking.status = Bookings.STATUS_FAILED
-                    booking.save(update_fields=["status"])
+
+                else:
+                    logger.warning(f"Unhandled Cashfree event: {event_type}")
+                    return Response({"status": "ignored"}, status=200)
+
+                payment.save(update_fields=["status", "transaction_id"])
+                booking.save(update_fields=["status"])
 
             return Response({"status": "ok"}, status=200)
 
-        except Exception as e:
+        except Payment.DoesNotExist:
+            logger.error(f"Payment not found for order_id={order_id}")
+            return Response({"error": "Order not found"}, status=404)
+
+        except Exception:
             logger.exception("Cashfree webhook processing failed")
-            return Response({"error": str(e)}, status=500)
+            return Response({"error": "Webhook error"}, status=500)
