@@ -12,7 +12,10 @@ class ReviewListCreate(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     
     def get_queryset(self):
-        listing = get_object_or_404(Listings, title_slug=self.kwargs["title_slug"])
+        title_slug = self.kwargs.get("title_slug")
+        if not title_slug or getattr(self, 'swagger_fake_view', False):
+             return Review.objects.none()
+        listing = get_object_or_404(Listings, title_slug=title_slug)
         return Review.objects.filter(listing=listing)
 
     def perform_create(self, serializer):

@@ -1,4 +1,5 @@
 from rest_framework import generics, views
+from drf_spectacular.utils import extend_schema
 from rest_framework.response import Response
 from rest_framework import status
 from users.base_views import AuthAPIView
@@ -47,6 +48,7 @@ class DeleteListingFromWishlistView(AuthAPIView,generics.DestroyAPIView):
         
 class BulkAddToWishlistView(AuthAPIView,views.APIView):
     
+    @extend_schema(request=BulkAddToWishlistSerializer)
     def post(self, request):
         serializer = BulkAddToWishlistSerializer(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)

@@ -26,6 +26,8 @@ class ListingView(BaseAuthenticatedView, generics.ListCreateAPIView):
     """List and create listings for authenticated users"""
     serializer_class = ListingSerializer
     def get_queryset(self):
+        if getattr(self, "swagger_fake_view", False) or self.request.user.is_anonymous:
+            return Listings.objects.none()
         return Listings.objects.filter(host=self.request.user).order_by("-id")
 
     def get_serializer_class(self):
@@ -96,7 +98,7 @@ class OptionsView(BaseAuthenticatedView, views.APIView):
                 {'value':v[0],'label':v[1]} for v in Listings.PROPERTY_TYPES
             ],
 
-            'aminities' : [
+            'amenities' : [
                 {'value':v[0],'label':v[1]} for v in Amenities.AMENITY_CHOICES
             ],
             'bedroom_options' : [
@@ -119,6 +121,8 @@ class PrivateListingView(BaseAuthenticatedView, generics.ListAPIView):
     serializer_class = ListingSerializer
     
     def get_queryset(self):
+        if getattr(self, "swagger_fake_view", False) or self.request.user.is_anonymous:
+             return Listings.objects.none()
         return Listings.objects.filter(host=self.request.user).order_by("-id")
 
 

@@ -2,6 +2,7 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import User
+from drf_spectacular.utils import extend_schema_field
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -33,11 +34,10 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'phone' : {'required':False},
         }
     
+    @extend_schema_field(serializers.URLField)
     def get_avatar(self, obj):
         """Return the Cloudinary URL as a string"""
         if obj.avatar:
-            # CloudinaryField returns a CloudinaryResource object
-            # .url gives us the full Cloudinary URL
             return obj.avatar.url if hasattr(obj.avatar, 'url') else str(obj.avatar)
         return None
 

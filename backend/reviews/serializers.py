@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from drf_spectacular.utils import extend_schema_field
 from .models import Review
 from users.serializers import UserSerializer
 
@@ -8,6 +9,7 @@ class ReviewSerializer(serializers.ModelSerializer):
     listing = serializers.PrimaryKeyRelatedField(read_only=True)
     user = UserSerializer(read_only=True)
 
+    @extend_schema_field(serializers.FloatField)
     def get_avg_rating(self,obj):
         return obj.get_avg_rating()
 

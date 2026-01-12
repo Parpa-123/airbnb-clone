@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from drf_spectacular.utils import extend_schema_field
 from .models import Wishlist
 from listings.serializers import ListingSerializer
 from listings.models import Listings
@@ -18,9 +19,11 @@ class WishlistSerializer(serializers.ModelSerializer):
             'cover_image',
         )
 
+    @extend_schema_field(serializers.IntegerField)
     def get_count(self, obj):
         return obj.listings.count()
     
+    @extend_schema_field(serializers.URLField)
     def get_cover_image(self, obj):
         first_listing = obj.listings.first()
         if not first_listing:

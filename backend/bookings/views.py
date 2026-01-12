@@ -11,6 +11,7 @@ from django.utils.decorators import method_decorator
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from drf_spectacular.utils import extend_schema
 
 from cashfree_pg.api_client import Cashfree
 from cashfree_pg.models.create_order_request import CreateOrderRequest
@@ -45,6 +46,8 @@ class BookingListView(AuthAPIView, generics.ListAPIView):
     serializer_class = ViewBookingSerializer
 
     def get_queryset(self):
+        if getattr(self, "swagger_fake_view", False) or self.request.user.is_anonymous:
+             return Bookings.objects.none()
         return Bookings.objects.filter(
             guest=self.request.user,
             status__in=[
@@ -81,6 +84,7 @@ class BookingDetailRetrieveView(AuthAPIView, generics.RetrieveAPIView):
 
 class CreateCashfreeOrderView(AuthAPIView, APIView):
 
+    @extend_schema(request=CreateOrderRequest, responses=None)
     def post(self, request):
         booking_id = request.data.get("booking_id")
 
@@ -148,6 +152,7 @@ class CashfreeWebhookView(APIView):
     authentication_classes = []
     permission_classes = []
 
+    @extend_schema(request=None, responses=None)
     def post(self, request):
         timestamp = request.headers.get("x-webhook-timestamp")
         signature = request.headers.get("x-webhook-signature")

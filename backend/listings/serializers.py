@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from drf_spectacular.utils import extend_schema_field
 from decimal import Decimal
 
 from .models import Listings, ListingImages, Amenities
@@ -18,6 +19,7 @@ class HostSerializer(serializers.ModelSerializer):
         model = User
         fields = ["username", "avatar"]
     
+    @extend_schema_field(serializers.URLField)
     def get_avatar(self, obj):
         """Return the Cloudinary URL as a string"""
         if obj.avatar:
@@ -34,6 +36,7 @@ class ListingImageSerializer(serializers.ModelSerializer):
         model = ListingImages
         fields = ["name", "image"]
     
+    @extend_schema_field(serializers.URLField)
     def get_image(self, obj):
         """Return the Cloudinary URL as a string"""
         if obj.image:
