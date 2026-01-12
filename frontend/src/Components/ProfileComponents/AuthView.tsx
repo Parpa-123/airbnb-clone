@@ -103,7 +103,7 @@ const AuthView = () => {
         {/* ================= HEADER ================= */}
         <div className="flex flex-col items-center space-y-3">
           <img
-            src={dets.avatar || "https://via.placeholder.com/150"}
+            src={dets.avatar || "https://placehold.co/150?text=Profile"}
             className="w-32 h-32 rounded-full object-cover border"
             alt="profile"
           />

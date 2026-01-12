@@ -4,7 +4,7 @@ import { useState } from "react";
 
 interface OptionsResponse {
     property_options: { value: string; label: string }[];
-    aminities: { value: string; label: string }[];  // Note: backend typo
+    amenities: { value: string; label: string }[];
     bedroom_options: { value: string; label: string }[];
     guest_options: { value: string; label: string }[];
     bathroom_options: { value: string; label: string }[];

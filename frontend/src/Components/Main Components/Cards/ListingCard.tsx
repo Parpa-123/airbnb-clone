@@ -74,7 +74,7 @@ const ListingCard: React.FC<ListingCardProps> = React.memo(({
                     {showHost && (
                         <div className="flex items-center mt-4">
                             <img
-                                src={listing.host.avatar ?? ""}
+                                src={listing.host.avatar || "https://placehold.co/100?text=User"}
                                 alt={listing.host.username}
                                 className="w-8 h-8 rounded-full object-cover bg-gray-200"
                             />

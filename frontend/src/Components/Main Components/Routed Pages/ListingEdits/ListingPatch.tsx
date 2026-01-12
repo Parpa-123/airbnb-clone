@@ -335,7 +335,7 @@ const ListingEditPage = () => {
                             <div className="md:col-span-2">
                                 <label className="block text-sm font-medium text-gray-700 mb-3">Amenities</label>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                    {options?.aminities?.map((opt) => {
+                                    {options?.amenities?.map((opt) => {
                                         const isChecked = listing.amenities.some(
                                             (amenity) => amenity.name === opt.value
                                         );

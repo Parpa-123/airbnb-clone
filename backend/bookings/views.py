@@ -97,7 +97,7 @@ class CreateCashfreeOrderView(AuthAPIView, generics.GenericAPIView):
 
         # Configure Cashfree (API ONLY)
         Cashfree.XClientId = settings.CASHFREE_APP_ID
-        Cashfree.XClientSecret = settings.CASHFREE_CLIENT_SECRET
+        Cashfree.XClientSecret = settings.CASHFREE_SECRET_KEY
         Cashfree.XEnvironment = (
             Cashfree.SANDBOX
             if settings.CASHFREE_ENV == "TEST"
@@ -166,7 +166,7 @@ class CashfreeWebhookView(APIView):
 
         expected_signature = base64.b64encode(
             hmac.new(
-                settings.CASHFREE_WEBHOOK_SECRET.encode(),
+                settings.CASHFREE_SECRET_KEY.encode(),
                 signed_payload.encode(),
                 hashlib.sha256,
             ).digest()

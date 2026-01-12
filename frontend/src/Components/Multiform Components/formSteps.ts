@@ -121,7 +121,7 @@ export const createFormSteps = (apiOptions: any): Step[] => {
                     name: "amenities",
                     label: "Amenities",
                     type: "checkbox",
-                    options: apiOptions?.aminities || [],
+                    options: apiOptions?.amenities || [],
                     rules: { required: true }
                 },
             ]
