@@ -46,7 +46,8 @@ class DeleteListingFromWishlistView(AuthAPIView,generics.DestroyAPIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
         
-class BulkAddToWishlistView(AuthAPIView,views.APIView):
+class BulkAddToWishlistView(AuthAPIView, generics.GenericAPIView):
+    serializer_class = BulkAddToWishlistSerializer
     
     @extend_schema(request=BulkAddToWishlistSerializer)
     def post(self, request):

@@ -2,6 +2,7 @@ from rest_framework import generics, permissions, views
 from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from drf_spectacular.utils import extend_schema, OpenApiParameter, extend_schema_view
+from drf_spectacular.types import OpenApiTypes
 from listings.models import Listings, Amenities
 from listings.serializers import ListingSerializer, ListingDetailSerializer, CreateUpdateListSerializer
 from listings.filters import ListingFilter
@@ -92,6 +93,7 @@ class PublicListingView(generics.ListAPIView):
 class OptionsView(BaseAuthenticatedView, views.APIView):
     """Get form options for authenticated users"""
     
+    @extend_schema(responses={200: OpenApiTypes.OBJECT})
     def get(self, request):
         return Response({
             'property_options' : [

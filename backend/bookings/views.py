@@ -18,7 +18,7 @@ from cashfree_pg.models.create_order_request import CreateOrderRequest
 
 from users.base_views import AuthAPIView
 from .models import Bookings, Payment
-from .serializers import BookingSerializer, ViewBookingSerializer, BookingDetailSerializer
+from .serializers import BookingSerializer, ViewBookingSerializer, BookingDetailSerializer, BookingOrderCreateSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -82,9 +82,10 @@ class BookingDetailRetrieveView(AuthAPIView, generics.RetrieveAPIView):
 # Cashfree Order Creation
 # =========================
 
-class CreateCashfreeOrderView(AuthAPIView, APIView):
+class CreateCashfreeOrderView(AuthAPIView, generics.GenericAPIView):
+    serializer_class = BookingOrderCreateSerializer
 
-    @extend_schema(request=CreateOrderRequest, responses=None)
+    @extend_schema(request=BookingOrderCreateSerializer, responses=None)
     def post(self, request):
         booking_id = request.data.get("booking_id")
 

@@ -8,6 +8,9 @@ from users.serializers import UserProfileSerializer
 
 # Create your tests here.
 
+class BookingOrderCreateSerializer(serializers.Serializer):
+    booking_id = serializers.UUIDField()
+
 class BookingSerializer(serializers.ModelSerializer):
 
     start_date = serializers.DateField()
