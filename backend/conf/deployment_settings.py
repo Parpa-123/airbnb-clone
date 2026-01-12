@@ -58,7 +58,6 @@ CLOUDINARY_STORAGE = {
     'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
     'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
     'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
-    'SECURE': True,
 }
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
@@ -67,4 +66,3 @@ CASHFREE_APP_ID = os.environ.get("CASHFREE_APP_ID")
 CASHFREE_SECRET_KEY = os.environ.get("CASHFREE_SECRET_KEY")
 CASHFREE_ENV = os.environ.get("CASHFREE_ENV", "TEST")
 CASHFREE_BASE_URL = os.environ.get("CASHFREE_BASE_URL")
-

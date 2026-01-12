@@ -4,7 +4,7 @@ import hashlib
 import base64
 import logging
 import json
-
+from django.db import transaction
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
@@ -22,9 +22,7 @@ from .serializers import BookingSerializer, ViewBookingSerializer, BookingDetail
 logger = logging.getLogger(__name__)
 
 
-# =========================
-# Booking Views
-# =========================
+
 
 class BookingDetailView(AuthAPIView, generics.RetrieveAPIView):
     serializer_class = BookingSerializer
@@ -172,30 +170,44 @@ class CashfreeWebhookView(APIView):
             logger.error("Cashfree webhook signature mismatch")
             return Response({"error": "Invalid signature"}, status=400)
 
-        payload = json.loads(raw_body)
-        event_type = payload.get("type")
+        try:
+            payload = json.loads(raw_body)
+            event_type = payload.get("type")
+            order_id = payload["data"]["order"]["order_id"]
+        except (json.JSONDecodeError, KeyError, TypeError) as e:
+            logger.error(f"Invalid webhook payload: {e}")
+            return Response({"error": "Invalid payload"}, status=400)
 
-        order_id = payload["data"]["order"]["order_id"]
+        try:
+            with transaction.atomic():
+                
+                try:
+                    payment = Payment.objects.select_for_update().select_related("booking").get(order_id=order_id)
+                    booking = payment.booking
+                except Payment.DoesNotExist:
+                    logger.error(f"Payment with order_id {order_id} not found")
+                    return Response({"error": "Order not found"}, status=404)
 
-        payment = Payment.objects.select_related("booking").get(order_id=order_id)
-        booking = payment.booking
+                if payment.status == Payment.PAID:
+                    return Response({"status": "already processed"}, status=200)
 
-        if payment.status == Payment.PAID:
-            return Response({"status": "already processed"}, status=200)
+                if event_type.startswith("PAYMENT_SUCCESS"):
+                    payment.status = Payment.PAID
+                    payment.transaction_id = payload["data"].get("payment", {}).get("cf_payment_id")
+                    payment.save(update_fields=["status", "transaction_id"])
 
-        if event_type.startswith("PAYMENT_SUCCESS"):
-            payment.status = Payment.PAID
-            payment.transaction_id = payload["data"]["payment"]["cf_payment_id"]
-            payment.save(update_fields=["status", "transaction_id"])
+                    booking.status = Bookings.STATUS_CONFIRMED
+                    booking.save(update_fields=["status"])
 
-            booking.status = Bookings.STATUS_CONFIRMED
-            booking.save(update_fields=["status"])
+                elif event_type.startswith("PAYMENT_FAILED"):
+                    payment.status = Payment.FAILED
+                    payment.save(update_fields=["status"])
 
-        elif event_type.startswith("PAYMENT_FAILED"):
-            payment.status = Payment.FAILED
-            payment.save(update_fields=["status"])
+                    booking.status = Bookings.STATUS_FAILED
+                    booking.save(update_fields=["status"])
 
-            booking.status = Bookings.STATUS_FAILED
-            booking.save(update_fields=["status"])
+            return Response({"status": "ok"}, status=200)
 
-        return Response({"status": "ok"}, status=200)
+        except Exception as e:
+            logger.exception("Cashfree webhook processing failed")
+            return Response({"error": str(e)}, status=500)
