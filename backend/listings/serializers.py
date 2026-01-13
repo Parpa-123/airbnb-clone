@@ -40,8 +40,7 @@ class ListingImageSerializer(serializers.ModelSerializer):
     def get_image(self, obj):
         """Return the Cloudinary URL as a string"""
         if obj.image:
-            # CloudinaryField returns a CloudinaryResource object
-            # .url gives us the full Cloudinary URL
+            
             return obj.image.url if hasattr(obj.image, 'url') else str(obj.image)
         return None
 
