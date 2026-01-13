@@ -2,13 +2,11 @@
 import axios from 'axios';
 
 const isDev = import.meta.env.MODE === 'development';
-const myBaseUrl = isDev ? import.meta.env.VITE_API_BASE_URL_LOCAL : import.meta.env.VITE_API_BASE_URL_DEPLOY;
-
-
+const myBaseUrl = isDev ? "http://127.0.0.1:8000/api/" : import.meta.env.VITE_API_URL;
 const axiosInstance = axios.create({
-    baseURL : myBaseUrl,
-    headers : {
-        "Content-Type" : 'application/json'
+    baseURL: myBaseUrl,
+    headers: {
+        "Content-Type": 'application/json'
     }
 });
 
@@ -16,25 +14,25 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
     function (config) {
         const access = localStorage.getItem('accessToken');
-        if(access)
+        if (access)
             config.headers['Authorization'] = `Bearer ${access}`
-       return config 
-   }
+        return config
+    }
 
 )
 
 axiosInstance.interceptors.response.use(
-    function(res){
+    function (res) {
         return res
     },
-    async function(err){
+    async function (err) {
         const og_config = err.config;
-        if(err.response?.status === 401 && !og_config.retry){
+        if (err.response?.status === 401 && !og_config.retry) {
             og_config.retry = true;
             try {
                 const refresh = localStorage.getItem('refreshToken');
-                const res = await axiosInstance.post('/token/refresh/',{refresh : refresh});
-                localStorage.setItem('accessToken',res.data.access);
+                const res = await axiosInstance.post('/token/refresh/', { refresh: refresh });
+                localStorage.setItem('accessToken', res.data.access);
                 og_config.headers['Authorization'] = `Bearer ${localStorage.getItem('accessToken')}`;
                 return axiosInstance(og_config);
             } catch (error) {
