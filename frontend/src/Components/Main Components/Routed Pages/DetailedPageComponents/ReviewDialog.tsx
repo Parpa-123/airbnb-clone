@@ -61,7 +61,7 @@ const ReviewDialog: React.FC<ReviewDialogProps> = ({ open, onOpenChange, onSubmi
     return (
         <Dialog.Root open={open} onOpenChange={onOpenChange}>
             <Dialog.Content asChild>
-                <div className="fixed inset-0 z-9999 flex items-center justify-center bg-black/40">
+                <div className="fixed inset-0 z-9999 flex items-center justify-center bg-black/50 backdrop-blur-sm">
                     <div className="bg-white w-full max-w-lg rounded-2xl p-6 relative">
                         <Dialog.Close className="absolute top-4 right-4 cursor-pointer">
                             <Cross2Icon />

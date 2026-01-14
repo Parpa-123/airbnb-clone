@@ -69,7 +69,7 @@ const AddToWishlistDialog: React.FC<AddToWishlistDialogProps> = ({
     return (
         <Dialog.Root open={open} onOpenChange={onOpenChange}>
             <Dialog.Portal>
-                <Dialog.Overlay className="fixed inset-0 bg-black/40" />
+                <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
 
                 <Dialog.Content
                     className="

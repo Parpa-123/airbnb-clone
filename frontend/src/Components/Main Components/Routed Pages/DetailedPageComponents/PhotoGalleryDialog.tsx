@@ -72,7 +72,7 @@ const PhotoGalleryDialog = React.memo(({
             { }
             <Dialog.Root open={open} onOpenChange={onOpenChange}>
                 <Dialog.Portal>
-                    <Dialog.Overlay className="fixed inset-0 bg-black/90 z-50" />
+                    <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50" />
                     <Dialog.Content className="fixed inset-0 z-50 overflow-y-auto">
                         <div className="min-h-screen px-4 py-8">
                             <div className="max-w-5xl mx-auto">
