@@ -27,7 +27,6 @@ const useOptionsService = () => {
                 "listings/choices/form-option/"
             );
 
-            // Set the fetched data
             setOptions(response.data);
 
             setLoading(false);

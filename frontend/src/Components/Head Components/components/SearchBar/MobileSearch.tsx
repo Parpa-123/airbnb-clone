@@ -85,9 +85,9 @@ const MobileSearch: React.FC<MobileSearchProps> = ({
                             </Dialog.Close>
                         </div>
 
-                        {/* Mobile Search Form - Stacked Layout */}
+                        {}
                         <div className="space-y-4">
-                            {/* Location */}
+                            {}
                             <div>
                                 <label className="block text-xs font-semibold text-gray-900 mb-2">Where</label>
                                 <input
@@ -102,7 +102,7 @@ const MobileSearch: React.FC<MobileSearchProps> = ({
                                 />
                             </div>
 
-                            {/* Dates */}
+                            {}
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <div>
                                     <label className="block text-xs font-semibold text-gray-900 mb-2">When</label>
@@ -141,13 +141,13 @@ const MobileSearch: React.FC<MobileSearchProps> = ({
                                 </div>
                             </LocalizationProvider>
 
-                            {/* Guests */}
+                            {}
                             <div>
                                 <label className="block text-xs font-semibold text-gray-900 mb-2">Who</label>
                                 <GuestSelector guests={guests} onGuestsChange={onGuestsChange} />
                             </div>
 
-                            {/* Action Buttons */}
+                            {}
                             <div className="flex gap-3 pt-2">
                                 <button
                                     type="button"

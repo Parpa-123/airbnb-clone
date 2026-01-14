@@ -1,35 +1,23 @@
 import { toast, type ToastOptions } from "react-toastify";
 
-/**
- * Extracts an error message from an API error response.
- * Handles various DRF error formats:
- * - ValidationError: { field: ["error message"] }
- * - detail: "error message"  
- * - message: "error message"
- * - non_field_errors: ["error message"]
- */
 export const extractErrorMessage = (error: any, fallback: string = "An error occurred"): string => {
     const data = error?.response?.data;
 
     if (!data) return error?.message || fallback;
 
-    // Handle direct message/detail strings
     if (typeof data === "string") return data;
     if (data.message) return data.message;
     if (data.detail) return data.detail;
 
-    // Handle non_field_errors array
     if (data.non_field_errors && Array.isArray(data.non_field_errors)) {
         return data.non_field_errors[0];
     }
 
-    // Handle validation errors: { field_name: ["error message"] }
     const firstKey = Object.keys(data)[0];
     if (firstKey && Array.isArray(data[firstKey])) {
         return `${firstKey}: ${data[firstKey][0]}`;
     }
 
-    // Fallback to JSON stringified response
     try {
         const jsonStr = JSON.stringify(data);
         return jsonStr !== "{}" ? jsonStr : fallback;
@@ -38,15 +26,11 @@ export const extractErrorMessage = (error: any, fallback: string = "An error occ
     }
 };
 
-// Default toast options
 const defaultOptions: ToastOptions = {
     position: "bottom-right",
     autoClose: 4000,
 };
 
-/**
- * Toast utility functions
- */
 export const showSuccess = (message: string, options?: ToastOptions) => {
     toast.success(message, { ...defaultOptions, ...options });
 };
@@ -63,14 +47,10 @@ export const showWarning = (message: string, options?: ToastOptions) => {
     toast.warning(message, { ...defaultOptions, ...options });
 };
 
-/**
- * Show error from API error response, extracting the message automatically
- */
 export const showApiError = (error: any, fallback?: string) => {
     showError(extractErrorMessage(error, fallback));
 };
 
-// Predefined messages for common actions
 export const MESSAGES = {
     AUTH: {
         LOGIN_SUCCESS: "Logged in!",

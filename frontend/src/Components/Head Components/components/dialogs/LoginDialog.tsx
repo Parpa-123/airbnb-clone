@@ -10,7 +10,7 @@ type Props = {
 };
 
 const LoginDialog: React.FC<Props> = ({ open, setOpen }) => {
-  const { doLogin, loading } = useAuth(); // note: we'll wrap provider or use hook directly in Header
+  const { doLogin, loading } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

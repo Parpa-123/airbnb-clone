@@ -7,7 +7,6 @@ import type { Booking } from "../../../../types";
 const UpcomingBookings = () => {
     const { data: bookings = [], isLoading, refetch } = useGetBookingsQuery(undefined);
 
-
     const upcomingBookings = bookings.filter((booking: Booking) => {
         const checkInDate = dayjs(booking.start_date);
         const today = dayjs().startOf('day');

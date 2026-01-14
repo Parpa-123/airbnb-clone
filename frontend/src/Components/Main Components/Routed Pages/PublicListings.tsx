@@ -8,8 +8,6 @@ import ListingCard from "../Cards/ListingCard";
 import AddToWishlistDialog from "../Dialogs/AddToWishlistDialog";
 import Loading from "../../Loading";
 
-/* ---------------- COMPONENT ---------------- */
-
 const PublicListings: React.FC = () => {
   const { filters } = useFilterContext();
 
@@ -19,8 +17,6 @@ const PublicListings: React.FC = () => {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  /* ---------------- FETCH LISTINGS ---------------- */
 
   useEffect(() => {
     (async () => {
@@ -78,14 +74,10 @@ const PublicListings: React.FC = () => {
     })();
   }, [filters]);
 
-  /* ---------------- HANDLERS ---------------- */
-
   const openWishlistDialog = (listing: Listing) => {
     setActiveListing(listing);
     setDialogOpen(true);
   };
-
-  /* ---------------- RENDER ---------------- */
 
   if (loading) return <Loading />;
 
@@ -133,7 +125,7 @@ const PublicListings: React.FC = () => {
         </div>
       )}
 
-      {/* Wishlist Dialog */}
+      { }
       <AddToWishlistDialog
         listing={activeListing}
         open={dialogOpen}

@@ -5,10 +5,6 @@ import { useFilterContext } from "../../../services/filterContext";
 import type { ListingFilters } from "../../../services/filterContext";
 import type { GuestCounts } from "../components/GuestSelector";
 
-/**
- * Custom hook to manage search filters and state
- * Centralizes all search-related logic
- */
 export const useSearchFilters = () => {
     const navigate = useNavigate();
     const { setFilters } = useFilterContext();

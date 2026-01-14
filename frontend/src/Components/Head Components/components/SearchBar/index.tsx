@@ -20,10 +20,6 @@ interface SearchBarProps {
     onSearch: () => void;
 }
 
-/**
- * Unified SearchBar component that renders both mobile and desktop search interfaces
- * Automatically shows/hides based on screen size
- */
 const SearchBar: React.FC<SearchBarProps> = ({
     shouldHide,
     checkIn,
@@ -45,7 +41,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
     return (
         <>
-            {/* Mobile Search */}
+            {}
             <MobileSearch
                 open={mobileSearchOpen}
                 onOpenChange={onMobileSearchOpenChange}
@@ -61,7 +57,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
                 onSearch={onSearch}
             />
 
-            {/* Desktop Search */}
+            {}
             <DesktopSearch
                 checkIn={checkIn}
                 checkOut={checkOut}

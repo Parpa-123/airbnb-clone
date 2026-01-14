@@ -12,13 +12,13 @@ export function useAuth() {
       const profile = await authService.fetchProfile();
       setUser(profile);
     } catch (e) {
-      // token might be invalid/expired
+
       setUser(null);
     }
   }, []);
 
   useEffect(() => {
-    // try to load profile if tokens exist
+
     const token = localStorage.getItem("accessToken");
     if (token) loadProfile();
   }, [loadProfile]);
@@ -59,4 +59,3 @@ export function useAuth() {
 
   return { user, loading, doLogin, doSignup, logout, loadProfile, setUser };
 }
-

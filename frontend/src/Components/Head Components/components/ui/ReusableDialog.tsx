@@ -18,7 +18,7 @@ const ReusableDialog: React.FC<ReusableDialogProps> = ({
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
-        {/* Overlay */}
+        {}
         <Dialog.Overlay
           className="
             fixed inset-0
@@ -27,7 +27,7 @@ const ReusableDialog: React.FC<ReusableDialogProps> = ({
           "
         />
 
-        {/* Content */}
+        {}
         <Dialog.Content
           className={`
             fixed left-1/2 top-1/2

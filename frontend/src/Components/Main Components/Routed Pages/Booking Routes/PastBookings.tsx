@@ -7,7 +7,6 @@ import type { Booking } from "../../../../types";
 const PastBookings = () => {
     const { data: bookings = [], isLoading, refetch } = useGetBookingsQuery(undefined);
 
-    // Filter for past bookings (check-out date in the past and status is CONFIRMED or COMPLETED)
     const pastBookings = bookings.filter((booking: Booking) => {
         const checkOutDate = dayjs(booking.end_date);
         const today = dayjs().startOf('day');

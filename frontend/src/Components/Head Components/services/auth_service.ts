@@ -1,11 +1,6 @@
 import axiosInstance from "../../../../public/connect";
 import type { LoginType, SignupType, UserProfile } from "../types";
 
-/**
- * Service centralizing auth-related API calls and token handling.
- * - login/signup return the loaded profile for convenience.
- */
-
 const ACCESS_KEY = "accessToken";
 const REFRESH_KEY = "refreshToken";
 
@@ -31,6 +26,6 @@ export async function login(data: LoginType): Promise<UserProfile> {
 }
 
 export async function signup(data: SignupType): Promise<void> {
-  // create user (no auto-login)
+
   await axiosInstance.post("/create/", data);
 }

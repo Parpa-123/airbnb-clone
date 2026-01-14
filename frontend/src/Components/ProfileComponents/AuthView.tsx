@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../../public/connect";
 import { showSuccess, showError, extractErrorMessage, MESSAGES } from "../../utils/toastMessages";
 import { useForm } from "@mantine/form";
@@ -12,6 +13,7 @@ interface AuthDetails {
 }
 
 const AuthView = () => {
+  const navigate = useNavigate();
   const [dets, setDets] = useState<AuthDetails | null>(null);
   const [loading, setLoading] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
@@ -28,7 +30,6 @@ const AuthView = () => {
     },
   });
 
-  /* ================= FETCH PROFILE ================= */
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -51,8 +52,6 @@ const AuthView = () => {
     fetchProfile();
   }, []);
 
-
-  /* ================= AVATAR PREVIEW ================= */
   useEffect(() => {
     if (!form.values.avatar) {
       setPreview(null);
@@ -65,7 +64,6 @@ const AuthView = () => {
     return () => URL.revokeObjectURL(objectUrl);
   }, [form.values.avatar]);
 
-  /* ================= SUBMIT ================= */
   const handleSubmit = async () => {
     const data = new FormData();
 
@@ -83,6 +81,7 @@ const AuthView = () => {
       setDets(res.data);
       form.setFieldValue("avatar", null);
       showSuccess(MESSAGES.AUTH.PROFILE_UPDATED);
+      navigate(0);
     } catch (error: any) {
       showError(extractErrorMessage(error, "Failed to update profile!"));
       console.error("Profile update error:", error?.response?.data);
@@ -100,7 +99,7 @@ const AuthView = () => {
   return (
     <div className="flex justify-center py-12 px-4 min-h-screen">
       <div className="w-full max-w-xl rounded-2xl shadow-xl p-8 bg-white">
-        {/* ================= HEADER ================= */}
+        { }
         <div className="flex flex-col items-center space-y-3">
           <img
             src={dets.avatar || "https://placehold.co/150?text=Profile"}
@@ -113,11 +112,11 @@ const AuthView = () => {
 
         <div className="border-t my-8" />
 
-        {/* ================= FORM ================= */}
+        { }
         <form onSubmit={form.onSubmit(handleSubmit)} className="space-y-6">
           <h2 className="text-xl font-semibold">Update Profile</h2>
 
-          {/* Email */}
+          { }
           <div>
             <label className="block text-sm mb-1">Email</label>
             <input
@@ -127,7 +126,7 @@ const AuthView = () => {
             />
           </div>
 
-          {/* Phone */}
+          { }
           <div>
             <label className="block text-sm mb-1">Phone Number</label>
             <input
@@ -137,7 +136,7 @@ const AuthView = () => {
             />
           </div>
 
-          {/* Avatar */}
+          { }
           <div>
             <label className="block text-sm mb-2">Profile Picture</label>
 
@@ -156,7 +155,7 @@ const AuthView = () => {
                 : "Click or drop image to upload"}
             </Dropzone>
 
-            {/* ================= PROFILE PREVIEW ================= */}
+            { }
             {preview && (
               <div className="mt-6 p-4 border rounded-xl flex items-center justify-center gap-4 bg-gray-50">
                 <img
@@ -169,8 +168,7 @@ const AuthView = () => {
             )}
           </div>
 
-
-          {/* Submit */}
+          { }
           <button
             type="submit"
             disabled={loading}

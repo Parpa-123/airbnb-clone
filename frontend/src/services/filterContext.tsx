@@ -30,7 +30,6 @@ export const FilterContextProvider = ({ children }: { children: React.ReactNode 
     );
 };
 
-
 export const useFilterContext = () => {
     const context = useContext(FilterContext);
     if (!context) {

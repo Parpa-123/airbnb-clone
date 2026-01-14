@@ -6,7 +6,6 @@ import type { Booking } from "../../../../types";
 const CancelledBookings = () => {
     const { data: bookings = [], isLoading, refetch } = useGetBookingsQuery(undefined);
 
-    // Filter for cancelled bookings
     const cancelledBookings = bookings.filter((booking: Booking) => {
         return booking.status === "CANCELLED" || booking.status === "FAILED";
     });

@@ -9,7 +9,6 @@ interface EditableSectionProps {
     children: (register: any, watch: any) => React.ReactNode;
 }
 
-
 export function EditableSection({ title, fields, listing, onPatch, children }: EditableSectionProps) {
     const { register, handleSubmit, reset, watch } = useForm();
 
@@ -41,15 +40,15 @@ export function EditableSection({ title, fields, listing, onPatch, children }: E
                     <button
                         type="button"
                         onClick={() => reset(listing)}
-                        className="px-5 py-2.5 border-2 border-gray-300 rounded-lg font-medium text-gray-700 
+                        className="px-5 py-2.5 border-2 border-gray-300 rounded-lg font-medium text-gray-700
                                    hover:border-gray-400 hover:bg-gray-50 transition-all duration-200 cursor-pointer"
                     >
                         Cancel
                     </button>
                     <button
                         type="submit"
-                        className="px-5 py-2.5 bg-linear-to-r from-[#FF385C] to-[#e03050] text-white 
-                                   rounded-lg font-medium shadow-md hover:shadow-lg hover:from-[#e03050] 
+                        className="px-5 py-2.5 bg-linear-to-r from-[#FF385C] to-[#e03050] text-white
+                                   rounded-lg font-medium shadow-md hover:shadow-lg hover:from-[#e03050]
                                    hover:to-[#c02848] transition-all duration-200 cursor-pointer"
                     >
                         Save Changes
@@ -60,7 +59,6 @@ export function EditableSection({ title, fields, listing, onPatch, children }: E
     );
 }
 
-// Backend image structure (from API)
 export interface BackendImage {
     name: string;
     image: string;
@@ -138,7 +136,6 @@ export function ListingImagesComponents(
         try {
             const formData = new FormData();
 
-            // Add new images
             newImages.forEach((file, index) => {
                 formData.append(`images[${index}]file`, file);
                 formData.append(
@@ -147,7 +144,6 @@ export function ListingImagesComponents(
                 );
             });
 
-            // Add images to delete (send URLs)
             if (imagesToDelete.length > 0) {
                 formData.append('delete_images', JSON.stringify(imagesToDelete));
             }
@@ -169,7 +165,7 @@ export function ListingImagesComponents(
             </h3>
 
             <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Existing Images */}
+                {}
                 {existingImages.length > 0 && (
                     <div>
                         <h4 className="text-sm font-medium text-gray-700 mb-3">
@@ -197,8 +193,8 @@ export function ListingImagesComponents(
                                             }}
                                         />
 
-                                        {/* Hover overlay */}
-                                        <div className="absolute inset-0 flex items-center justify-center rounded-lg 
+                                        {}
+                                        <div className="absolute inset-0 flex items-center justify-center rounded-lg
                                                         bg-black/0 transition-all">
                                             {isMarked ? (
                                                 <button
@@ -206,8 +202,8 @@ export function ListingImagesComponents(
                                                     onClick={() =>
                                                         undoDeletion(img.image)
                                                     }
-                                                    className="opacity-0 group-hover:opacity-100 
-                                                               bg-green-500 text-white px-4 py-2 
+                                                    className="opacity-0 group-hover:opacity-100
+                                                               bg-green-500 text-white px-4 py-2
                                                                rounded-lg font-medium transition-opacity cursor-pointer"
                                                 >
                                                     Undo
@@ -218,8 +214,8 @@ export function ListingImagesComponents(
                                                     onClick={() =>
                                                         markForDeletion(img.image)
                                                     }
-                                                    className="opacity-0 group-hover:opacity-100 
-                                                               bg-red-500 text-white px-4 py-2 
+                                                    className="opacity-0 group-hover:opacity-100
+                                                               bg-red-500 text-white px-4 py-2
                                                                rounded-lg font-medium transition-opacity cursor-pointer"
                                                 >
                                                     Delete
@@ -237,7 +233,7 @@ export function ListingImagesComponents(
                     </div>
                 )}
 
-                {/* New Images Preview */}
+                {}
                 {newImages.length > 0 && (
                     <div>
                         <h4 className="text-sm font-medium text-gray-700 mb-3">
@@ -256,15 +252,15 @@ export function ListingImagesComponents(
                                         className="w-full h-40 object-cover rounded-lg border-2 border-[#FF385C]"
                                     />
 
-                                    <div className="absolute inset-0 flex items-center justify-center rounded-lg 
+                                    <div className="absolute inset-0 flex items-center justify-center rounded-lg
                                                     bg-black/0 group-hover:bg-black/40 transition-all">
                                         <button
                                             type="button"
                                             onClick={() =>
                                                 removeNewImage(index)
                                             }
-                                            className="opacity-0 group-hover:opacity-100 
-                                                       bg-red-500 text-white px-4 py-2 
+                                            className="opacity-0 group-hover:opacity-100
+                                                       bg-red-500 text-white px-4 py-2
                                                        rounded-lg font-medium transition-opacity cursor-pointer"
                                         >
                                             Remove
@@ -280,11 +276,11 @@ export function ListingImagesComponents(
                     </div>
                 )}
 
-                {/* Upload Area */}
+                {}
                 {totalImages < MAX_IMAGES && (
-                    <label className="block border-2 border-dashed border-gray-300 
-                                      rounded-xl p-8 text-center cursor-pointer 
-                                      hover:border-[#FF385C] hover:bg-[#FF385C]/5 
+                    <label className="block border-2 border-dashed border-gray-300
+                                      rounded-xl p-8 text-center cursor-pointer
+                                      hover:border-[#FF385C] hover:bg-[#FF385C]/5
                                       transition-all">
                         <div className="space-y-2">
                             <div className="text-4xl">📸</div>
@@ -306,7 +302,7 @@ export function ListingImagesComponents(
                     </label>
                 )}
 
-                {/* Actions */}
+                {}
                 {(newImages.length > 0 || imagesToDelete.length > 0) && (
                     <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
                         <button
@@ -316,8 +312,8 @@ export function ListingImagesComponents(
                                 setImagesToDelete([]);
                             }}
                             disabled={uploading}
-                            className="px-5 py-2.5 border-2 border-gray-300 
-                                       rounded-lg font-medium text-gray-700 
+                            className="px-5 py-2.5 border-2 border-gray-300
+                                       rounded-lg font-medium text-gray-700
                                        hover:bg-gray-50 disabled:opacity-50 cursor-pointer"
                         >
                             Cancel
@@ -326,8 +322,8 @@ export function ListingImagesComponents(
                         <button
                             type="submit"
                             disabled={uploading}
-                            className="px-5 py-2.5 bg-[#FF385C] text-white 
-                                       rounded-lg font-medium shadow-md 
+                            className="px-5 py-2.5 bg-[#FF385C] text-white
+                                       rounded-lg font-medium shadow-md
                                        hover:bg-[#e03050] disabled:opacity-50 cursor-pointer"
                         >
                             {uploading ? "Uploading..." : "Upload Images"}
@@ -338,4 +334,3 @@ export function ListingImagesComponents(
         </section>
     );
 }
-

@@ -130,7 +130,6 @@ const GuestSelector: React.FC<GuestSelectorProps> = ({
     const open = Boolean(anchorEl);
     const id = open ? "guest-selector-popover" : undefined;
 
-    // Format display text
     const getDisplayText = () => {
         const parts: string[] = [];
         const totalGuests = guests.adults + guests.children;
@@ -139,19 +138,16 @@ const GuestSelector: React.FC<GuestSelectorProps> = ({
             return "Add guests";
         }
 
-        // Main guest count (adults + children)
         if (totalGuests === 1) {
             parts.push("1 guest");
         } else {
             parts.push(`${totalGuests} guests`);
         }
 
-        // Infants
         if (guests.infants > 0) {
             parts.push(guests.infants === 1 ? "1 infant" : `${guests.infants} infants`);
         }
 
-        // Pets
         if (guests.pets > 0) {
             parts.push(guests.pets === 1 ? "1 pet" : `${guests.pets} pets`);
         }
@@ -197,20 +193,20 @@ const GuestSelector: React.FC<GuestSelectorProps> = ({
                 }}
             >
                 <Box sx={{ p: 3 }}>
-                    {/* Adults */}
+                    {}
                     <GuestRow
                         label="Adults"
                         description="Ages 13 or above"
                         count={guests.adults}
                         onIncrement={() => updateGuests("adults", 1)}
                         onDecrement={() => updateGuests("adults", -1)}
-                        minCount={1} // At least 1 adult required
+                        minCount={1}
                         maxCount={16}
                     />
 
                     <Divider />
 
-                    {/* Children */}
+                    {}
                     <GuestRow
                         label="Children"
                         description="Ages 2–12"
@@ -222,7 +218,7 @@ const GuestSelector: React.FC<GuestSelectorProps> = ({
 
                     <Divider />
 
-                    {/* Infants */}
+                    {}
                     <GuestRow
                         label="Infants"
                         description="Under 2"
@@ -234,7 +230,7 @@ const GuestSelector: React.FC<GuestSelectorProps> = ({
 
                     <Divider />
 
-                    {/* Pets */}
+                    {}
                     <GuestRow
                         label="Pets"
                         description="Bringing a service animal?"
@@ -244,7 +240,7 @@ const GuestSelector: React.FC<GuestSelectorProps> = ({
                         maxCount={5}
                     />
 
-                    {/* Info text */}
+                    {}
                     {guests.pets > 0 && (
                         <Typography
                             variant="caption"

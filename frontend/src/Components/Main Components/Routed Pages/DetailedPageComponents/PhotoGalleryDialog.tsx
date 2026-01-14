@@ -14,20 +14,17 @@ interface PhotoGalleryDialogProps {
     onOpenChange: (open: boolean) => void;
 }
 
-/**
- * Airbnb-style photo grid with lightbox dialog.
- */
-const PhotoGalleryDialog: React.FC<PhotoGalleryDialogProps> = ({
+const PhotoGalleryDialog = React.memo(({
     images,
     title,
     open,
     onOpenChange,
-}) => {
+}: PhotoGalleryDialogProps) => {
     return (
         <div className="mt-6 relative">
-            {/* Images Grid */}
+            { }
             <div className="grid grid-cols-4 gap-2 h-[420px] rounded-xl overflow-hidden">
-                {/* Main Large Image */}
+                { }
                 <div className="col-span-2 row-span-2">
                     <img
                         src={images[0]?.image}
@@ -37,7 +34,7 @@ const PhotoGalleryDialog: React.FC<PhotoGalleryDialogProps> = ({
                     />
                 </div>
 
-                {/* Four Smaller Images */}
+                { }
                 {images.slice(1, 5).map((img, idx) => (
                     <div key={idx} className="col-span-1 row-span-1">
                         <img
@@ -50,7 +47,7 @@ const PhotoGalleryDialog: React.FC<PhotoGalleryDialogProps> = ({
                 ))}
             </div>
 
-            {/* View All Photos Button */}
+            { }
             <button
                 onClick={() => onOpenChange(true)}
                 className="absolute bottom-4 right-4 bg-white border border-gray-800 px-4 py-2 rounded-lg font-medium hover:bg-gray-50 transition cursor-pointer flex items-center gap-2"
@@ -72,7 +69,7 @@ const PhotoGalleryDialog: React.FC<PhotoGalleryDialogProps> = ({
                 View all photos
             </button>
 
-            {/* Photo Gallery Dialog */}
+            { }
             <Dialog.Root open={open} onOpenChange={onOpenChange}>
                 <Dialog.Portal>
                     <Dialog.Overlay className="fixed inset-0 bg-black/90 z-50" />
@@ -105,6 +102,6 @@ const PhotoGalleryDialog: React.FC<PhotoGalleryDialogProps> = ({
             </Dialog.Root>
         </div>
     );
-};
+});
 
 export default PhotoGalleryDialog;

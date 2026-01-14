@@ -30,9 +30,6 @@ const RATING_LABELS: [RatingKeys, string][] = [
     ["value", "Value"],
 ];
 
-/**
- * Dialog for submitting a review with star ratings.
- */
 const ReviewDialog: React.FC<ReviewDialogProps> = ({ open, onOpenChange, onSubmit }) => {
     const [ratings, setRatings] = useState<Record<RatingKeys, number>>({
         accuracy: 0,
@@ -50,7 +47,7 @@ const ReviewDialog: React.FC<ReviewDialogProps> = ({ open, onOpenChange, onSubmi
             review: formData.get("review"),
             ...ratings,
         });
-        // Reset ratings after successful submit
+
         setRatings({
             accuracy: 0,
             communication: 0,

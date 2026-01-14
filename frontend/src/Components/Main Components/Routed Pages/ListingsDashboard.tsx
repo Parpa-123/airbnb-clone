@@ -25,7 +25,6 @@ const ListingsDashboard: React.FC = () => {
     fetchListings();
   }, []);
 
-  /* ---------------- DELETE LISTING ---------------- */
   const handleDelete = async (id: number) => {
     const confirmed = window.confirm(
       "Are you sure you want to remove this listing? This action cannot be undone."
@@ -53,7 +52,7 @@ const ListingsDashboard: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      {/* Header */}
+      {}
       <div className="mb-6">
         <h1 className="text-2xl font-semibold text-gray-900">
           Your Listings
@@ -64,14 +63,14 @@ const ListingsDashboard: React.FC = () => {
         </p>
       </div>
 
-      {/* Listings Grid */}
+      {}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {listings.map((listing) => {
           const coverImage = listing.images?.[0]?.image;
 
           return (
             <div key={listing.id} className="group">
-              {/* Image */}
+              {}
               <div className="relative aspect-square rounded-xl overflow-hidden bg-gray-100">
                 {coverImage ? (
                   <img
@@ -85,9 +84,9 @@ const ListingsDashboard: React.FC = () => {
                   </div>
                 )}
 
-                {/* ACTION BUTTONS */}
+                {}
                 <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition">
-                  {/* Edit */}
+                  {}
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -98,7 +97,7 @@ const ListingsDashboard: React.FC = () => {
                     Edit
                   </button>
 
-                  {/* Delete */}
+                  {}
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -111,7 +110,7 @@ const ListingsDashboard: React.FC = () => {
                 </div>
               </div>
 
-              {/* Content (clickable) */}
+              {}
               <NavLink to={`/${listing.title_slug}`}>
                 <div className="mt-3 space-y-1">
                   <h3 className="text-sm font-medium text-gray-900 truncate">

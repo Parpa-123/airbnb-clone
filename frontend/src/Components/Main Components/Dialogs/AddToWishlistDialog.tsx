@@ -18,8 +18,6 @@ const AddToWishlistDialog: React.FC<AddToWishlistDialogProps> = ({
     const [wishlists, setWishlists] = useState<Wishlist[]>([]);
     const [selectedWishlists, setSelectedWishlists] = useState<string[]>([]);
 
-    /* ---------------- FETCH WISHLISTS ---------------- */
-
     useEffect(() => {
         if (open) {
             (async () => {
@@ -32,8 +30,6 @@ const AddToWishlistDialog: React.FC<AddToWishlistDialogProps> = ({
             })();
         }
     }, [open]);
-
-    /* ---------------- HANDLERS ---------------- */
 
     const handleCheckboxChange = (slug: string) => {
         setSelectedWishlists((prev) =>

@@ -1,9 +1,5 @@
 import { useState } from "react";
 
-/**
- * Custom hook to manage all dialog states in the Header component
- * Centralizes dialog state management for cleaner code
- */
 export const useDialogState = () => {
     const [loginOpen, setLoginOpen] = useState(false);
     const [signupOpen, setSignupOpen] = useState(false);

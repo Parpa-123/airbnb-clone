@@ -26,7 +26,6 @@ const CancelBookingButton: React.FC<CancelBookingButtonProps> = ({
             showSuccess(MESSAGES.BOOKING.CANCEL_SUCCESS)
             setDialogOpen(false)
 
-            // Call the callback if provided
             if (onSuccess) {
                 onSuccess()
             }
@@ -52,7 +51,7 @@ const CancelBookingButton: React.FC<CancelBookingButtonProps> = ({
                 {buttonText}
             </button>
 
-            {/* Confirmation Dialog */}
+            {}
             <Dialog.Root open={dialogOpen} onOpenChange={setDialogOpen}>
                 <Dialog.Portal>
                     <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50" />

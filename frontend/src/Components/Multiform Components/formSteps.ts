@@ -26,7 +26,6 @@ export interface Step {
     fields: StepField[];
 }
 
-// This function receives API options and returns form steps
 export const createFormSteps = (apiOptions: any): Step[] => {
     return [
         {

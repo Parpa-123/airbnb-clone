@@ -14,11 +14,9 @@ const BookingsOverview = () => {
 
     const orderId = searchParams.get("order_id");
 
-    // Payment status polling when order_id is present
     useEffect(() => {
         if (!orderId) return;
 
-        // Extract booking ID from order_id format: "booking_1_abc123" -> "1"
         const bookingIdMatch = orderId.match(/^booking_(\d+)_/);
         if (!bookingIdMatch) {
             console.error("Invalid order_id format:", orderId);
@@ -28,13 +26,12 @@ const BookingsOverview = () => {
         const bookingId = bookingIdMatch[1];
         let intervalId: number;
         let attemptCount = 0;
-        const MAX_ATTEMPTS_BEFORE_VERIFY = 5; // Try 5 times (10 seconds) before using verify endpoint
+        const MAX_ATTEMPTS_BEFORE_VERIFY = 5;
 
         const checkPaymentStatus = async () => {
             try {
                 attemptCount++;
 
-                // After MAX_ATTEMPTS_BEFORE_VERIFY, use the verify endpoint as fallback
                 if (attemptCount > MAX_ATTEMPTS_BEFORE_VERIFY) {
                     console.log("Webhook may have failed, using manual verification...");
                     const verifyRes = await axiosInstance.post(`/bookings/payments/verify/`, {
@@ -55,13 +52,12 @@ const BookingsOverview = () => {
                         setSearchParams({});
                         return;
                     }
-                    // If still pending, continue polling
+
                 } else {
-                    // Normal polling - check booking status (webhook should update it)
+
                     const res = await axiosInstance.get(`/bookings/${bookingId}/`);
                     const booking = res.data;
 
-                    // Check if booking and status exist
                     if (!booking || !booking.status) {
                         console.warn("Booking or status not found in response:", booking);
                         return;
@@ -72,7 +68,7 @@ const BookingsOverview = () => {
                     if (bookingStatus === "CONFIRMED") {
                         clearInterval(intervalId);
                         showSuccess(MESSAGES.BOOKING.PAYMENT_SUCCESS);
-                        refetch(); // Reload bookings after confirmation using RTK Query
+                        refetch();
                         setSearchParams({});
                     }
 
@@ -96,7 +92,7 @@ const BookingsOverview = () => {
             }
         };
 
-        checkPaymentStatus(); // Immediate check
+        checkPaymentStatus();
         intervalId = window.setInterval(checkPaymentStatus, 2000);
 
         return () => clearInterval(intervalId);

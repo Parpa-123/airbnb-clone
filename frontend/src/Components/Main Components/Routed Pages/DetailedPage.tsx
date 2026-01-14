@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { useParams, NavLink } from "react-router-dom";
 import dayjs from "dayjs";
 
@@ -9,12 +9,16 @@ import PhotoGalleryDialog from "./DetailedPageComponents/PhotoGalleryDialog";
 import ReviewDialog from "./DetailedPageComponents/ReviewDialog";
 import BookingCard from "./DetailedPageComponents/BookingCard";
 import { useListingDetails } from "./DetailedPageComponents/useListingDetails";
+import { useFilterContext } from "../../../services/filterContext";
+
+import AmenitiesDisplay from "./DetailedPageComponents/AmenitiesDisplay";
 
 import type { DatePickerRef } from "../../../types";
 
 const DetailedPage: React.FC = () => {
   const { slug } = useParams();
   const datePickerRef = useRef<DatePickerRef | null>(null);
+  const { filters } = useFilterContext();
 
   const { listing, reviews, loading, submitReview } = useListingDetails(slug);
 
@@ -25,19 +29,24 @@ const DetailedPage: React.FC = () => {
     checkOut: string | null;
   }>({ checkIn: null, checkOut: null });
 
-  // Initialize default dates
   useEffect(() => {
     const tomorrow = dayjs().add(1, "day").format("YYYY-MM-DD");
     const sixDaysLater = dayjs().add(6, "day").format("YYYY-MM-DD");
-    setSelectedDates({ checkIn: tomorrow, checkOut: sixDaysLater });
-  }, []);
 
-  const handleReviewSubmit = async (payload: Parameters<typeof submitReview>[0]) => {
+    setSelectedDates({
+      checkIn: filters.check_in || tomorrow,
+      checkOut: filters.check_out || sixDaysLater,
+    });
+  }, [filters.check_in, filters.check_out]);
+
+  const handleReviewSubmit = useCallback(async (payload: Parameters<typeof submitReview>[0]) => {
     const success = await submitReview(payload);
     if (success) {
       setOpenReviewDialog(false);
     }
-  };
+  }, [submitReview]);
+
+
 
   if (loading || !listing) {
     return (
@@ -49,7 +58,7 @@ const DetailedPage: React.FC = () => {
 
   return (
     <div className="max-w-[1120px] mx-auto px-6 py-8">
-      {/* Back Button */}
+      { }
       <NavLink
         to=".."
         className="inline-flex items-center gap-2 text-gray-600 hover:text-[#FF385C] transition-colors mb-4 group"
@@ -71,13 +80,13 @@ const DetailedPage: React.FC = () => {
         <span className="font-medium">Back</span>
       </NavLink>
 
-      {/* Title */}
+      { }
       <h1 className="text-2xl font-semibold text-gray-900">{listing.title}</h1>
       <p className="text-gray-600 underline">
         {listing.city}, {listing.country}
       </p>
 
-      {/* Photo Gallery */}
+      { }
       <PhotoGalleryDialog
         images={listing.images}
         title={listing.title}
@@ -85,9 +94,9 @@ const DetailedPage: React.FC = () => {
         onOpenChange={setOpenPhotoGallery}
       />
 
-      {/* Main Layout */}
+      { }
       <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-12">
-        {/* LEFT - Details */}
+        { }
         <div className="md:col-span-2">
           <div className="border-b pb-6">
             <p className="text-lg font-semibold">
@@ -99,6 +108,8 @@ const DetailedPage: React.FC = () => {
             </p>
           </div>
 
+
+
           <div className="py-6 border-b">
             <h2 className="text-xl font-semibold mb-3">About this place</h2>
             <p className="text-gray-700 whitespace-pre-line">
@@ -106,23 +117,14 @@ const DetailedPage: React.FC = () => {
             </p>
           </div>
 
-          <div id="amenities" className="py-6 border-b">
-            <h2 className="text-xl font-semibold mb-4">Amenities</h2>
-            <div className="grid grid-cols-2 gap-3">
-              {listing.amenities.map((a) => (
-                <div key={a.name} className="text-gray-700">
-                  ✓ {a.display_name}
-                </div>
-              ))}
-            </div>
-          </div>
+          <AmenitiesDisplay amenities={listing.amenities} />
 
           <div id="location" className="py-6 border-b">
             <h2 className="text-xl font-semibold mb-4">Location</h2>
             <ListMap city={listing.city} country={listing.country} />
           </div>
 
-          {/* Reviews Section */}
+          { }
           <div id="reviews" className="py-10 border-t mt-10 relative">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-semibold">Reviews</h2>
@@ -144,7 +146,7 @@ const DetailedPage: React.FC = () => {
           </div>
         </div>
 
-        {/* RIGHT - Booking */}
+        { }
         <BookingCard
           pricePerNight={listing.price_per_night}
           listingId={listing.id}

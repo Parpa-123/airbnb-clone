@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axiosInstance from "../../../../public/connect";
 import { showError, extractErrorMessage } from "../../../utils/toastMessages";
 import type { Listing } from "../../../types";
@@ -13,18 +13,14 @@ const WishlistDetail: React.FC = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
 
-  /* ---------------- HANDLERS ---------------- */
-
-  const handleRemove = async (listing: Listing) => {
+  const handleRemove = useCallback(async (listing: Listing) => {
     try {
       await axiosInstance.delete(`/wishlist/${slug}/delete/${listing.title_slug}`);
       setListings((prev) => prev.filter((l) => l.id !== listing.id));
     } catch (err: unknown) {
       showError(extractErrorMessage(err, "Failed to remove from wishlist"));
     }
-  };
-
-  /* ---------------- FETCH ---------------- */
+  }, [slug]);
 
   useEffect(() => {
     (async () => {
@@ -38,11 +34,9 @@ const WishlistDetail: React.FC = () => {
     })();
   }, [slug]);
 
-  /* ---------------- RENDER ---------------- */
-
   return (
     <div className="max-w-7xl mx-auto px-6 py-6">
-      {/* ---------- HEADER ---------- */}
+      { }
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-3">
           <button
@@ -61,14 +55,14 @@ const WishlistDetail: React.FC = () => {
         </div>
       </div>
 
-      {/* ---------- EMPTY STATE ---------- */}
+      { }
       {listings.length === 0 && (
         <div className="flex items-center justify-center h-[50vh] text-gray-500">
           No listings saved yet
         </div>
       )}
 
-      {/* ---------- LISTINGS GRID ---------- */}
+      { }
       {listings.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {listings.map((listing) => (

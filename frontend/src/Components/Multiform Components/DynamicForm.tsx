@@ -31,7 +31,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
     <form
       onSubmit={handleSubmit(handleNext)}
       className="
-        relative   
+        relative
         w-full max-w-3xl mx-auto
         bg-linear-to-br from-white to-gray-50
         rounded-2xl shadow-2xl
@@ -41,14 +41,14 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
         overflow-visible
       "
     >
-      {/* Fixed Header */}
+      {}
       <div className="p-8 pb-6 shrink-0 border-b border-gray-100">
         <h2 className="text-3xl font-bold bg-linear-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
           {step.title}
         </h2>
       </div>
 
-      {/* Scrollable Content Area (ONLY fields scroll) */}
+      {}
       <div className="flex-1 overflow-y-auto px-8 py-2 custom-scrollbar">
         <div className="space-y-6">
           {step.fields.map((field) => (
@@ -61,7 +61,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
         </div>
       </div>
 
-      {/* Fixed Footer */}
+      {}
       <div className="p-8 pt-6 shrink-0 border-t border-gray-100 bg-white/80 backdrop-blur-sm">
         <div className="flex items-center justify-between gap-4">
           {stepIndex > 0 && (

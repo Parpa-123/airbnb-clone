@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import dayjs from "dayjs";
 import DatePickerValue from "../../DatePicker";
 import { reserveAndPay } from "../../../../services/reserveAndPay";
-import { showError, MESSAGES } from "../../../../utils/toastMessages";
+import { showApiError, MESSAGES } from "../../../../utils/toastMessages";
 import type { DatePickerRef } from "../../../../types";
 
 interface BookingCardProps {
@@ -13,9 +13,6 @@ interface BookingCardProps {
     onDatesChange: (dates: { checkIn: string | null; checkOut: string | null }) => void;
 }
 
-/**
- * Sticky booking card with date picker, reserve button, and price breakdown.
- */
 const BookingCard: React.FC<BookingCardProps> = ({
     pricePerNight,
     listingId,
@@ -34,14 +31,14 @@ const BookingCard: React.FC<BookingCardProps> = ({
                 checkIn: datePickerRef.current?.getDates()?.checkIn,
                 checkOut: datePickerRef.current?.getDates()?.checkOut,
             });
-        } catch {
-            showError(MESSAGES.BOOKING.BOOKING_FAILED);
+        } catch (error) {
+            showApiError(error, MESSAGES.BOOKING.BOOKING_FAILED);
         } finally {
             setBookingLoading(false);
         }
     };
 
-    const renderPriceBreakdown = () => {
+    const priceBreakdown = React.useMemo(() => {
         const { checkIn, checkOut } = selectedDates;
         if (!checkIn || !checkOut) return null;
 
@@ -70,7 +67,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
                 </div>
             </div>
         );
-    };
+    }, [selectedDates, price]);
 
     return (
         <div className="sticky top-24 h-fit">
@@ -97,9 +94,9 @@ const BookingCard: React.FC<BookingCardProps> = ({
                 <p className="text-center text-sm text-gray-600 mt-3">
                     You won't be charged yet
                 </p>
-            </div>
 
-            {selectedDates.checkIn && selectedDates.checkOut && renderPriceBreakdown()}
+                {selectedDates.checkIn && selectedDates.checkOut && priceBreakdown}
+            </div>
         </div>
     );
 };

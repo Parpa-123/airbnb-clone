@@ -51,7 +51,7 @@ const ResetPasswordDialog: React.FC<ResetPasswordDialogProps> = ({
                         </Dialog.Close>
                     </div>
 
-                    {/* Reset Password Form */}
+                    {}
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
                             <label htmlFor="Username" className="block text-sm font-medium text-gray-700 mb-2">

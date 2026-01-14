@@ -9,7 +9,7 @@ const navItems = [
 const Booking: React.FC = () => {
     return (
         <div className="flex flex-col lg:flex-row min-h-screen bg-gray-50">
-            {/* Mobile/Tablet Navigation - visible only below lg breakpoint */}
+            {}
             <div className="lg:hidden bg-white border-b border-gray-200 shadow-sm">
                 <div className="p-4">
                     <h2 className="text-xl font-bold text-gray-900 mb-4">Bookings</h2>
@@ -33,7 +33,7 @@ const Booking: React.FC = () => {
                 </div>
             </div>
 
-            {/* Desktop Sidebar - hidden on mobile/tablet, visible on lg+ */}
+            {}
             <aside className="hidden lg:block w-64 bg-white border-r border-gray-200 shadow-sm">
                 <div className="p-6">
                     <h2 className="text-2xl font-bold text-gray-900 mb-6">Bookings</h2>
@@ -57,10 +57,10 @@ const Booking: React.FC = () => {
                 </div>
             </aside>
 
-            {/* Main content area */}
+            {}
             <main className="flex-1 overflow-y-auto">
                 <div className="max-w-7xl mx-auto p-4 lg:p-8">
-                    {/* This is where nested routes will render */}
+                    {}
                     <Outlet />
                 </div>
             </main>

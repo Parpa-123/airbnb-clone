@@ -1,5 +1,3 @@
-
-
 export interface Host {
     username: string;
     avatar: string | null;
@@ -16,8 +14,6 @@ export interface User {
     username: string;
 }
 
-// ============ Listing Types ============
-
 export interface ListingImage {
     name: string;
     image: string;
@@ -28,7 +24,6 @@ export interface Amenity {
     name: string;
     display_name: string;
 }
-
 
 export interface Listing {
     id: number;
@@ -48,14 +43,12 @@ export interface Listing {
     created_at?: string;
 }
 
-
 export interface ListingDetail extends Listing {
     description: string;
     address?: string;
     amenities: Amenity[];
     updated_at?: string;
 }
-
 
 export type BookingStatus = "confirmed" | "pending" | "cancelled" | "failed" | "paid" | "refunded" | "CONFIRMED" | "PENDING" | "CANCELLED" | "FAILED" | "COMPLETED";
 
@@ -101,4 +94,3 @@ export type DatePickerRef = {
     getDates: () => { checkIn: string | null; checkOut: string | null };
     getDateObjects: () => { checkIn: any | null; checkOut: any | null };
 };
-

@@ -21,10 +21,6 @@ interface AuthDialogsProps {
     loading: boolean;
 }
 
-/**
- * Container component for all authentication-related dialogs
- * Consolidates login, signup, logout, and reset password functionality
- */
 const AuthDialogs: React.FC<AuthDialogsProps> = ({
     loginOpen,
     signupOpen,
@@ -42,7 +38,7 @@ const AuthDialogs: React.FC<AuthDialogsProps> = ({
 }) => {
     return (
         <>
-            {/* Signup Dialog */}
+            {}
             <SignupDialog
                 open={signupOpen}
                 onOpenChange={onSignupOpenChange}
@@ -63,7 +59,7 @@ const AuthDialogs: React.FC<AuthDialogsProps> = ({
                 }}
             />
 
-            {/* Login Dialog */}
+            {}
             <LoginDialog
                 open={loginOpen}
                 onOpenChange={onLoginOpenChange}
@@ -79,14 +75,14 @@ const AuthDialogs: React.FC<AuthDialogsProps> = ({
                 }}
             />
 
-            {/* Logout Confirmation Dialog */}
+            {}
             <LogoutDialog
                 open={logoutOpen}
                 onOpenChange={onLogoutOpenChange}
                 onConfirm={onLogout}
             />
 
-            {/* Reset Password Dialog */}
+            {}
             <ResetPasswordDialog
                 open={resetPasswordOpen}
                 onOpenChange={onResetPasswordOpenChange}

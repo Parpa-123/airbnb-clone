@@ -31,7 +31,6 @@ const MultiStepController = () => {
         try {
             const formData = new FormData();
 
-            // Append all text fields
             formData.append("title", data.title);
             formData.append("description", data.description);
             formData.append("address", data.address);
@@ -44,28 +43,22 @@ const MultiStepController = () => {
             formData.append("bathrooms", data.bathrooms.toString());
             formData.append("price_per_night", data.price_per_night.toString());
 
-            // Guest policies
             formData.append("allows_children", String(data.allows_children ?? true));
             formData.append("allows_infants", String(data.allows_infants ?? true));
             formData.append("allows_pets", String(data.allows_pets ?? false));
 
-            // Append amenities as JSON array
             if (data.amenities && data.amenities.length > 0) {
                 data.amenities.forEach((amenity) => {
                     formData.append(`amenities`, amenity);
                 });
             }
 
-            // Append image files directly with their names
             if (data.images && data.images.length > 0) {
                 data.images.forEach((img, index) => {
                     formData.append(`images[${index}]file`, img.image);
                     formData.append(`images[${index}]name`, img.name);
                 });
             }
-
-
-
 
             await axiosInstance.post("/listings/", formData, {
                 headers: {
@@ -74,7 +67,6 @@ const MultiStepController = () => {
             });
             showSuccess(MESSAGES.LISTING.CREATE_SUCCESS);
 
-            // Reload the page to reset the form
             navigate(0);
         } catch (error: any) {
             console.error("=== Listing Creation Error ===");
@@ -93,13 +85,11 @@ const MultiStepController = () => {
     const handleNext = (data: Partial<EntireFormData>) => {
         dispatch(updateForm(data));
 
-        // If it's the final step → switch to review mode
         if (currentStep === totalSteps - 1) {
             setReviewMode(true);
             return;
         }
 
-        // Otherwise go to next form step
         setCurrentStep((prev) => prev + 1);
     };
 
@@ -133,7 +123,6 @@ const MultiStepController = () => {
             </div>
         );
 
-
     if (reviewMode) {
         return (
             <JsonReviewDisplay
@@ -146,7 +135,6 @@ const MultiStepController = () => {
             />
         );
     }
-
 
     return (
         <DynamicForm

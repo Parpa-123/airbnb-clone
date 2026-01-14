@@ -21,15 +21,11 @@ interface UseListingDetailsResult {
     submitReview: (payload: ReviewPayload) => Promise<boolean>;
 }
 
-/**
- * Custom hook for fetching listing details and reviews.
- */
 export function useListingDetails(slug: string | undefined): UseListingDetailsResult {
     const [listing, setListing] = useState<ListingDetail | null>(null);
     const [reviews, setReviews] = useState<Review[]>([]);
     const [loading, setLoading] = useState(true);
 
-    // Fetch listing
     useEffect(() => {
         if (!slug) return;
 
@@ -45,7 +41,6 @@ export function useListingDetails(slug: string | undefined): UseListingDetailsRe
         })();
     }, [slug]);
 
-    // Fetch reviews
     useEffect(() => {
         if (!listing?.id) return;
 
@@ -59,7 +54,6 @@ export function useListingDetails(slug: string | undefined): UseListingDetailsRe
         })();
     }, [listing?.id, slug]);
 
-    // Submit review
     const submitReview = async (payload: ReviewPayload): Promise<boolean> => {
         try {
             const res = await axiosInstance.post(`/reviews/${slug}`, payload);

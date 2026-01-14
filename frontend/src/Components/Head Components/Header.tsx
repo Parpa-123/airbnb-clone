@@ -6,14 +6,12 @@ import { useAuth } from "./hooks/useAuth";
 import { useDialogState } from "./hooks/useDialogState";
 import { useSearchFilters } from "./hooks/useSearchFilters";
 
-// Components
 import SearchBar from "./components/SearchBar";
 import UserMenu from "./components/UserMenu";
 import AuthDialogs from "./components/AuthDialogs";
 import HostingDialog from "./components/HostingDialog";
 
-// Services
-import { showError, showSuccess } from "../../utils/toastMessages";
+import { showApiError, showSuccess } from "../../utils/toastMessages";
 import axiosInstance from "../../../public/connect";
 
 const Header: React.FC = () => {
@@ -29,7 +27,6 @@ const Header: React.FC = () => {
     location.pathname.startsWith(path)
   );
 
-  // Window resize handler for responsive behavior
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 640) {
@@ -41,7 +38,6 @@ const Header: React.FC = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, [dialogState]);
 
-  // Logout handler
   const handleLogout = () => {
     logout();
     dialogState.setLogoutOpen(false);
@@ -49,7 +45,6 @@ const Header: React.FC = () => {
     navigate("/");
   };
 
-  // Reset password handler
   const handleResetPassword = async (username: string, newPassword: string) => {
     try {
       await axiosInstance.patch("/me/", {
@@ -60,40 +55,54 @@ const Header: React.FC = () => {
       dialogState.setResetPasswordOpen(false);
       dialogState.setMenuOpen(false);
     } catch (error) {
-      showError("Failed to reset password");
+      showApiError(error, "Failed to reset password");
     }
   };
 
+  const searchBarProps = React.useMemo(() => ({
+    shouldHide: shouldHideSearch,
+    checkIn: searchState.checkIn,
+    checkOut: searchState.checkOut,
+    guests: searchState.guests,
+    mobileSearchOpen: dialogState.mobileSearchOpen,
+    onMobileSearchOpenChange: dialogState.setMobileSearchOpen,
+    onCheckInChange: searchState.handleCheckInChange,
+    onCheckOutChange: searchState.handleCheckOutChange,
+    onGuestsChange: searchState.handleGuestsChange,
+    onCountryChange: searchState.handleCountryChange,
+    onCityChange: searchState.handleCityChange,
+    onClearFilters: searchState.clearFilters,
+    onSearch: searchState.handleSearch,
+  }), [
+    shouldHideSearch,
+    searchState.checkIn,
+    searchState.checkOut,
+    searchState.guests,
+    dialogState.mobileSearchOpen,
+    dialogState.setMobileSearchOpen,
+    searchState.handleCheckInChange,
+    searchState.handleCheckOutChange,
+    searchState.handleGuestsChange,
+    searchState.handleCountryChange,
+    searchState.handleCityChange,
+    searchState.clearFilters,
+    searchState.handleSearch,
+  ]);
+
   return (
     <>
-      {/* ================= HEADER ================= */}
+      { }
       <nav className="sticky top-0 z-50 bg-white border-b border-gray-200">
         <div className="max-w-screen-2xl mx-auto px-6 lg:px-12 py-4">
           <div className="flex flex-wrap md:flex-nowrap items-center justify-between gap-y-4 gap-x-4">
-            {/* Logo */}
+            { }
             <Link to="/" className="shrink-0 order-1 md:order-1">
               <img src={Img} alt="Logo" className="h-8 cursor-pointer" />
             </Link>
 
-
             <div className="order-3 md:order-2 w-full md:w-auto flex justify-center">
-              <SearchBar
-                shouldHide={shouldHideSearch}
-                checkIn={searchState.checkIn}
-                checkOut={searchState.checkOut}
-                guests={searchState.guests}
-                mobileSearchOpen={dialogState.mobileSearchOpen}
-                onMobileSearchOpenChange={dialogState.setMobileSearchOpen}
-                onCheckInChange={searchState.handleCheckInChange}
-                onCheckOutChange={searchState.handleCheckOutChange}
-                onGuestsChange={searchState.handleGuestsChange}
-                onCountryChange={searchState.handleCountryChange}
-                onCityChange={searchState.handleCityChange}
-                onClearFilters={searchState.clearFilters}
-                onSearch={searchState.handleSearch}
-              />
+              <SearchBar {...searchBarProps} />
             </div>
-
 
             <div className="order-2 md:order-3">
               <UserMenu
@@ -110,7 +119,7 @@ const Header: React.FC = () => {
         </div>
       </nav>
 
-      {/* ================= AUTH DIALOGS ================= */}
+      { }
       <AuthDialogs
         loginOpen={dialogState.loginOpen}
         signupOpen={dialogState.signupOpen}
@@ -131,7 +140,7 @@ const Header: React.FC = () => {
         loading={loading}
       />
 
-      {/* ================= HOSTING DIALOG ================= */}
+      { }
       <HostingDialog
         open={dialogState.hostingOpen}
         onOpenChange={dialogState.setHostingOpen}

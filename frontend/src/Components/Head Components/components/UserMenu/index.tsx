@@ -27,7 +27,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
 
     return (
         <div className="flex items-center gap-2">
-            {/* Airbnb your home */}
+            {}
             <button
                 onClick={onHostingClick}
                 className="hidden lg:block px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
@@ -35,7 +35,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
                 {user?.is_host ? "List your home" : "Airbnb your home"}
             </button>
 
-            {/* Wishlist */}
+            {}
             <Link
                 to="/me/wishlist"
                 className="hidden lg:block px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
@@ -43,7 +43,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
                 Wishlist
             </Link>
 
-            {/* User Menu Dropdown */}
+            {}
             <DropdownMenu.Root open={menuOpen} onOpenChange={onMenuOpenChange}>
                 <DropdownMenu.Trigger asChild>
                     <button className="flex items-center gap-3 pl-3 pr-2 py-1 border border-gray-300 rounded-full hover:shadow-md transition-shadow cursor-pointer">

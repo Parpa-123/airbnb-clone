@@ -1,19 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-// Interface for working with images in the form (before submission)
 export interface ImageWithName {
     name: string;
     image: File;
 }
 
-// Interface for submitting images to backend (after conversion to base64)
 export interface ImageData {
     name: string;
     image_data: string;
 }
 
-// Main form data interface matching backend schema
 export interface EntireFormData {
     title: string;
     property_type: string;
@@ -28,7 +25,7 @@ export interface EntireFormData {
     amenities: string[];
     price_per_night: number;
     images: ImageWithName[];
-    // Guest policies
+
     allows_children: boolean;
     allows_infants: boolean;
     allows_pets: boolean;
@@ -64,8 +61,6 @@ const slice = createSlice({
                 ...action.payload
             }
         },
-
-
 
         resetForm: () => initialState
     }

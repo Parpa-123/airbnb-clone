@@ -45,22 +45,17 @@ const ReusableTextField = ({
   const isCountry = name === "country";
   const isCity = name === "city";
 
-  // For country field, we need to track the ISO code separately for city filtering
-  // but send the full name to the backend
   const selectedCountryName = useWatch({
     control,
     name: "country",
   });
 
-  // Find the ISO code from the selected country name
   const selectedCountryIsoCode = selectedCountryName
     ? Country.getAllCountries().find((c) => c.name === selectedCountryName)?.isoCode
     : null;
 
-  // Local UI-only state for real files
   const [localFiles, setLocalFiles] = useState<File[]>([]);
 
-  // Build options dynamically for country & city selectors
   const cityOptions = selectedCountryIsoCode
     ? City.getCitiesOfCountry(selectedCountryIsoCode)?.map((c) => ({
       label: c.name,
@@ -72,7 +67,7 @@ const ReusableTextField = ({
   if (isCountry) {
     displayOptions = Country.getAllCountries().map((c) => ({
       label: c.name,
-      value: c.name,  // Send full country name to backend
+      value: c.name,
     }));
   }
   if (isCity) displayOptions = cityOptions;
@@ -83,9 +78,9 @@ const ReusableTextField = ({
       control={control}
       rules={rules}
       render={({ field, fieldState: { error } }) => {
-        const baseClassName = `w-full bg-white border-2 border-gray-200 rounded-xl px-4 py-3 
-                text-gray-900 shadow-sm hover:shadow-md focus:ring-2 focus:ring-[#FF385C]/30 
-                focus:border-[#FF385C] transition-all 
+        const baseClassName = `w-full bg-white border-2 border-gray-200 rounded-xl px-4 py-3
+                text-gray-900 shadow-sm hover:shadow-md focus:ring-2 focus:ring-[#FF385C]/30
+                focus:border-[#FF385C] transition-all
                 ${error ? "border-red-500" : ""}`;
 
         return (
@@ -94,7 +89,7 @@ const ReusableTextField = ({
               {label}
             </label>
 
-            {/* SELECT FIELD */}
+            {}
             {type === "select" && (
               <select {...field} disabled={disabled} className={baseClassName}>
                 <option value="">Select {label}</option>
@@ -106,7 +101,7 @@ const ReusableTextField = ({
               </select>
             )}
 
-            {/* TEXTAREA FIELD */}
+            {}
             {type === "textarea" && (
               <textarea
                 {...field}
@@ -116,7 +111,7 @@ const ReusableTextField = ({
               />
             )}
 
-            {/* CHECKBOX FIELD (multiple selection) */}
+            {}
             {type === "checkbox" && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
 
@@ -126,7 +121,7 @@ const ReusableTextField = ({
                   return (
                     <label
                       key={opt.value}
-                      className="flex items-center gap-2 cursor-pointer 
+                      className="flex items-center gap-2 cursor-pointer
                                 bg-white border rounded-lg p-3 hover:shadow-md"
                     >
                       <input
@@ -146,7 +141,7 @@ const ReusableTextField = ({
               </div>
             )}
 
-            {/* CHECKBOX SINGLE FIELD (boolean toggle) */}
+            {}
             {type === "checkbox_single" && (
               <label className="flex items-center gap-3 cursor-pointer bg-white border-2 border-gray-200 rounded-xl p-4 hover:shadow-md hover:border-[#FF385C] transition-all">
                 <input
@@ -159,10 +154,10 @@ const ReusableTextField = ({
               </label>
             )}
 
-            {/* FILE UPLOAD FIELD */}
+            {}
             {type === "file" && (
               <div className="space-y-4">
-                {/* Thumbnails + Editing Names */}
+                {}
                 {Array.isArray(field.value) &&
                   field.value.map((item: ImageWithName, idx: number) => {
                     const file = localFiles[idx];
@@ -207,7 +202,7 @@ const ReusableTextField = ({
                     );
                   })}
 
-                <label className="border-2 border-dashed border-gray-300 rounded-xl 
+                <label className="border-2 border-dashed border-gray-300 rounded-xl
                       flex justify-center items-center h-32 cursor-pointer
                       hover:border-[#FF385C] hover:bg-[#FF385C]/5">
                   <span className="text-lg text-gray-500">+ Upload Images</span>
@@ -240,7 +235,7 @@ const ReusableTextField = ({
               </div>
             )}
 
-            {/* DEFAULT INPUT */}
+            {}
             {["text", "number"].includes(type) && (
               <input
                 {...field}
@@ -252,7 +247,7 @@ const ReusableTextField = ({
               />
             )}
 
-            {/* Validation Error */}
+            {}
             {error && (
               <p className="text-red-500 text-sm">{error.message as string}</p>
             )}

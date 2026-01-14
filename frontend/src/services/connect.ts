@@ -1,4 +1,3 @@
-
 import axios from 'axios';
 
 const isDev = import.meta.env.MODE === 'development';
@@ -9,7 +8,6 @@ const axiosInstance = axios.create({
         "Content-Type": 'application/json'
     }
 });
-
 
 axiosInstance.interceptors.request.use(
     function (config) {

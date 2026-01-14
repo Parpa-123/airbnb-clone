@@ -1,4 +1,3 @@
-// central place for shared types
 export interface LoginType {
   username: string;
   password: string;

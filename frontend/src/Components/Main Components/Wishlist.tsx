@@ -1,19 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { FaPlusCircle, FaEllipsisH } from "react-icons/fa";
+import { FaPlusCircle } from "react-icons/fa";
 import axiosInstance from "../../../public/connect";
 import { showSuccess, showError, extractErrorMessage, MESSAGES } from "../../utils/toastMessages";
-import { Link } from "react-router-dom";
 import type { WishlistItem } from "../../types";
-
-/* ---------------- COMPONENT ---------------- */
+import WishlistCard from "./Cards/WishlistCard";
 
 const Wishlist: React.FC = () => {
   const [wishlistName, setWishlistName] = useState("");
   const [wishlists, setWishlists] = useState<WishlistItem[]>([]);
-
-  /* ---------------- FETCH ---------------- */
 
   useEffect(() => {
     (async () => {
@@ -26,9 +21,7 @@ const Wishlist: React.FC = () => {
     })();
   }, []);
 
-  /* ---------------- ACTIONS ---------------- */
-
-  const createWishlist = async () => {
+  const createWishlist = useCallback(async () => {
     try {
       const res = await axiosInstance.post("/wishlist/", {
         name: wishlistName,
@@ -39,9 +32,9 @@ const Wishlist: React.FC = () => {
     } catch (err: unknown) {
       showError(extractErrorMessage(err, "Failed to create wishlist"));
     }
-  };
+  }, [wishlistName]);
 
-  const deleteWishlist = async (slug: string) => {
+  const deleteWishlist = useCallback(async (slug: string) => {
     try {
       await axiosInstance.delete(`/wishlist/${slug}/`);
       setWishlists((prev) => prev.filter((item) => item.slug !== slug));
@@ -49,14 +42,12 @@ const Wishlist: React.FC = () => {
     } catch (err: unknown) {
       showError(extractErrorMessage(err, "Failed to delete wishlist"));
     }
-  };
-
-  /* ---------------- RENDER ---------------- */
+  }, []);
 
   return (
     <div className="px-6 py-10 max-w-5xl mx-auto">
       <Dialog.Root>
-        {/* Header */}
+        { }
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-2xl font-semibold">Wishlists</h2>
 
@@ -70,7 +61,7 @@ const Wishlist: React.FC = () => {
           )}
         </div>
 
-        {/* Empty State */}
+        { }
         {wishlists.length === 0 && (
           <Dialog.Trigger asChild>
             <div className="flex flex-col items-center justify-center h-[60vh] cursor-pointer text-center">
@@ -82,70 +73,20 @@ const Wishlist: React.FC = () => {
           </Dialog.Trigger>
         )}
 
-        {/* Wishlist Grid */}
+        { }
         {wishlists.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {wishlists.map((wishlist) => (
-              <div
+              <WishlistCard
                 key={wishlist.slug}
-                className="group relative cursor-pointer"
-              >
-                {/* Cover Image */}
-                <div className="relative aspect-4/3 rounded-2xl overflow-hidden bg-gray-200">
-                  <img
-                    src={
-                      wishlist.cover_image ||
-                      "https://images.unsplash.com/random/800x600?house"
-                    }
-                    alt={wishlist.name}
-                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
-
-                  {/* Dropdown Menu */}
-                  <DropdownMenu.Root>
-                    <DropdownMenu.Trigger asChild>
-                      <button className="absolute top-3 right-3 bg-white/90 rounded-full p-2 shadow hover:bg-white cursor-pointer">
-                        <FaEllipsisH />
-                      </button>
-                    </DropdownMenu.Trigger>
-
-                    <DropdownMenu.Portal>
-                      <DropdownMenu.Content
-                        sideOffset={8}
-                        className="w-40 bg-white border rounded-lg shadow-lg p-1"
-                      >
-                        <DropdownMenu.Item
-                          className="px-3 py-2 text-sm rounded hover:bg-gray-100 cursor-pointer"
-                        >
-                          Edit
-                        </DropdownMenu.Item>
-
-                        <DropdownMenu.Item
-                          className="px-3 py-2 text-sm rounded text-red-600 hover:bg-red-50 cursor-pointer"
-                          onClick={() => deleteWishlist(wishlist.slug)}
-                        >
-                          Delete
-                        </DropdownMenu.Item>
-                      </DropdownMenu.Content>
-                    </DropdownMenu.Portal>
-                  </DropdownMenu.Root>
-                </div>
-
-                {/* Info */}
-                {<Link to={`/wishlist/${wishlist.slug}`}><div className="mt-3">
-                  <p className="text-lg font-semibold text-gray-900">
-                    {wishlist.name}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    {wishlist.count ?? 0} saved
-                  </p>
-                </div></Link>}
-              </div>
+                wishlist={wishlist}
+                onDelete={deleteWishlist}
+              />
             ))}
           </div>
         )}
 
-        {/* Create Wishlist Dialog */}
+        { }
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 bg-black/50" />
           <Dialog.Content className="fixed top-1/2 left-1/2 w-[90vw] max-w-md -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl p-6 shadow-lg">

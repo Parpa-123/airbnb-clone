@@ -4,8 +4,6 @@ import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
 import { StarRating } from "./StarRating";
 import dayjs from "dayjs";
 
-/* --------------------------- TYPES --------------------------- */
-
 export interface User {
     email: string;
     username: string;
@@ -31,9 +29,7 @@ interface ReviewSliderProps {
     reviews: Review[];
 }
 
-/* --------------------------- COMPONENT --------------------------- */
-
-const ReviewSlider: React.FC<ReviewSliderProps> = ({ reviews }) => {
+const ReviewSlider = React.memo(({ reviews }: ReviewSliderProps) => {
     if (!reviews?.length) {
         return (
             <p className="text-gray-500 mt-4">
@@ -54,7 +50,7 @@ const ReviewSlider: React.FC<ReviewSliderProps> = ({ reviews }) => {
             {reviews.map((r) => (
                 <SwiperSlide key={r.id}>
                     <div className="border rounded-2xl p-5 h-full bg-white">
-                        {/* Header */}
+                        { }
                         <div className="flex items-center justify-between mb-2">
                             <span className="font-semibold">
                                 {r.user.username}
@@ -64,10 +60,10 @@ const ReviewSlider: React.FC<ReviewSliderProps> = ({ reviews }) => {
                             </span>
                         </div>
 
-                        {/* Avg rating */}
+                        { }
                         <StarRating value={Number(r.avg_rating)} readonly />
 
-                        {/* Review text */}
+                        { }
                         <p className="mt-3 text-gray-700 line-clamp-4">
                             {r.review}
                         </p>
@@ -76,6 +72,6 @@ const ReviewSlider: React.FC<ReviewSliderProps> = ({ reviews }) => {
             ))}
         </Swiper>
     );
-};
+});
 
 export default ReviewSlider;

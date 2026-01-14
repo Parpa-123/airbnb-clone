@@ -1,7 +1,5 @@
 import axiosInstance from "../../public/connect";
 
-/* ----------------------------- TYPES ----------------------------- */
-
 export interface ReserveAndPayParams {
     listingId: number;
     checkIn?: string | null;
@@ -37,15 +35,13 @@ declare global {
     }
 }
 
-/* ----------------------------- FUNCTION ----------------------------- */
-
 export const reserveAndPay = async ({
     listingId,
     checkIn,
     checkOut,
 }: ReserveAndPayParams): Promise<void> => {
     try {
-        // 1️⃣ Create booking
+
         const bookingRes = await axiosInstance.post<BookingResponse>("/bookings/create/", {
             listing: listingId,
             start_date: checkIn || null,
@@ -54,7 +50,6 @@ export const reserveAndPay = async ({
 
         const bookingId = bookingRes.data.id;
 
-        // 2️⃣ Create Cashfree order
         const paymentRes = await axiosInstance.post<PaymentResponse>(
             "/bookings/payments/create-order/",
             { booking_id: bookingId }
@@ -62,19 +57,15 @@ export const reserveAndPay = async ({
 
         const { payment_session_id } = paymentRes.data;
 
-        // 3️⃣ Initialize Cashfree v3 SDK
         const cashfree = window.Cashfree({
-            mode: "sandbox", // Change to "production" for live
+            mode: "sandbox",
         });
 
-        // 4️⃣ Open hosted checkout page
         cashfree.checkout({
             paymentSessionId: payment_session_id,
             redirectTarget: "_self",
         });
 
-        // ❗ Payment confirmation happens via webhook
-        // User will be redirected back after payment
     } catch (error: any) {
         console.error("Payment error:", error);
         console.error("Error response:", error.response?.data);

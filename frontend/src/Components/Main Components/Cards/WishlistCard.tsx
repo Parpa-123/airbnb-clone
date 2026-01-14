@@ -16,7 +16,7 @@ const WishlistCard: React.FC<WishlistCardProps> = React.memo(({
     return (
         <Link to={`/wishlist/${wishlist.slug}`}>
             <div className="group relative cursor-pointer">
-                {/* Cover Image */}
+                {}
                 <div className="relative aspect-4/3 rounded-2xl overflow-hidden bg-gray-200">
                     <img
                         src={
@@ -27,7 +27,7 @@ const WishlistCard: React.FC<WishlistCardProps> = React.memo(({
                         className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                     />
 
-                    {/* Dropdown Menu */}
+                    {}
                     {onDelete && (
                         <DropdownMenu.Root>
                             <DropdownMenu.Trigger asChild>
@@ -64,7 +64,7 @@ const WishlistCard: React.FC<WishlistCardProps> = React.memo(({
                     )}
                 </div>
 
-                {/* Info */}
+                {}
                 <div className="mt-3 space-y-1">
                     <h3 className="text-sm font-semibold text-gray-900 truncate">
                         {wishlist.name}

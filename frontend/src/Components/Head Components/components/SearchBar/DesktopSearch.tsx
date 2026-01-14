@@ -59,7 +59,7 @@ const DesktopSearch: React.FC<DesktopSearchProps> = ({
 
     return (
         <div className="hidden smd:flex items-center gap-0 border border-gray-300 rounded-full shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer">
-            {/* Where */}
+            {}
             <DropdownMenu.Root>
                 <DropdownMenu.Trigger asChild>
                     <button className="px-4 xz:px-6 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-full transition-colors cursor-pointer">
@@ -94,13 +94,13 @@ const DesktopSearch: React.FC<DesktopSearchProps> = ({
                 </DropdownMenu.Portal>
             </DropdownMenu.Root>
 
-            {/* Divider */}
+            {}
             <div className="h-6 w-px bg-gray-300" />
 
-            {/* Dates - Check-in & Check-out */}
+            {}
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <div className="flex items-center gap-0">
-                    {/* Check-in DatePicker */}
+                    {}
                     <DatePicker
                         label=""
                         value={checkIn}
@@ -165,10 +165,10 @@ const DesktopSearch: React.FC<DesktopSearchProps> = ({
                         }}
                     />
 
-                    {/* Divider */}
+                    {}
                     <div className="h-6 w-px bg-gray-300" />
 
-                    {/* Check-out DatePicker */}
+                    {}
                     <DatePicker
                         label=""
                         value={checkOut}
@@ -234,13 +234,13 @@ const DesktopSearch: React.FC<DesktopSearchProps> = ({
                 </div>
             </LocalizationProvider>
 
-            {/* Divider */}
+            {}
             <div className="h-6 w-px bg-gray-300" />
 
-            {/* Guests - Using GuestSelector */}
+            {}
             <GuestSelector guests={guests} onGuestsChange={onGuestsChange} />
 
-            {/* Clear Filters Button - Only show if any filters are active */}
+            {}
             {hasActiveFilters && (
                 <>
                     <div className="h-6 w-px bg-gray-300" />
@@ -254,7 +254,7 @@ const DesktopSearch: React.FC<DesktopSearchProps> = ({
                 </>
             )}
 
-            {/* Search Button */}
+            {}
             <button
                 onClick={onSearch}
                 className="bg-[#FF385C] text-white p-2 rounded-full m-1 hover:bg-[#E31C5F] transition-colors cursor-pointer"

@@ -33,7 +33,7 @@ const BookingCard: React.FC<BookingCardProps> = React.memo(({
 
     return (
         <div className="rounded-2xl border hover:shadow-lg transition overflow-hidden">
-            {/* Image */}
+            {}
             <div className="h-48 bg-gray-200">
                 <img
                     src={coverImage}
@@ -42,7 +42,7 @@ const BookingCard: React.FC<BookingCardProps> = React.memo(({
                 />
             </div>
 
-            {/* Content */}
+            {}
             <div className="p-4 space-y-2">
                 <div className="flex items-start justify-between gap-2">
                     <h3 className="font-semibold text-lg leading-tight line-clamp-2">

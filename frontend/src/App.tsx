@@ -1,23 +1,17 @@
 import React, { Suspense, lazy } from "react";
 
-// Layout
 import Header from "./Components/Head Components/Header";
 
-// Toast notifications
 import { ToastContainer } from "react-toastify";
 
-// React Router
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
-// Auth (not lazy - needed immediately)
 import LoginContextProvider from "../public/loginContext";
 import ProtectedRoute from "../public/ProtectedRoute";
 import { FilterContextProvider } from "./services/filterContext";
 
-// Loading component
 import Loading from "./Components/Loading";
 
-// Lazy loaded pages
 const AuthView = lazy(() => import("./Components/ProfileComponents/AuthView"));
 const DetailedPage = lazy(() => import("./Components/Main Components/Routed Pages/DetailedPage"));
 const PublicListings = lazy(() => import("./Components/Main Components/Routed Pages/PublicListings"));
@@ -33,9 +27,6 @@ const UpcomingBookings = lazy(() => import("./Components/Main Components/Routed 
 const PastBookings = lazy(() => import("./Components/Main Components/Routed Pages/Booking Routes/PastBookings"));
 const CancelledBookings = lazy(() => import("./Components/Main Components/Routed Pages/Booking Routes/CancelledBookings"));
 
-// ==============================
-// App Component
-// ==============================
 const App: React.FC = () => {
   return (
     <LoginContextProvider>
@@ -43,17 +34,15 @@ const App: React.FC = () => {
         <Router>
           <Suspense fallback={<Loading />}>
             <Routes>
-              {/* Layout route */}
+              {}
               <Route path="/" element={<Header />}>
-                {/* Home */}
+                {}
                 <Route index element={<PublicListings />} />
 
-                {/* Listing detail */}
+                {}
                 <Route path=":slug" element={<DetailedPage />} />
 
-
-
-                {/* Profile page */}
+                {}
                 <Route
                   path="me"
                   element={
@@ -63,7 +52,7 @@ const App: React.FC = () => {
                   }
                 />
 
-                {/* Host's listings dashboard - separate protected route */}
+                {}
                 <Route
                   path="me/listings"
                   element={
@@ -73,7 +62,7 @@ const App: React.FC = () => {
                   }
                 />
 
-                {/* Listing edit */}
+                {}
                 <Route
                   path="me/listings/:id/edit"
                   element={
@@ -83,7 +72,7 @@ const App: React.FC = () => {
                   }
                 />
 
-                {/* Wishlist */}
+                {}
                 <Route
                   path="me/wishlist"
                   element={
@@ -94,9 +83,7 @@ const App: React.FC = () => {
                 />
                 <Route path="/wishlist/:slug" element={<WishlistDetail />} />
 
-
-
-                {/* Bookings with nested routes */}
+                {}
                 <Route path="bookings" element={<Booking />}>
                   <Route index element={<Navigate to="overview" replace />} />
                   <Route path="overview" element={<BookingsOverview />} />
@@ -111,7 +98,7 @@ const App: React.FC = () => {
           </Suspense>
         </Router>
 
-        {/* Global Toast */}
+        {}
         <ToastContainer position="top-center" />
       </FilterContextProvider>
     </LoginContextProvider>

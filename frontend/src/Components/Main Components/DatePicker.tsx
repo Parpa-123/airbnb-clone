@@ -18,7 +18,6 @@ type DatePickerProps = {
 const DatePickerValue = ({ ref, onChange }: DatePickerProps) => {
   const { filters } = useFilterContext();
 
-  // Initialize dates from filter context if available, otherwise use defaults
   const [checkIn, setCheckIn] = React.useState<Dayjs | null>(() => {
     if (filters.check_in) {
       return dayjs(filters.check_in);
@@ -33,7 +32,6 @@ const DatePickerValue = ({ ref, onChange }: DatePickerProps) => {
     return dayjs().add(6, "day");
   });
 
-  // Update dates when filters change
   React.useEffect(() => {
     if (filters.check_in) {
       setCheckIn(dayjs(filters.check_in));
@@ -61,7 +59,7 @@ const DatePickerValue = ({ ref, onChange }: DatePickerProps) => {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div className="grid grid-cols-2 divide-x divide-gray-300">
-        {/* Check-in */}
+        {}
         <div className="p-3">
           <MUIDatePicker
             label="CHECK-IN"
@@ -102,7 +100,7 @@ const DatePickerValue = ({ ref, onChange }: DatePickerProps) => {
           />
         </div>
 
-        {/* Check-out */}
+        {}
         <div className="p-3">
           <MUIDatePicker
             label="CHECKOUT"
