@@ -1,11 +1,15 @@
 import axios from 'axios';
 
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api/';
+
 const axiosInstance = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api/',
+    baseURL: BASE_URL,
     headers: {
         "Content-Type": 'application/json'
     }
 });
+
+let isRefreshing = false;
 
 axiosInstance.interceptors.request.use(
     function (config) {
@@ -23,18 +27,35 @@ axiosInstance.interceptors.response.use(
     },
     async function (err) {
         const og_config = err.config;
-        if (err.response?.status === 401 && !og_config.retry) {
-            og_config.retry = true;
+
+        // Skip retry for refresh token endpoint to prevent infinite loops
+        if (og_config.url?.includes('/token/refresh/')) {
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+            return Promise.reject(err);
+        }
+
+        if (err.response?.status === 401 && !og_config._retry && !isRefreshing) {
+            og_config._retry = true;
+            isRefreshing = true;
+
             try {
                 const refresh = localStorage.getItem('refreshToken');
-                const res = await axiosInstance.post('/token/refresh/', { refresh: refresh });
+                if (!refresh) {
+                    throw new Error('No refresh token');
+                }
+
+                // Use plain axios to avoid interceptor loop
+                const res = await axios.post(`${BASE_URL}token/refresh/`, { refresh });
                 localStorage.setItem('accessToken', res.data.access);
-                og_config.headers['Authorization'] = `Bearer ${localStorage.getItem('accessToken')}`;
+                og_config.headers['Authorization'] = `Bearer ${res.data.access}`;
                 return axiosInstance(og_config);
             } catch (error) {
                 localStorage.removeItem('accessToken');
                 localStorage.removeItem('refreshToken');
                 return Promise.reject(error);
+            } finally {
+                isRefreshing = false;
             }
         }
         return Promise.reject(err);
@@ -42,3 +63,4 @@ axiosInstance.interceptors.response.use(
 )
 
 export default axiosInstance;
+
