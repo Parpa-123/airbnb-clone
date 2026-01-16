@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, lazy, Suspense } from "react";
 import { Outlet, useLocation, useNavigate, Link } from "react-router-dom";
 
 import Img from "../../assets/image.png";
@@ -9,7 +9,7 @@ import { useSearchFilters } from "./hooks/useSearchFilters";
 import SearchBar from "./components/SearchBar";
 import UserMenu from "./components/UserMenu";
 import AuthDialogs from "./components/AuthDialogs";
-import HostingDialog from "./components/HostingDialog";
+const HostingDialog = lazy(() => import("./components/HostingDialog"));
 
 import { showApiError, showSuccess } from "../../utils/toastMessages";
 import axiosInstance from "../../../public/connect";
@@ -141,11 +141,13 @@ const Header: React.FC = () => {
       />
 
       { }
-      <HostingDialog
-        open={dialogState.hostingOpen}
-        onOpenChange={dialogState.setHostingOpen}
-        isHost={user?.is_host}
-      />
+      <Suspense fallback={null}>
+        <HostingDialog
+          open={dialogState.hostingOpen}
+          onOpenChange={dialogState.setHostingOpen}
+          isHost={user?.is_host}
+        />
+      </Suspense>
 
       <Outlet />
     </>

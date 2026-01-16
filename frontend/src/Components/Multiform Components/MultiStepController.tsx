@@ -8,20 +8,22 @@ import axiosInstance from "../../../public/connect";
 import { showSuccess, showError, extractErrorMessage, MESSAGES } from "../../utils/toastMessages";
 import { useAuth } from "../Head Components/hooks/useAuth";
 import JsonReviewDisplay from "./JsonReviewDisplay";
-import { useNavigate } from "react-router-dom";
 
 interface RootState {
     form: EntireFormData;
 }
 
-const MultiStepController = () => {
+interface MultiStepControllerProps {
+    onClose?: () => void;
+}
+
+const MultiStepController = ({ onClose }: MultiStepControllerProps) => {
     const [currentStep, setCurrentStep] = useState(0);
     const [reviewMode, setReviewMode] = useState(false);
 
     const formData = useSelector((state: RootState) => state.form);
     const dispatch = useDispatch();
     const { user } = useAuth();
-    const navigate = useNavigate();
 
     const { options, loading, error, fetchOptions } = useOptionsService();
 
@@ -67,7 +69,7 @@ const MultiStepController = () => {
             });
             showSuccess(MESSAGES.LISTING.CREATE_SUCCESS);
 
-            navigate(0);
+            onClose?.();
         } catch (error: any) {
             console.error("=== Listing Creation Error ===");
             console.error("Full error:", error);

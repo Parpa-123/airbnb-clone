@@ -27,7 +27,7 @@ const HostingDialog: React.FC<HostingDialogProps> = ({
                         List your property and start earning.
                     </Dialog.Description>
 
-                    <MultiStepController />
+                    <MultiStepController onClose={() => onOpenChange(false)} />
 
                     <Dialog.Close asChild>
                         <button
