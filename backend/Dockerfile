@@ -13,20 +13,18 @@ RUN apk add --no-cache \
     zlib-dev \
     tzdata
 
-COPY requirements.txt /tmp/requirements.txt
+# Copy all application files first
+COPY . /app
 
+# Install dependencies from copied requirements.txt
 RUN python -m venv /py && \
     pip install --upgrade pip && \
-    pip install --no-cache-dir -r /tmp/requirements.txt && \
-    rm -rf /tmp && \
+    pip install --no-cache-dir -r /app/requirements.txt && \
     adduser --disabled-password --no-create-home django-user
-
-COPY . /app
 
 ENV DJANGO_SETTINGS_MODULE=conf.deployment_settings
 
-
-COPY build.sh /app/build.sh
+# Make build script executable (already copied via COPY . /app)
 RUN chmod +x /app/build.sh
 
 # Create static directory with proper permissions
