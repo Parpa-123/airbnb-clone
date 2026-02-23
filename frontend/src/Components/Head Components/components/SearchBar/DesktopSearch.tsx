@@ -59,7 +59,7 @@ const DesktopSearch: React.FC<DesktopSearchProps> = ({
 
     return (
         <div className="hidden smd:flex items-center gap-0 border border-gray-300 rounded-full shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer">
-            {}
+            { }
             <DropdownMenu.Root>
                 <DropdownMenu.Trigger asChild>
                     <button className="px-4 xz:px-6 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-full transition-colors cursor-pointer">
@@ -80,13 +80,13 @@ const DesktopSearch: React.FC<DesktopSearchProps> = ({
                         <div className="space-y-3">
                             <input
                                 placeholder="Which Country"
-                                className="w-full border border-gray-300 px-4 py-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#FF385C] transition"
+                                className="w-full border border-gray-300 px-4 py-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB] transition"
                                 onChange={(e) => onCountryChange(e.target.value)}
                             />
 
                             <input
                                 placeholder="City"
-                                className="w-full border border-gray-300 px-4 py-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#FF385C] transition"
+                                className="w-full border border-gray-300 px-4 py-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB] transition"
                                 onChange={(e) => onCityChange(e.target.value)}
                             />
                         </div>
@@ -94,13 +94,13 @@ const DesktopSearch: React.FC<DesktopSearchProps> = ({
                 </DropdownMenu.Portal>
             </DropdownMenu.Root>
 
-            {}
+            { }
             <div className="h-6 w-px bg-gray-300" />
 
-            {}
+            { }
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <div className="flex items-center gap-0">
-                    {}
+                    { }
                     <DatePicker
                         label=""
                         value={checkIn}
@@ -154,9 +154,9 @@ const DesktopSearch: React.FC<DesktopSearchProps> = ({
                                     },
                                     "& .MuiPickersDay-root": {
                                         "&.Mui-selected": {
-                                            backgroundColor: "#FF385C",
+                                            backgroundColor: "#2563EB",
                                             "&:hover": {
-                                                backgroundColor: "#E31C5F",
+                                                backgroundColor: "#1D4ED8",
                                             },
                                         },
                                     },
@@ -165,10 +165,10 @@ const DesktopSearch: React.FC<DesktopSearchProps> = ({
                         }}
                     />
 
-                    {}
+                    { }
                     <div className="h-6 w-px bg-gray-300" />
 
-                    {}
+                    { }
                     <DatePicker
                         label=""
                         value={checkOut}
@@ -221,9 +221,9 @@ const DesktopSearch: React.FC<DesktopSearchProps> = ({
                                     },
                                     "& .MuiPickersDay-root": {
                                         "&.Mui-selected": {
-                                            backgroundColor: "#FF385C",
+                                            backgroundColor: "#2563EB",
                                             "&:hover": {
-                                                backgroundColor: "#E31C5F",
+                                                backgroundColor: "#1D4ED8",
                                             },
                                         },
                                     },
@@ -234,13 +234,13 @@ const DesktopSearch: React.FC<DesktopSearchProps> = ({
                 </div>
             </LocalizationProvider>
 
-            {}
+            { }
             <div className="h-6 w-px bg-gray-300" />
 
-            {}
+            { }
             <GuestSelector guests={guests} onGuestsChange={onGuestsChange} />
 
-            {}
+            { }
             {hasActiveFilters && (
                 <>
                     <div className="h-6 w-px bg-gray-300" />
@@ -254,10 +254,10 @@ const DesktopSearch: React.FC<DesktopSearchProps> = ({
                 </>
             )}
 
-            {}
+            { }
             <button
                 onClick={onSearch}
-                className="bg-[#FF385C] text-white p-2 rounded-full m-1 hover:bg-[#E31C5F] transition-colors cursor-pointer"
+                className="bg-[#2563EB] text-white p-2 rounded-full m-1 hover:bg-[#1D4ED8] transition-colors cursor-pointer"
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"

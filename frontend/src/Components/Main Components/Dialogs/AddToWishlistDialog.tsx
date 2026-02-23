@@ -119,7 +119,7 @@ const AddToWishlistDialog: React.FC<AddToWishlistDialogProps> = ({
 
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 bg-[#FF385C] text-white rounded-lg cursor-pointer"
+                                    className="px-4 py-2 bg-[#2563EB] text-white rounded-lg cursor-pointer"
                                 >
                                     Save
                                 </button>

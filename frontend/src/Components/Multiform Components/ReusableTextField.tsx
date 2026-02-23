@@ -79,8 +79,8 @@ const ReusableTextField = ({
       rules={rules}
       render={({ field, fieldState: { error } }) => {
         const baseClassName = `w-full bg-white border-2 border-gray-200 rounded-xl px-4 py-3
-                text-gray-900 shadow-sm hover:shadow-md focus:ring-2 focus:ring-[#FF385C]/30
-                focus:border-[#FF385C] transition-all
+                text-gray-900 shadow-sm hover:shadow-md focus:ring-2 focus:ring-[#2563EB]/30
+                focus:border-[#2563EB] transition-all
                 ${error ? "border-red-500" : ""}`;
 
         return (
@@ -89,7 +89,7 @@ const ReusableTextField = ({
               {label}
             </label>
 
-            {}
+            { }
             {type === "select" && (
               <select {...field} disabled={disabled} className={baseClassName}>
                 <option value="">Select {label}</option>
@@ -101,7 +101,7 @@ const ReusableTextField = ({
               </select>
             )}
 
-            {}
+            { }
             {type === "textarea" && (
               <textarea
                 {...field}
@@ -111,7 +111,7 @@ const ReusableTextField = ({
               />
             )}
 
-            {}
+            { }
             {type === "checkbox" && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
 
@@ -141,23 +141,23 @@ const ReusableTextField = ({
               </div>
             )}
 
-            {}
+            { }
             {type === "checkbox_single" && (
-              <label className="flex items-center gap-3 cursor-pointer bg-white border-2 border-gray-200 rounded-xl p-4 hover:shadow-md hover:border-[#FF385C] transition-all">
+              <label className="flex items-center gap-3 cursor-pointer bg-white border-2 border-gray-200 rounded-xl p-4 hover:shadow-md hover:border-[#2563EB] transition-all">
                 <input
                   type="checkbox"
                   checked={field.value === true}
                   onChange={(e) => field.onChange(e.target.checked)}
-                  className="w-5 h-5 rounded border-gray-300 text-[#FF385C] focus:ring-[#FF385C] cursor-pointer"
+                  className="w-5 h-5 rounded border-gray-300 text-[#2563EB] focus:ring-[#2563EB] cursor-pointer"
                 />
                 <span className="text-gray-800 font-medium">{label}</span>
               </label>
             )}
 
-            {}
+            { }
             {type === "file" && (
               <div className="space-y-4">
-                {}
+                { }
                 {Array.isArray(field.value) &&
                   field.value.map((item: ImageWithName, idx: number) => {
                     const file = localFiles[idx];
@@ -204,7 +204,7 @@ const ReusableTextField = ({
 
                 <label className="border-2 border-dashed border-gray-300 rounded-xl
                       flex justify-center items-center h-32 cursor-pointer
-                      hover:border-[#FF385C] hover:bg-[#FF385C]/5">
+                      hover:border-[#2563EB] hover:bg-[#2563EB]/5">
                   <span className="text-lg text-gray-500">+ Upload Images</span>
 
                   <input
@@ -235,7 +235,7 @@ const ReusableTextField = ({
               </div>
             )}
 
-            {}
+            { }
             {["text", "number"].includes(type) && (
               <input
                 {...field}
@@ -247,7 +247,7 @@ const ReusableTextField = ({
               />
             )}
 
-            {}
+            { }
             {error && (
               <p className="text-red-500 text-sm">{error.message as string}</p>
             )}

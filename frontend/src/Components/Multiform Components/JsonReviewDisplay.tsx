@@ -39,14 +39,14 @@ const JsonReviewDisplay = ({
 
     return (
         <div className="w-full max-w-4xl mx-auto bg-white rounded-2xl shadow-xl border border-gray-100 h-[650px] flex flex-col overflow-hidden">
-            {}
+            { }
             <div className="p-6 sm:p-8 pb-4 shrink-0 border-b border-gray-100 bg-white">
                 <h2 className="text-3xl font-bold text-gray-900">{title}</h2>
             </div>
 
-            {}
+            { }
             <div className="flex-1 overflow-y-auto custom-scrollbar">
-                {}
+                { }
                 {images.length > 0 && (
                     <div className="h-64 sm:h-80 w-full bg-gray-100 relative overflow-hidden group">
                         <img
@@ -61,7 +61,7 @@ const JsonReviewDisplay = ({
                 )}
 
                 <div className="p-6 sm:p-8 space-y-8">
-                    {}
+                    { }
                     <div className="flex flex-col sm:flex-row justify-between items-start gap-4 border-b border-gray-100 pb-6">
                         <div>
                             <div className="flex items-center gap-2 text-rose-500 font-semibold text-sm uppercase tracking-wider mb-2">
@@ -81,12 +81,12 @@ const JsonReviewDisplay = ({
                         </div>
                     </div>
 
-                    {}
+                    { }
                     <div className="prose prose-gray max-w-none text-gray-600 leading-relaxed">
                         {description}
                     </div>
 
-                    {}
+                    { }
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 py-6 border-y border-gray-100">
                         <StatItem icon={<FaUsers />} label="Guests" value={max_guests} />
                         <StatItem icon={<FaHome />} label="Bedrooms" value={bhk_choice} />
@@ -94,7 +94,7 @@ const JsonReviewDisplay = ({
                         <StatItem icon={<FaBath />} label="Baths" value={bathrooms} />
                     </div>
 
-                    {}
+                    { }
                     <div className="grid md:grid-cols-2 gap-8">
                         <div>
                             <h4 className="font-bold text-gray-900 mb-4 text-lg">Guest Policies</h4>
@@ -119,7 +119,7 @@ const JsonReviewDisplay = ({
                 </div>
             </div>
 
-            {}
+            { }
             <div className="p-6 sm:p-8 pt-4 shrink-0 border-t border-gray-100 bg-white flex justify-between gap-4">
                 <button
                     onClick={onBack}
@@ -132,8 +132,8 @@ const JsonReviewDisplay = ({
 
                 <button
                     onClick={onSubmit}
-                    className="px-8 py-3 bg-linear-to-r from-[#FF385C] to-[#e03050]
-                        text-white font-semibold rounded-xl hover:from-[#e03050] hover:to-[#c02848]
+                    className="px-8 py-3 bg-linear-to-r from-[#2563EB] to-[#16A34A]
+                        text-white font-semibold rounded-xl hover:from-[#16A34A] hover:to-[#15803D]
                         transition-all duration-300 shadow-lg hover:shadow-xl
                         transform hover:scale-105 active:scale-95 cursor-pointer"
                 >

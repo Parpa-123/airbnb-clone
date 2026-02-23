@@ -51,7 +51,7 @@ const ResetPasswordDialog: React.FC<ResetPasswordDialogProps> = ({
                         </Dialog.Close>
                     </div>
 
-                    {}
+                    { }
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
                             <label htmlFor="Username" className="block text-sm font-medium text-gray-700 mb-2">
@@ -62,7 +62,7 @@ const ResetPasswordDialog: React.FC<ResetPasswordDialogProps> = ({
                                 id="Username"
                                 name="Username"
                                 required
-                                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF385C] focus:border-[#FF385C] transition-all"
+                                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2563EB] focus:border-[#2563EB] transition-all"
                                 placeholder="Enter your username"
                             />
                         </div>
@@ -77,7 +77,7 @@ const ResetPasswordDialog: React.FC<ResetPasswordDialogProps> = ({
                                 name="NewPassword"
                                 required
                                 minLength={8}
-                                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF385C] focus:border-[#FF385C] transition-all"
+                                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2563EB] focus:border-[#2563EB] transition-all"
                                 placeholder="Enter new password"
                             />
                         </div>
@@ -92,14 +92,14 @@ const ResetPasswordDialog: React.FC<ResetPasswordDialogProps> = ({
                                 name="ConfirmPassword"
                                 required
                                 minLength={8}
-                                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF385C] focus:border-[#FF385C] transition-all"
+                                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2563EB] focus:border-[#2563EB] transition-all"
                                 placeholder="Confirm new password"
                             />
                         </div>
 
                         <button
                             type="submit"
-                            className="w-full bg-[#FF385C] text-white py-3 rounded-lg font-semibold hover:bg-[#E31C5F] transition-colors cursor-pointer"
+                            className="w-full bg-[#2563EB] text-white py-3 rounded-lg font-semibold hover:bg-[#1D4ED8] transition-colors cursor-pointer"
                         >
                             Reset Password
                         </button>

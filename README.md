@@ -7,12 +7,12 @@
 </head>
 <body>
 
-  <h1>Airbnb Clone</h1>
+  <h1>Ghummakad-Niwas</h1>
 
   <a href="https://airbnb-clone-2-ogpo.onrender.com/">Here is the link to the Site.</a>
 
   <p>
-    A full-stack booking platform inspired by Airbnb.
+    A full-stack booking platform.
     This project demonstrates booking logic, payments, role-based authentication,
     and a responsive user interface.
   </p>
@@ -104,7 +104,7 @@
 
   <h3>1. Clone the Repository</h3>
   <pre><code>git clone https://github.com/Parpa-123/airbnb-clone.git
-cd airbnb-clone</code></pre>
+cd Ghummakad-Niwas</code></pre>
 
   <h3>2. Backend Setup</h3>
   <pre><code>cd backend

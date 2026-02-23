@@ -21,7 +21,7 @@ const ListingCard: React.FC<ListingCardProps> = React.memo(({
     return (
         <Link to={`/${listing.title_slug}`}>
             <div className="relative rounded-xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition cursor-pointer group">
-                {}
+                { }
                 <div className="relative aspect-4/3 bg-gray-100">
                     {coverImage ? (
                         <img
@@ -46,13 +46,13 @@ const ListingCard: React.FC<ListingCardProps> = React.memo(({
                         >
                             <FaHeart
                                 size={18}
-                                className={isFavorited ? "text-[#FF385C]" : "text-gray-400 hover:text-[#FF385C]"}
+                                className={isFavorited ? "text-[#2563EB]" : "text-gray-400 hover:text-[#2563EB]"}
                             />
                         </button>
                     )}
                 </div>
 
-                {}
+                { }
                 <div className="p-4">
                     <h3 className="text-lg font-semibold truncate">
                         {listing.title}

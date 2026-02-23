@@ -121,7 +121,7 @@ const AuthView = () => {
             <label className="block text-sm mb-1">Email</label>
             <input
               type="email"
-              className="w-full border p-3 rounded-lg focus:ring-2 focus:ring-red-600 outline-none"
+              className="w-full border p-3 rounded-lg focus:ring-2 focus:ring-blue-600 outline-none"
               {...form.getInputProps("email")}
             />
           </div>
@@ -131,7 +131,7 @@ const AuthView = () => {
             <label className="block text-sm mb-1">Phone Number</label>
             <input
               type="text"
-              className="w-full border p-3 rounded-lg focus:ring-2 focus:ring-red-600 outline-none"
+              className="w-full border p-3 rounded-lg focus:ring-2 focus:ring-blue-600 outline-none"
               {...form.getInputProps("phone")}
             />
           </div>
@@ -172,7 +172,7 @@ const AuthView = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-red-600 hover:bg-red-700 disabled:opacity-50 transition text-white p-3 rounded-lg font-semibold"
+            className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 transition text-white p-3 rounded-lg font-semibold"
           >
             {loading ? "Saving..." : "Save Changes"}
           </button>

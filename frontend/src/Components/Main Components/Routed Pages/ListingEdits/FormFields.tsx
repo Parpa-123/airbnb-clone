@@ -25,7 +25,7 @@ export function FormInput({
             <input
                 type={type}
                 {...register(name, options)}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF385C] focus:border-[#FF385C] transition-all"
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2563EB] focus:border-[#2563EB] transition-all"
             />
         </div>
     );
@@ -60,7 +60,7 @@ export function FormSelect({
             </label>
             <select
                 {...register(name, options)}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF385C] focus:border-[#FF385C] transition-all bg-white"
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2563EB] focus:border-[#2563EB] transition-all bg-white"
             >
                 {selectOptions.map((opt) => (
                     <option key={opt.value} value={opt.value}>
@@ -80,11 +80,11 @@ interface FormCheckboxProps {
 
 export function FormCheckbox({ label, name, register }: FormCheckboxProps) {
     return (
-        <label className="flex items-center gap-3 p-3 border border-gray-300 rounded-lg hover:border-[#FF385C] hover:bg-gray-50 transition-all cursor-pointer">
+        <label className="flex items-center gap-3 p-3 border border-gray-300 rounded-lg hover:border-[#2563EB] hover:bg-gray-50 transition-all cursor-pointer">
             <input
                 type="checkbox"
                 {...register(name)}
-                className="w-4 h-4 text-[#FF385C] border-gray-300 rounded focus:ring-[#FF385C] focus:ring-2"
+                className="w-4 h-4 text-[#2563EB] border-gray-300 rounded focus:ring-[#2563EB] focus:ring-2"
             />
             <span className="text-sm text-gray-700">{label}</span>
         </label>
@@ -114,7 +114,7 @@ export function FormTextarea({
             <textarea
                 {...register(name)}
                 rows={rows}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF385C] focus:border-[#FF385C] transition-all resize-none"
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2563EB] focus:border-[#2563EB] transition-all resize-none"
             />
         </div>
     );

@@ -9,7 +9,7 @@ const navItems = [
 const Booking: React.FC = () => {
     return (
         <div className="flex flex-col lg:flex-row min-h-screen bg-gray-50">
-            {}
+            { }
             <div className="lg:hidden bg-white border-b border-gray-200 shadow-sm">
                 <div className="p-4">
                     <h2 className="text-xl font-bold text-gray-900 mb-4">Bookings</h2>
@@ -21,7 +21,7 @@ const Booking: React.FC = () => {
                                 to={item.path}
                                 className={({ isActive }) =>
                                     `px-4 py-3 rounded-lg font-medium transition-colors whitespace-nowrap ${isActive
-                                        ? "bg-[#FF385C] text-white"
+                                        ? "bg-[#2563EB] text-white"
                                         : "text-gray-700 hover:bg-gray-100"
                                     }`
                                 }
@@ -33,7 +33,7 @@ const Booking: React.FC = () => {
                 </div>
             </div>
 
-            {}
+            { }
             <aside className="hidden lg:block w-64 bg-white border-r border-gray-200 shadow-sm">
                 <div className="p-6">
                     <h2 className="text-2xl font-bold text-gray-900 mb-6">Bookings</h2>
@@ -45,7 +45,7 @@ const Booking: React.FC = () => {
                                 to={item.path}
                                 className={({ isActive }) =>
                                     `block px-4 py-3 rounded-lg font-medium transition-colors ${isActive
-                                        ? "bg-[#FF385C] text-white"
+                                        ? "bg-[#2563EB] text-white"
                                         : "text-gray-700 hover:bg-gray-100"
                                     }`
                                 }
@@ -57,10 +57,10 @@ const Booking: React.FC = () => {
                 </div>
             </aside>
 
-            {}
+            { }
             <main className="flex-1 overflow-y-auto">
                 <div className="max-w-7xl mx-auto p-4 lg:p-8">
-                    {}
+                    { }
                     <Outlet />
                 </div>
             </main>

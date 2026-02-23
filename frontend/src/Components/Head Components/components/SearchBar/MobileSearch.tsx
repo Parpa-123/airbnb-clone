@@ -85,24 +85,24 @@ const MobileSearch: React.FC<MobileSearchProps> = ({
                             </Dialog.Close>
                         </div>
 
-                        {}
+                        { }
                         <div className="space-y-4">
-                            {}
+                            { }
                             <div>
                                 <label className="block text-xs font-semibold text-gray-900 mb-2">Where</label>
                                 <input
                                     placeholder="Country"
-                                    className="w-full border border-gray-300 px-4 py-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#FF385C] transition"
+                                    className="w-full border border-gray-300 px-4 py-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB] transition"
                                     onChange={(e) => onCountryChange(e.target.value)}
                                 />
                                 <input
                                     placeholder="City"
-                                    className="w-full border border-gray-300 px-4 py-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#FF385C] transition mt-2"
+                                    className="w-full border border-gray-300 px-4 py-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB] transition mt-2"
                                     onChange={(e) => onCityChange(e.target.value)}
                                 />
                             </div>
 
-                            {}
+                            { }
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <div>
                                     <label className="block text-xs font-semibold text-gray-900 mb-2">When</label>
@@ -141,13 +141,13 @@ const MobileSearch: React.FC<MobileSearchProps> = ({
                                 </div>
                             </LocalizationProvider>
 
-                            {}
+                            { }
                             <div>
                                 <label className="block text-xs font-semibold text-gray-900 mb-2">Who</label>
                                 <GuestSelector guests={guests} onGuestsChange={onGuestsChange} />
                             </div>
 
-                            {}
+                            { }
                             <div className="flex gap-3 pt-2">
                                 <button
                                     type="button"
@@ -160,7 +160,7 @@ const MobileSearch: React.FC<MobileSearchProps> = ({
                                 <Dialog.Close asChild>
                                     <button
                                         onClick={onSearch}
-                                        className="flex-1 bg-[#FF385C] text-white py-3.5 rounded-lg font-semibold hover:bg-[#E31C5F] transition-colors cursor-pointer"
+                                        className="flex-1 bg-[#2563EB] text-white py-3.5 rounded-lg font-semibold hover:bg-[#1D4ED8] transition-colors cursor-pointer"
                                     >
                                         <div className="flex items-center justify-center gap-2">
                                             <svg

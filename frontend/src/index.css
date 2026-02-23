@@ -30,7 +30,7 @@ body {
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(to bottom, #FF385C, #e03050);
+  background: linear-gradient(to bottom, #2563EB, #1D4ED8);
 }
 
 /* Firefox Custom Scrollbar */
@@ -69,6 +69,6 @@ body {
   }
 
   .airbnb-pagination .swiper-pagination-bullet-active {
-    @apply bg-[#FF385C] w-[10px] h-[10px];
+    @apply bg-[#2563EB] w-[10px] h-[10px];
   }
 }

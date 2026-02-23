@@ -1,7 +1,7 @@
 import React, { useEffect, lazy, Suspense } from "react";
 import { Outlet, useLocation, useNavigate, Link } from "react-router-dom";
 
-import Img from "../../assets/image.png";
+import Img from "../../assets/image.svg";
 import { useAuth } from "./hooks/useAuth";
 import { useDialogState } from "./hooks/useDialogState";
 import { useSearchFilters } from "./hooks/useSearchFilters";
