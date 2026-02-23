@@ -247,3 +247,49 @@ class PrivateListingsTest(TestCase):
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
 
         self.assertEqual(Listings.objects.count(), 0)
+
+    def test_no_listing_without_phone_number(self):
+
+        user_no_phone = User.objects.create_user(
+
+            email='nophone@example.com',
+
+            password='testpass123',
+
+            username='nophoneuser',
+
+        )
+
+        self.client.force_authenticate(user=user_no_phone)
+
+        payload = {
+
+            "title": "No Phone Listing",
+
+            "description": "This should fail.",
+
+            "address": "123 No Phone St",
+
+            "country": "India",
+
+            "city": "Delhi",
+
+            "property_type": "apartment",
+
+            "max_guests": 4,
+
+            "bhk_choice": 2,
+
+            "bed_choice": 3,
+
+            "bathrooms": 2.0,
+
+            "price_per_night": "59.99",
+
+        }
+
+        res = self.client.post(LIST_API_URL, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+        self.client.force_authenticate(user=self.testuser)

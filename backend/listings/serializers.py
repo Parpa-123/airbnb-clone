@@ -372,6 +372,10 @@ class CreateUpdateListSerializer(serializers.ModelSerializer):
 
                 attrs['images'] = images_list
 
+        if request and not request.user.phone:
+
+            raise serializers.ValidationError("Must have a phone number to list a property.")
+
         return attrs
 
     def create(self, validated_data):
