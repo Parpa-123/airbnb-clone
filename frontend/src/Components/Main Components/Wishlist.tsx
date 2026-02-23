@@ -53,7 +53,7 @@ const Wishlist: React.FC = () => {
 
           {wishlists.length > 0 && (
             <Dialog.Trigger asChild>
-              <button className="flex items-center gap-2 text-[#2563EB] hover:opacity-80 cursor-pointer">
+              <button className="flex items-center gap-2 text-[#22C55E] hover:opacity-80 cursor-pointer">
                 <FaPlusCircle size={22} />
                 <span className="text-sm font-medium">Add</span>
               </button>
@@ -65,8 +65,8 @@ const Wishlist: React.FC = () => {
         {wishlists.length === 0 && (
           <Dialog.Trigger asChild>
             <div className="flex flex-col items-center justify-center h-[60vh] cursor-pointer text-center">
-              <FaPlusCircle size={96} className="text-[#2563EB]" />
-              <p className="mt-6 text-lg font-medium text-[#2563EB]">
+              <FaPlusCircle size={96} className="text-[#22C55E]" />
+              <p className="mt-6 text-lg font-medium text-[#22C55E]">
                 Create your first wishlist
               </p>
             </div>

@@ -2,10 +2,12 @@
 
 @theme {
   --font-sans: "Nunito Sans", sans-serif;
-  
+
   /* Custom breakpoints for responsive search bar */
-  --breakpoint-smd: 640px;   /* Small-medium devices (tablets) */
-  --breakpoint-xz: 1024px;    /* Extra-large devices (desktops) */
+  --breakpoint-smd: 640px;
+  /* Small-medium devices (tablets) */
+  --breakpoint-xz: 1024px;
+  /* Extra-large devices (desktops) */
 }
 
 body {
@@ -30,7 +32,7 @@ body {
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(to bottom, #2563EB, #1D4ED8);
+  background: linear-gradient(to bottom, #22C55E, #16A34A);
 }
 
 /* Firefox Custom Scrollbar */
@@ -69,6 +71,6 @@ body {
   }
 
   .airbnb-pagination .swiper-pagination-bullet-active {
-    @apply bg-[#2563EB] w-[10px] h-[10px];
+    @apply bg-[#22C55E] w-[10px] h-[10px];
   }
 }

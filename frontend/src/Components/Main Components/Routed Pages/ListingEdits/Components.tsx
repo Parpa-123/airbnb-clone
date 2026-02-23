@@ -249,7 +249,7 @@ export function ListingImagesComponents(
                                     <img
                                         src={URL.createObjectURL(file)}
                                         alt={file.name}
-                                        className="w-full h-40 object-cover rounded-lg border-2 border-[#2563EB]"
+                                        className="w-full h-40 object-cover rounded-lg border-2 border-[#22C55E]"
                                     />
 
                                     <div className="absolute inset-0 flex items-center justify-center rounded-lg
@@ -280,7 +280,7 @@ export function ListingImagesComponents(
                 {totalImages < MAX_IMAGES && (
                     <label className="block border-2 border-dashed border-gray-300
                                       rounded-xl p-8 text-center cursor-pointer
-                                      hover:border-[#2563EB] hover:bg-[#2563EB]/5
+                                      hover:border-[#22C55E] hover:bg-[#22C55E]/5
                                       transition-all">
                         <div className="space-y-2">
                             <div className="text-4xl">📸</div>

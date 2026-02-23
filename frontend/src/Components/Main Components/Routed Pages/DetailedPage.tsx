@@ -61,7 +61,7 @@ const DetailedPage: React.FC = () => {
       { }
       <NavLink
         to=".."
-        className="inline-flex items-center gap-2 text-gray-600 hover:text-[#2563EB] transition-colors mb-4 group"
+        className="inline-flex items-center gap-2 text-gray-600 hover:text-[#22C55E] transition-colors mb-4 group"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

@@ -7,7 +7,7 @@ const Loading: React.FC = () => {
                 { }
                 <div className="relative w-16 h-16">
                     <div className="absolute inset-0 rounded-full border-4 border-gray-200"></div>
-                    <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-[#2563EB] animate-spin"></div>
+                    <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-[#22C55E] animate-spin"></div>
                 </div>
 
                 { }

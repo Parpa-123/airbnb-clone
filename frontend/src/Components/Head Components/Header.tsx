@@ -97,7 +97,7 @@ const Header: React.FC = () => {
           <div className="flex flex-wrap md:flex-nowrap items-center justify-between gap-y-4 gap-x-4">
             { }
             <Link to="/" className="shrink-0 order-1 md:order-1">
-              <img src={Img} alt="Logo" className="h-8 cursor-pointer" />
+              <img src={Img} alt="Logo" className="h-12 cursor-pointer" />
             </Link>
 
             <div className="order-3 md:order-2 w-full md:w-auto flex justify-center">

@@ -46,7 +46,7 @@ const ListingCard: React.FC<ListingCardProps> = React.memo(({
                         >
                             <FaHeart
                                 size={18}
-                                className={isFavorited ? "text-[#2563EB]" : "text-gray-400 hover:text-[#2563EB]"}
+                                className={isFavorited ? "text-[#22C55E]" : "text-gray-400 hover:text-[#22C55E]"}
                             />
                         </button>
                     )}

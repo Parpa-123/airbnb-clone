@@ -10,7 +10,7 @@ const ListingEditPage = () => {
         return (
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
                 <div className="text-center">
-                    <div className="animate-spin inline-block w-10 h-10 border-4 border-gray-300 border-t-[#2563EB] rounded-full mb-4"></div>
+                    <div className="animate-spin inline-block w-10 h-10 border-4 border-gray-300 border-t-[#22C55E] rounded-full mb-4"></div>
                     <p className="text-gray-600 font-medium">Loading listing details...</p>
                 </div>
             </div>
@@ -23,7 +23,7 @@ const ListingEditPage = () => {
                 <div className="mb-8">
                     <NavLink
                         to=".."
-                        className="inline-flex items-center gap-2 text-gray-600 hover:text-[#2563EB] transition-colors mb-4 group"
+                        className="inline-flex items-center gap-2 text-gray-600 hover:text-[#22C55E] transition-colors mb-4 group"
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -181,14 +181,14 @@ const ListingEditPage = () => {
                                         return (
                                             <label
                                                 key={opt.value}
-                                                className="flex items-center gap-3 p-3 border border-gray-300 rounded-lg hover:border-[#2563EB] hover:bg-gray-50 transition-all cursor-pointer"
+                                                className="flex items-center gap-3 p-3 border border-gray-300 rounded-lg hover:border-[#22C55E] hover:bg-gray-50 transition-all cursor-pointer"
                                             >
                                                 <input
                                                     type="checkbox"
                                                     value={opt.value}
                                                     {...register("amenities")}
                                                     defaultChecked={isChecked}
-                                                    className="w-4 h-4 text-[#2563EB] border-gray-300 rounded focus:ring-[#2563EB] focus:ring-2"
+                                                    className="w-4 h-4 text-[#22C55E] border-gray-300 rounded focus:ring-[#22C55E] focus:ring-2"
                                                 />
                                                 <span className="text-sm text-gray-700">{opt.label}</span>
                                             </label>

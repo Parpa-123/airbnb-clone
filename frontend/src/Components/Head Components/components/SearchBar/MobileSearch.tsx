@@ -92,12 +92,12 @@ const MobileSearch: React.FC<MobileSearchProps> = ({
                                 <label className="block text-xs font-semibold text-gray-900 mb-2">Where</label>
                                 <input
                                     placeholder="Country"
-                                    className="w-full border border-gray-300 px-4 py-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB] transition"
+                                    className="w-full border border-gray-300 px-4 py-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#22C55E] transition"
                                     onChange={(e) => onCountryChange(e.target.value)}
                                 />
                                 <input
                                     placeholder="City"
-                                    className="w-full border border-gray-300 px-4 py-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB] transition mt-2"
+                                    className="w-full border border-gray-300 px-4 py-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#22C55E] transition mt-2"
                                     onChange={(e) => onCityChange(e.target.value)}
                                 />
                             </div>

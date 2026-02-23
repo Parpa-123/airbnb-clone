@@ -121,7 +121,7 @@ const AuthView = () => {
             <label className="block text-sm mb-1">Email</label>
             <input
               type="email"
-              className="w-full border p-3 rounded-lg focus:ring-2 focus:ring-blue-600 outline-none"
+              className="w-full border p-3 rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
               {...form.getInputProps("email")}
             />
           </div>
@@ -131,7 +131,7 @@ const AuthView = () => {
             <label className="block text-sm mb-1">Phone Number</label>
             <input
               type="text"
-              className="w-full border p-3 rounded-lg focus:ring-2 focus:ring-blue-600 outline-none"
+              className="w-full border p-3 rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
               {...form.getInputProps("phone")}
             />
           </div>

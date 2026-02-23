@@ -80,13 +80,13 @@ const DesktopSearch: React.FC<DesktopSearchProps> = ({
                         <div className="space-y-3">
                             <input
                                 placeholder="Which Country"
-                                className="w-full border border-gray-300 px-4 py-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB] transition"
+                                className="w-full border border-gray-300 px-4 py-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#22C55E] transition"
                                 onChange={(e) => onCountryChange(e.target.value)}
                             />
 
                             <input
                                 placeholder="City"
-                                className="w-full border border-gray-300 px-4 py-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB] transition"
+                                className="w-full border border-gray-300 px-4 py-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#22C55E] transition"
                                 onChange={(e) => onCityChange(e.target.value)}
                             />
                         </div>
