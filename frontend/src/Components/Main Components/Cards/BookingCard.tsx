@@ -33,7 +33,7 @@ const BookingCard: React.FC<BookingCardProps> = React.memo(({
 
     return (
         <div className="rounded-2xl border hover:shadow-lg transition overflow-hidden">
-            {}
+            { }
             <div className="h-48 bg-gray-200">
                 <img
                     src={coverImage}
@@ -42,7 +42,7 @@ const BookingCard: React.FC<BookingCardProps> = React.memo(({
                 />
             </div>
 
-            {}
+            { }
             <div className="p-4 space-y-2">
                 <div className="flex items-start justify-between gap-2">
                     <h3 className="font-semibold text-lg leading-tight line-clamp-2">
@@ -61,6 +61,14 @@ const BookingCard: React.FC<BookingCardProps> = React.memo(({
                     {booking.listing.property_type_display}
                 </p>
 
+                {booking.listing.address && (
+                    <p className="text-xs text-gray-400 flex items-center gap-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                        </svg>
+                        {booking.listing.address}
+                    </p>
+                )}
                 <p className="text-sm text-gray-600">
                     {dayjs(booking.start_date).format('MMM D, YYYY')} →{" "}
                     {dayjs(booking.end_date).format('MMM D, YYYY')}

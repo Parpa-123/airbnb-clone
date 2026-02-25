@@ -30,6 +30,8 @@ urlpatterns = [
 
     path("api/wishlist/", include("wishlist.urls", namespace="wishlist")),
 
+    path("api/chat/", include("chat.urls", namespace="chat")),
+
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
 
     path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),

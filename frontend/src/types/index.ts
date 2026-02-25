@@ -40,6 +40,7 @@ export interface Listing {
     bathrooms: number;
     price_per_night: string;
     images: ListingImage[];
+    address?: string;
     created_at?: string;
 }
 

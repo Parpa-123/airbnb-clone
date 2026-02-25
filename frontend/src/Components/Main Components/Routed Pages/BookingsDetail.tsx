@@ -40,13 +40,13 @@ const BookingDetails = () => {
 
     return (
         <div className="max-w-5xl mx-auto px-4 py-8 space-y-8">
-            {}
+            { }
             <div>
                 <h1 className="text-2xl font-semibold">Your booking is confirmed</h1>
                 <p className="text-gray-600">Here are the details of your stay</p>
             </div>
 
-            {}
+            { }
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
                 <img
                     src={booking.listing.images[0]?.image}
@@ -61,19 +61,28 @@ const BookingDetails = () => {
                     <p className="text-gray-600">
                         {booking.listing.city}, {booking.listing.country}
                     </p>
+                    {booking.listing.address && (
+                        <p className="text-sm text-gray-500 flex items-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                            </svg>
+                            {booking.listing.address}
+                        </p>
+                    )}
                     <p className="text-sm text-gray-500">
                         Hosted by {booking.listing.host.username}
                     </p>
                 </div>
             </div>
 
-            {}
+            { }
             <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
                 {[
                     { label: "Check-in", value: dayjs(booking.start_date).format('MMM D, YYYY') },
                     { label: "Check-out", value: dayjs(booking.end_date).format('MMM D, YYYY') },
                     { label: "Duration", value: `${nights} nights` },
                     { label: "Guests", value: booking.listing.max_guests },
+                    ...(booking.listing.address ? [{ label: "Address", value: booking.listing.address }] : []),
                 ].map((item) => (
                     <div
                         key={item.label}
@@ -85,9 +94,9 @@ const BookingDetails = () => {
                 ))}
             </div>
 
-            {}
+            { }
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {}
+                { }
                 <div className="bg-white rounded-xl p-6 shadow-sm md:col-span-2">
                     <h3 className="font-semibold mb-4">Price breakdown</h3>
 
@@ -104,7 +113,7 @@ const BookingDetails = () => {
                     </div>
                 </div>
 
-                {}
+                { }
                 <div className="bg-white rounded-xl p-6 shadow-sm space-y-3">
                     <button
                         onClick={() =>
@@ -124,12 +133,12 @@ const BookingDetails = () => {
                 </div>
             </div>
 
-            {}
+            { }
             <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 shadow-sm border border-blue-100">
                 <h3 className="font-semibold text-lg mb-4 text-gray-900">Price Calculation Details</h3>
 
                 <div className="space-y-3">
-                    {}
+                    { }
                     <div className="flex justify-between text-sm">
                         <span className="text-gray-600">Check-in Date:</span>
                         <span className="font-medium text-gray-900">
@@ -145,7 +154,7 @@ const BookingDetails = () => {
 
                     <div className="border-t border-blue-200 my-3"></div>
 
-                    {}
+                    { }
                     <div className="flex justify-between text-sm">
                         <span className="text-gray-600">Number of Nights:</span>
                         <span className="font-medium text-gray-900">{nights}</span>
@@ -159,7 +168,7 @@ const BookingDetails = () => {
 
                     <div className="border-t border-blue-200 my-3"></div>
 
-                    {}
+                    { }
                     <div className="bg-white/60 rounded-lg p-3 text-sm">
                         <div className="text-gray-600 mb-1">Calculation:</div>
                         <div className="font-mono text-indigo-700">
@@ -167,7 +176,7 @@ const BookingDetails = () => {
                         </div>
                     </div>
 
-                    {}
+                    { }
                     <div className="border-t border-blue-200 my-3"></div>
                     <div className="flex justify-between items-center">
                         <span className="font-semibold text-lg text-gray-900">Total Amount:</span>

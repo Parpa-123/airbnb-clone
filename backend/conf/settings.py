@@ -26,6 +26,8 @@ ALLOWED_HOSTS = [
 
 INSTALLED_APPS = [
 
+    'daphne',
+
     'django.contrib.admin',
 
     'django.contrib.auth',
@@ -39,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'corsheaders',
+
+    'channels',
 
     'rest_framework',
 
@@ -59,6 +63,8 @@ INSTALLED_APPS = [
     'django_filters',
 
     'reviews',
+
+    'chat',
 
 ]
 
@@ -127,8 +133,11 @@ DATABASES = {
 }
 
 CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
     },
 }
 

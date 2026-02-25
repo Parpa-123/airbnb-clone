@@ -107,6 +107,7 @@ class ListingSerializer(serializers.ModelSerializer):
             "allows_pets",
 
             "created_at",
+            "address",
 
         ]
 
