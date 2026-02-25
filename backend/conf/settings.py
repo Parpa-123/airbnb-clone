@@ -112,7 +112,7 @@ TEMPLATES = [
 
 ]
 
-WSGI_APPLICATION = 'conf.wsgi.application'
+ASGI_APPLICATION = 'conf.asgi.application'
 
 DATABASES = {
 
@@ -124,6 +124,12 @@ DATABASES = {
 
     }
 
+}
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
 }
 
 AUTH_PASSWORD_VALIDATORS = [
