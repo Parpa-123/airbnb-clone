@@ -13,6 +13,7 @@ CSRF_TRUSTED_ORIGINS = [f"https://{os.environ.get('RENDER_EXTERNAL_HOSTNAME')}"]
 CORS_ALLOWED_ORIGINS = [
 
     "https://airbnb-clone-2-ogpo.onrender.com",
+    
 
 ]
 
@@ -75,6 +76,30 @@ DATABASES = {
     )
 
 }
+
+if os.environ.get("REDIS_URL"):
+
+    CHANNEL_LAYERS = {
+
+        "default": {
+
+            "BACKEND": "channels_redis.core.RedisChannelLayer",
+
+            "CONFIG": {
+
+                "hosts": [{
+                    "address": os.environ.get("REDIS_URL"),
+                    "socket_connect_timeout": 30,
+                    "socket_timeout": 30,
+                    "retry_on_timeout": True,
+                    "health_check_interval": 30,
+                }],
+
+            },
+
+        },
+
+    }
 
 INSTALLED_APPS += [
 

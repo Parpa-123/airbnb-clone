@@ -38,6 +38,8 @@ INSTALLED_APPS = [
 
     'django.contrib.staticfiles',
 
+    'channels',
+
     'corsheaders',
 
     'rest_framework',
@@ -52,6 +54,8 @@ INSTALLED_APPS = [
 
     'wishlist',
 
+    'chat',
+
     'phonenumber_field',
 
     'drf_spectacular',
@@ -63,7 +67,6 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-
     'django.middleware.security.SecurityMiddleware',
 
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -79,7 +82,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
 
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
 ]
 
 ROOT_URLCONF = 'conf.urls'
@@ -131,6 +133,22 @@ CHANNEL_LAYERS = {
         'BACKEND': 'channels.layers.InMemoryChannelLayer',
     },
 }
+
+if os.getenv("REDIS_URL"):
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels_redis.core.RedisChannelLayer",
+            "CONFIG": {
+                "hosts": [{
+                    "address": os.getenv("REDIS_URL"),
+                    "socket_connect_timeout": 30,
+                    "socket_timeout": 30,
+                    "retry_on_timeout": True,
+                    "health_check_interval": 30,
+                }],
+            },
+        },
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
-import { useParams, NavLink } from "react-router-dom";
+import { useParams, NavLink, useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 
 import ListMap from "../../../services/MapService";
@@ -10,6 +10,8 @@ import ReviewDialog from "./DetailedPageComponents/ReviewDialog";
 import BookingCard from "./DetailedPageComponents/BookingCard";
 import { useListingDetails } from "./DetailedPageComponents/useListingDetails";
 import { useFilterContext } from "../../../services/filterContext";
+import { getOrCreateListingRoom } from "../../../services/chatService";
+import { showError } from "../../../utils/toastMessages";
 
 import AmenitiesDisplay from "./DetailedPageComponents/AmenitiesDisplay";
 
@@ -17,6 +19,7 @@ import type { DatePickerRef } from "../../../types";
 
 const DetailedPage: React.FC = () => {
   const { slug } = useParams();
+  const navigate = useNavigate();
   const datePickerRef = useRef<DatePickerRef | null>(null);
   const { filters } = useFilterContext();
 
@@ -45,6 +48,22 @@ const DetailedPage: React.FC = () => {
       setOpenReviewDialog(false);
     }
   }, [submitReview]);
+
+  const handleContactHost = useCallback(async () => {
+    if (!listing?.id) return;
+
+    if (!localStorage.getItem("accessToken")) {
+      showError("Please log in to contact the host");
+      return;
+    }
+
+    try {
+      const room = await getOrCreateListingRoom(listing.id);
+      navigate(`/messages/${room.id}`);
+    } catch {
+      showError("Unable to open chat for this listing");
+    }
+  }, [listing?.id, navigate]);
 
 
 
@@ -99,13 +118,24 @@ const DetailedPage: React.FC = () => {
         { }
         <div className="md:col-span-2">
           <div className="border-b pb-6">
-            <p className="text-lg font-semibold">
-              Hosted by {listing.host.username}
-            </p>
-            <p className="text-gray-600 mt-1">
-              {listing.max_guests} guests · {listing.bed_choice} beds ·{" "}
-              {listing.bhk_choice} bedrooms · {listing.bathrooms} baths
-            </p>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div>
+                <p className="text-lg font-semibold">
+                  Hosted by {listing.host.username}
+                </p>
+                <p className="text-gray-600 mt-1">
+                  {listing.max_guests} guests · {listing.bed_choice} beds ·{" "}
+                  {listing.bhk_choice} bedrooms · {listing.bathrooms} baths
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={handleContactHost}
+                className="px-5 py-3 rounded-lg bg-[#22C55E] text-white font-semibold hover:bg-[#16A34A] transition-colors cursor-pointer"
+              >
+                Contact host
+              </button>
+            </div>
           </div>
 
 

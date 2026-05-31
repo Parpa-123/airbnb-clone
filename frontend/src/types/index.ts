@@ -91,6 +91,26 @@ export interface Review {
     user: User;
 }
 
+export interface ChatMessage {
+    id: number;
+    user: User;
+    content: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface ChatRoom {
+    id: number;
+    name: string;
+    listing: Listing;
+    host: User;
+    guest: User;
+    other_user: User | null;
+    last_message: ChatMessage | null;
+    created_at: string;
+    updated_at: string;
+}
+
 export type DatePickerRef = {
     getDates: () => { checkIn: string | null; checkOut: string | null };
     getDateObjects: () => { checkIn: any | null; checkOut: any | null };

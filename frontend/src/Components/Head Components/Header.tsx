@@ -22,7 +22,7 @@ const Header: React.FC = () => {
   const dialogState = useDialogState();
   const searchState = useSearchFilters();
 
-  const searchHidePaths = ['/bookings', '/me'];
+  const searchHidePaths = ['/bookings', '/me', '/messages'];
   const shouldHideSearch = searchHidePaths.some(path =>
     location.pathname.startsWith(path)
   );

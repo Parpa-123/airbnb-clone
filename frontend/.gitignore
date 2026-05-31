@@ -63,6 +63,7 @@ desktop.ini
 # Debug
 .vscode/launch.json
 .vscode/tasks.json
+.vscode
 
 # Optional: Python files (remove if not needed)
 __pycache__/

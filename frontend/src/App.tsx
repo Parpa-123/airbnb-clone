@@ -26,6 +26,8 @@ const BookingsOverview = lazy(() => import("./Components/Main Components/Routed 
 const UpcomingBookings = lazy(() => import("./Components/Main Components/Routed Pages/Booking Routes/UpcomingBookings"));
 const PastBookings = lazy(() => import("./Components/Main Components/Routed Pages/Booking Routes/PastBookings"));
 const CancelledBookings = lazy(() => import("./Components/Main Components/Routed Pages/Booking Routes/CancelledBookings"));
+const ChatInbox = lazy(() => import("./Components/Main Components/Routed Pages/ChatInbox"));
+const ChatConversation = lazy(() => import("./Components/Main Components/Routed Pages/ChatConversation"));
 
 const App: React.FC = () => {
   return (
@@ -93,6 +95,22 @@ const App: React.FC = () => {
                 </Route>
                 <Route path="bookings/:id" element={<BookingStatus />} />
                 <Route path="bookings/details/:id" element={<BookingDetails />} />
+                <Route
+                  path="messages"
+                  element={
+                    <ProtectedRoute>
+                      <ChatInbox />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="messages/:roomId"
+                  element={
+                    <ProtectedRoute>
+                      <ChatConversation />
+                    </ProtectedRoute>
+                  }
+                />
               </Route>
             </Routes>
           </Suspense>

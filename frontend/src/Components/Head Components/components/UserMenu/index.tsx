@@ -124,6 +124,16 @@ const UserMenu: React.FC<UserMenuProps> = ({
 
                                 <DropdownMenu.Item asChild>
                                     <Link
+                                        to="/messages"
+                                        onClick={handleMenuClose}
+                                        className="block px-4 py-3 text-sm hover:bg-gray-50 cursor-pointer outline-none"
+                                    >
+                                        Messages
+                                    </Link>
+                                </DropdownMenu.Item>
+
+                                <DropdownMenu.Item asChild>
+                                    <Link
                                         to="/me/wishlist"
                                         onClick={handleMenuClose}
                                         className="lg:hidden block px-4 py-3 text-sm hover:bg-gray-50 cursor-pointer outline-none"
