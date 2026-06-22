@@ -1,7 +1,12 @@
-import axiosInstance from "../../../../public/connect";
-import type { ListingFilters } from "../../../services/filterContext";
+import axiosInstance from "../../../services/connect";
+import type { ListingFilters } from "../../../redux/slices/filtersSlice";
+import type { Listing, PaginatedResponse } from "../../../types";
+import { extractResults } from "../../../utils/pagination";
 
 export async function fetchListings(filters: ListingFilters) {
-  const res = await axiosInstance.get("/listings/public/", { params: filters });
-  return res.data;
+  const res = await axiosInstance.get<Listing[] | PaginatedResponse<Listing>>(
+    "/listings/public/",
+    { params: filters }
+  );
+  return extractResults(res.data);
 }

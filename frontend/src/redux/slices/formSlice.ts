@@ -64,7 +64,7 @@ const slice = createSlice({
 
         resetForm: () => initialState
     }
-})
+});
 
-export const { updateForm, resetForm } = slice.actions
-export default slice.reducer
+export const { updateForm, resetForm } = slice.actions;
+export default slice.reducer;

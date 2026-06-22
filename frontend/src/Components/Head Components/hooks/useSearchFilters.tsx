@@ -1,13 +1,13 @@
 import { useState } from "react";
-import { Dayjs } from "dayjs";
+import { type Dayjs } from "dayjs";
 import { useNavigate } from "react-router-dom";
-import { useFilterContext } from "../../../services/filterContext";
-import type { ListingFilters } from "../../../services/filterContext";
+import { useDispatch } from "react-redux";
+import { updateFilters, clearFilters as clearFiltersAction } from "../../../redux/slices/filtersSlice";
 import type { GuestCounts } from "../components/GuestSelector";
 
 export const useSearchFilters = () => {
     const navigate = useNavigate();
-    const { setFilters } = useFilterContext();
+    const dispatch = useDispatch();
 
     const [checkIn, setCheckIn] = useState<Dayjs | null>(null);
     const [checkOut, setCheckOut] = useState<Dayjs | null>(null);
@@ -20,24 +20,21 @@ export const useSearchFilters = () => {
 
     const handleCheckInChange = (date: Dayjs | null) => {
         setCheckIn(date);
-        setFilters((prev: ListingFilters) => ({
-            ...prev,
+        dispatch(updateFilters({
             check_in: date ? date.format("YYYY-MM-DD") : undefined,
         }));
     };
 
     const handleCheckOutChange = (date: Dayjs | null) => {
         setCheckOut(date);
-        setFilters((prev: ListingFilters) => ({
-            ...prev,
+        dispatch(updateFilters({
             check_out: date ? date.format("YYYY-MM-DD") : undefined,
         }));
     };
 
     const handleGuestsChange = (newGuests: GuestCounts) => {
         setGuests(newGuests);
-        setFilters((prev: ListingFilters) => ({
-            ...prev,
+        dispatch(updateFilters({
             max_guests__gte: newGuests.adults > 0 ? newGuests.adults : undefined,
             has_pets: newGuests.pets > 0 ? true : undefined,
             has_children: newGuests.children > 0 ? true : undefined,
@@ -45,15 +42,13 @@ export const useSearchFilters = () => {
     };
 
     const handleCountryChange = (country: string) => {
-        setFilters((prev: ListingFilters) => ({
-            ...prev,
+        dispatch(updateFilters({
             country: country || undefined,
         }));
     };
 
     const handleCityChange = (city: string) => {
-        setFilters((prev: ListingFilters) => ({
-            ...prev,
+        dispatch(updateFilters({
             city: city || undefined,
         }));
     };
@@ -67,7 +62,7 @@ export const useSearchFilters = () => {
             infants: 0,
             pets: 0,
         });
-        setFilters({});
+        dispatch(clearFiltersAction());
     };
 
     const handleSearch = () => {

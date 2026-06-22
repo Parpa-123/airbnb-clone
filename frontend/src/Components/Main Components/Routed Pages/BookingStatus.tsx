@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axiosInstance from "../../../../public/connect";
+import axiosInstance from "../../../services/connect";
 
 const BookingStatus = () => {
   const { id } = useParams();

@@ -58,35 +58,35 @@ const DesktopSearch: React.FC<DesktopSearchProps> = ({
         guests.pets > 0;
 
     return (
-        <div className="hidden smd:flex items-center gap-0 border border-gray-300 rounded-full shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer">
-            { }
+        <div className="hidden smd:flex items-center gap-0 border border-white/20 glass rounded-full shadow-lg hover:shadow-[0_0_20px_rgba(168,85,247,0.2)] transition-shadow duration-300 cursor-pointer">
+            {/* Anywhere Dropdown */}
             <DropdownMenu.Root>
                 <DropdownMenu.Trigger asChild>
-                    <button className="px-4 xz:px-6 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-full transition-colors cursor-pointer">
+                    <button className="px-4 xz:px-6 py-2 text-sm font-medium text-slate-200 hover:bg-white/10 rounded-full transition-colors cursor-pointer">
                         Anywhere
                     </button>
                 </DropdownMenu.Trigger>
 
                 <DropdownMenu.Portal>
                     <DropdownMenu.Content
-                        sideOffset={8}
+                        sideOffset={12}
                         align="start"
-                        className="z-50 w-80 p-6 bg-white border border-gray-200 rounded-3xl shadow-xl"
+                        className="z-50 w-80 p-6 bg-slate-900/90 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl"
                     >
-                        <DropdownMenu.Label className="text-xs font-semibold text-gray-900 mb-4">
+                        <DropdownMenu.Label className="text-xs font-semibold text-slate-300 mb-4 uppercase tracking-wider">
                             Where to?
                         </DropdownMenu.Label>
 
-                        <div className="space-y-3">
+                        <div className="space-y-4">
                             <input
                                 placeholder="Which Country"
-                                className="w-full border border-gray-300 px-4 py-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#22C55E] transition"
+                                className="w-full bg-white/5 border border-white/10 px-4 py-3 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
                                 onChange={(e) => onCountryChange(e.target.value)}
                             />
 
                             <input
                                 placeholder="City"
-                                className="w-full border border-gray-300 px-4 py-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#22C55E] transition"
+                                className="w-full bg-white/5 border border-white/10 px-4 py-3 rounded-xl text-sm text-white placeholder-slate-400 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
                                 onChange={(e) => onCityChange(e.target.value)}
                             />
                         </div>
@@ -94,13 +94,12 @@ const DesktopSearch: React.FC<DesktopSearchProps> = ({
                 </DropdownMenu.Portal>
             </DropdownMenu.Root>
 
-            { }
-            <div className="h-6 w-px bg-gray-300" />
+            {/* Divider */}
+            <div className="h-6 w-px bg-white/20" />
 
-            { }
+            {/* Date Pickers */}
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <div className="flex items-center gap-0">
-                    { }
                     <DatePicker
                         label=""
                         value={checkIn}
@@ -111,9 +110,7 @@ const DesktopSearch: React.FC<DesktopSearchProps> = ({
                             textField: {
                                 placeholder: "Add date",
                                 variant: "standard",
-                                InputProps: {
-                                    disableUnderline: true,
-                                },
+                                InputProps: { disableUnderline: true },
                                 sx: {
                                     width: "110px",
                                     "& .MuiInputBase-root": {
@@ -122,7 +119,7 @@ const DesktopSearch: React.FC<DesktopSearchProps> = ({
                                         padding: "8px 16px",
                                         cursor: "pointer",
                                         "&:hover": {
-                                            backgroundColor: "rgba(0, 0, 0, 0.04)",
+                                            backgroundColor: "rgba(255, 255, 255, 0.1)",
                                             borderRadius: "24px",
                                         },
                                     },
@@ -130,17 +127,14 @@ const DesktopSearch: React.FC<DesktopSearchProps> = ({
                                         fontSize: "0.875rem",
                                         padding: 0,
                                         cursor: "pointer",
-                                        color: checkIn ? "#222" : "#717171",
-                                        "&::placeholder": {
-                                            color: "#717171",
-                                            opacity: 1,
-                                        },
+                                        color: checkIn ? "#fff" : "#94a3b8",
+                                        "&::placeholder": { color: "#94a3b8", opacity: 1 },
                                     },
                                     "&::before": {
                                         content: '"Check in"',
                                         fontSize: "0.75rem",
                                         fontWeight: 600,
-                                        color: "#222",
+                                        color: "#e2e8f0",
                                         marginBottom: "2px",
                                     },
                                 },
@@ -149,26 +143,30 @@ const DesktopSearch: React.FC<DesktopSearchProps> = ({
                                 sx: {
                                     "& .MuiPaper-root": {
                                         borderRadius: "24px",
-                                        boxShadow: "0 4px 32px rgba(0,0,0,0.15)",
+                                        backgroundColor: "#0f172a",
+                                        color: "#fff",
+                                        border: "1px solid rgba(255,255,255,0.1)",
+                                        boxShadow: "0 10px 40px rgba(0,0,0,0.5)",
                                         marginTop: "8px",
                                     },
                                     "& .MuiPickersDay-root": {
+                                        color: "#e2e8f0",
                                         "&.Mui-selected": {
-                                            backgroundColor: "#2563EB",
-                                            "&:hover": {
-                                                backgroundColor: "#1D4ED8",
-                                            },
+                                            backgroundColor: "#a855f7",
+                                            "&:hover": { backgroundColor: "#9333ea" },
                                         },
+                                        "&:hover": { backgroundColor: "rgba(255,255,255,0.1)" },
                                     },
+                                    "& .MuiIconButton-root": { color: "#e2e8f0" },
+                                    "& .MuiTypography-root": { color: "#94a3b8" },
                                 },
                             },
                         }}
                     />
 
-                    { }
-                    <div className="h-6 w-px bg-gray-300" />
+                    {/* Divider */}
+                    <div className="h-6 w-px bg-white/20" />
 
-                    { }
                     <DatePicker
                         label=""
                         value={checkOut}
@@ -178,9 +176,7 @@ const DesktopSearch: React.FC<DesktopSearchProps> = ({
                             textField: {
                                 placeholder: "Add date",
                                 variant: "standard",
-                                InputProps: {
-                                    disableUnderline: true,
-                                },
+                                InputProps: { disableUnderline: true },
                                 sx: {
                                     width: "110px",
                                     "& .MuiInputBase-root": {
@@ -189,7 +185,7 @@ const DesktopSearch: React.FC<DesktopSearchProps> = ({
                                         padding: "8px 16px",
                                         cursor: "pointer",
                                         "&:hover": {
-                                            backgroundColor: "rgba(0, 0, 0, 0.04)",
+                                            backgroundColor: "rgba(255, 255, 255, 0.1)",
                                             borderRadius: "24px",
                                         },
                                     },
@@ -197,17 +193,14 @@ const DesktopSearch: React.FC<DesktopSearchProps> = ({
                                         fontSize: "0.875rem",
                                         padding: 0,
                                         cursor: "pointer",
-                                        color: checkOut ? "#222" : "#717171",
-                                        "&::placeholder": {
-                                            color: "#717171",
-                                            opacity: 1,
-                                        },
+                                        color: checkOut ? "#fff" : "#94a3b8",
+                                        "&::placeholder": { color: "#94a3b8", opacity: 1 },
                                     },
                                     "&::before": {
                                         content: '"Check out"',
                                         fontSize: "0.75rem",
                                         fontWeight: 600,
-                                        color: "#222",
+                                        color: "#e2e8f0",
                                         marginBottom: "2px",
                                     },
                                 },
@@ -216,17 +209,22 @@ const DesktopSearch: React.FC<DesktopSearchProps> = ({
                                 sx: {
                                     "& .MuiPaper-root": {
                                         borderRadius: "24px",
-                                        boxShadow: "0 4px 32px rgba(0,0,0,0.15)",
+                                        backgroundColor: "#0f172a",
+                                        color: "#fff",
+                                        border: "1px solid rgba(255,255,255,0.1)",
+                                        boxShadow: "0 10px 40px rgba(0,0,0,0.5)",
                                         marginTop: "8px",
                                     },
                                     "& .MuiPickersDay-root": {
+                                        color: "#e2e8f0",
                                         "&.Mui-selected": {
-                                            backgroundColor: "#2563EB",
-                                            "&:hover": {
-                                                backgroundColor: "#1D4ED8",
-                                            },
+                                            backgroundColor: "#a855f7",
+                                            "&:hover": { backgroundColor: "#9333ea" },
                                         },
+                                        "&:hover": { backgroundColor: "rgba(255,255,255,0.1)" },
                                     },
+                                    "& .MuiIconButton-root": { color: "#e2e8f0" },
+                                    "& .MuiTypography-root": { color: "#94a3b8" },
                                 },
                             },
                         }}
@@ -234,19 +232,19 @@ const DesktopSearch: React.FC<DesktopSearchProps> = ({
                 </div>
             </LocalizationProvider>
 
-            { }
-            <div className="h-6 w-px bg-gray-300" />
+            {/* Divider */}
+            <div className="h-6 w-px bg-white/20" />
 
-            { }
+            {/* Guest Selector */}
             <GuestSelector guests={guests} onGuestsChange={onGuestsChange} />
 
-            { }
+            {/* Clear Filters Button */}
             {hasActiveFilters && (
                 <>
-                    <div className="h-6 w-px bg-gray-300" />
+                    <div className="h-6 w-px bg-white/20" />
                     <button
                         onClick={onClearFilters}
-                        className="px-3 py-2 text-xs font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
+                        className="px-3 py-2 text-xs font-medium text-slate-400 hover:text-white hover:bg-white/10 rounded-full transition-colors cursor-pointer"
                         title="Clear all filters"
                     >
                         Clear
@@ -254,10 +252,10 @@ const DesktopSearch: React.FC<DesktopSearchProps> = ({
                 </>
             )}
 
-            { }
+            {/* Search Button */}
             <button
                 onClick={onSearch}
-                className="bg-[#2563EB] text-white p-2 rounded-full m-1 hover:bg-[#1D4ED8] transition-colors cursor-pointer"
+                className="bg-gradient-to-r from-rose-400 to-purple-500 text-white p-2 rounded-full m-1 hover:opacity-90 hover:scale-105 transition-all shadow-md cursor-pointer"
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"

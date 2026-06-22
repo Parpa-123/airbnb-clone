@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import axiosInstance from "../../../../public/connect";
+import axiosInstance from "../../../services/connect";
 import { showError, extractErrorMessage } from "../../../utils/toastMessages";
 import type { Listing } from "../../../types";
 import { useParams, useNavigate } from "react-router-dom";

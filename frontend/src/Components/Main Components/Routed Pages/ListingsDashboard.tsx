@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import axiosInstance from "../../../../public/connect";
-import type { Listing } from "../../../types";
+import axiosInstance from "../../../services/connect";
+import type { Listing, PaginatedResponse } from "../../../types";
 import { showSuccess, showError, MESSAGES } from "../../../utils/toastMessages";
 import { NavLink, useNavigate } from "react-router-dom";
 import Loading from "../../Loading";
+import { extractResults } from "../../../utils/pagination";
 
 const ListingsDashboard: React.FC = () => {
   const [listings, setListings] = useState<Listing[]>([]);
@@ -13,8 +14,8 @@ const ListingsDashboard: React.FC = () => {
   useEffect(() => {
     const fetchListings = async () => {
       try {
-        const res = await axiosInstance.get("/listings/private/");
-        setListings(res.data);
+        const res = await axiosInstance.get<Listing[] | PaginatedResponse<Listing>>("/listings/private/");
+        setListings(extractResults(res.data));
       } catch (error: unknown) {
         showError(MESSAGES.LISTING.FETCH_FAILED);
       } finally {

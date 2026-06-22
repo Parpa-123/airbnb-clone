@@ -1,19 +1,64 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Nunito Sans", sans-serif;
+  --font-sans: "Outfit", "Inter", "Nunito Sans", sans-serif;
 
   /* Custom breakpoints for responsive search bar */
   --breakpoint-smd: 640px;
-  /* Small-medium devices (tablets) */
   --breakpoint-xz: 1024px;
-  /* Extra-large devices (desktops) */
+
+  /* Thematic Colors */
+  --color-bg-dark: #0f172a; /* Slate 900 */
+  --color-bg-glass: rgba(15, 23, 42, 0.6);
+  --color-accent-coral: #fb7185; /* Rose 400 */
+  --color-accent-amethyst: #a855f7; /* Purple 500 */
 }
 
 body {
-  font-family: "Nunito Sans", sans-serif;
+  font-family: "Outfit", "Inter", "Nunito Sans", sans-serif;
+  background-color: var(--color-bg-dark);
+  color: #e2e8f0; /* Slate 200 */
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
 }
 
+/* Glassmorphism Utilities */
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+}
+
+.glass-header {
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.glass-card {
+  background: rgba(30, 41, 59, 0.6); /* Slate 800 with opacity */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 40px rgba(168, 85, 247, 0.15); /* Subtle purple shadow */
+}
+
+/* Gradient Text */
+.text-gradient {
+  background: linear-gradient(135deg, var(--color-accent-coral), var(--color-accent-amethyst));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
 
 /* Custom Scrollbar for Multiform */
 .custom-scrollbar::-webkit-scrollbar {
@@ -21,24 +66,24 @@ body {
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: linear-gradient(to bottom, #f9fafb, #f3f4f6);
+  background: rgba(15, 23, 42, 0.9);
   border-radius: 10px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #d1d5db, #9ca3af);
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 10px;
   transition: all 0.3s ease;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(to bottom, #22C55E, #16A34A);
+  background: linear-gradient(to bottom, var(--color-accent-coral), var(--color-accent-amethyst));
 }
 
 /* Firefox Custom Scrollbar */
 .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: #9ca3af #f3f4f6;
+  scrollbar-color: rgba(255, 255, 255, 0.2) rgba(15, 23, 42, 0.9);
 }
 
 @layer components {
@@ -50,7 +95,7 @@ body {
 
   /* Translucent circular Airbnb arrow buttons */
   .airbnb-arrow {
-    @apply absolute top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-white/70 backdrop-blur shadow-md flex justify-center items-center transition hover:bg-white/90 hover:scale-105;
+    @apply absolute top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-slate-800/70 backdrop-blur shadow-md flex justify-center items-center transition hover:bg-slate-700 hover:scale-105 border border-white/10;
   }
 
   .airbnb-arrow-prev {
@@ -62,15 +107,15 @@ body {
   }
 
   .airbnb-arrow-icon {
-    @apply text-xl font-semibold text-gray-800 select-none;
+    @apply text-xl font-semibold text-slate-200 select-none;
   }
 
   /* Airbnb pagination bullets */
   .airbnb-pagination .swiper-pagination-bullet {
-    @apply bg-white/70 w-2 h-2 opacity-100;
+    @apply bg-white/50 w-2 h-2 opacity-100 transition-all;
   }
 
   .airbnb-pagination .swiper-pagination-bullet-active {
-    @apply bg-[#22C55E] w-[10px] h-[10px];
+    @apply bg-gradient-to-r from-rose-400 to-purple-500 w-[12px] h-[12px];
   }
-}
+}

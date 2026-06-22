@@ -3,7 +3,8 @@ import dayjs, { Dayjs } from "dayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker as MUIDatePicker } from "@mui/x-date-pickers/DatePicker";
-import { useFilterContext } from "../../services/filterContext";
+import { useSelector } from "react-redux";
+import { type RootState } from "../../redux/store/store";
 
 type DatePickerRef = {
   getDates: () => { checkIn: string | null; checkOut: string | null };
@@ -16,7 +17,7 @@ type DatePickerProps = {
 };
 
 const DatePickerValue = ({ ref, onChange }: DatePickerProps) => {
-  const { filters } = useFilterContext();
+  const { filters } = useSelector((state: RootState) => state.filters);
 
   const [checkIn, setCheckIn] = React.useState<Dayjs | null>(() => {
     if (filters.check_in) {

@@ -1,4 +1,4 @@
-import { useGetBookingsQuery } from "../../../../../public/redux/api/apiSlice";
+import { useGetBookingsQuery } from "../../../../redux/api/apiSlice";
 import BookingCard from "../../Cards/BookingCard";
 import Loading from "../../../Loading";
 import type { Booking } from "../../../../types";

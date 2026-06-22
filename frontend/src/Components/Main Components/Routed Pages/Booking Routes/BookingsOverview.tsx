@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
-import axiosInstance from "../../../../../public/connect";
+import axiosInstance from "../../../../services/connect";
 import { showSuccess, showError, showWarning, MESSAGES } from "../../../../utils/toastMessages";
 import BookingCard from "../../Cards/BookingCard";
 import Loading from "../../../Loading";
-import { useGetBookingsQuery } from "../../../../../public/redux/api/apiSlice";
+import { useGetBookingsQuery } from "../../../../redux/api/apiSlice";
 import type { Booking } from "../../../../types";
 
 const BookingsOverview = () => {

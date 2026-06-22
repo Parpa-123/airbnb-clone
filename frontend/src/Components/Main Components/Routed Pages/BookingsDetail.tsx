@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axiosInstance from "../../../../public/connect";
+import axiosInstance from "../../../services/connect";
 import type { Booking } from "../../../types";
 import CancelBookingButton from "../Buttons/CancelBookingButton";
 import Loading from "../../Loading";

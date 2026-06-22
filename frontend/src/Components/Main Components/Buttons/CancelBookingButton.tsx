@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import * as Dialog from "@radix-ui/react-dialog"
-import axiosInstance from "../../../../public/connect"
+import axiosInstance from "../../../services/connect"
 import { showSuccess, showError, extractErrorMessage, MESSAGES } from "../../../utils/toastMessages"
 
 interface CancelBookingButtonProps {

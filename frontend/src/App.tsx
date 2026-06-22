@@ -6,9 +6,7 @@ import { ToastContainer } from "react-toastify";
 
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
-import LoginContextProvider from "../public/loginContext";
-import ProtectedRoute from "../public/ProtectedRoute";
-import { FilterContextProvider } from "./services/filterContext";
+import ProtectedRoute from "./Components/ProtectedRoute";
 
 import Loading from "./Components/Loading";
 
@@ -31,9 +29,8 @@ const ChatConversation = lazy(() => import("./Components/Main Components/Routed 
 
 const App: React.FC = () => {
   return (
-    <LoginContextProvider>
-      <FilterContextProvider>
-        <Router>
+    <>
+      <Router>
           <Suspense fallback={<Loading />}>
             <Routes>
               {}
@@ -118,9 +115,8 @@ const App: React.FC = () => {
 
         {}
         <ToastContainer position="top-center" />
-      </FilterContextProvider>
-    </LoginContextProvider>
-  );
+      </>
+    );
 };
 
 export default App;

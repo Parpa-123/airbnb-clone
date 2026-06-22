@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axiosInstance from "../../../../../public/connect";
+import axiosInstance from "../../../../services/connect";
 import { showError, MESSAGES } from "../../../../utils/toastMessages";
 import type { ListingDetail } from "../../../../types";
 import type { Review } from "../../../Review Components/ReviewSlider";

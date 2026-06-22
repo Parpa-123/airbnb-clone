@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
-import axiosInstance from "../../../../../public/connect";
+import axiosInstance from "../../../../services/connect";
 import { showSuccess, showError, extractErrorMessage, MESSAGES } from "../../../../utils/toastMessages";
 import useOptionsService from "../../../../services/optionsService";
 import type { ListingEditData } from "./types";

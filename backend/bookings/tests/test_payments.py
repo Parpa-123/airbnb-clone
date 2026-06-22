@@ -244,34 +244,34 @@ class VerifyCashfreePaymentTest(TestCase):
         )
         self.booking = Bookings.objects.create(
             guest=self.guest, listing=self.listing, start_date="2026-10-01", end_date="2026-10-05", status=Bookings.STATUS_PENDING,
-            hold_expires_at=timezone.now() + timedelta(minutes=10)
+            hold_expires_at=timezone.now() + timedelta(minutes=10), total_price=1000
         )
         self.payment = Payment.objects.create(
             booking=self.booking, order_id="order_123", payment_session_id="session_123", amount=1000, status=Payment.INITIATED
         )
         self.url = reverse("bookings:payment-verify")
 
-    @patch("bookings.views.Cashfree.PGOrderFetchPayments")
+    @patch("bookings.views.Cashfree.PGFetchOrder")
     def test_verify_payment_success(self, mock_fetch):
-        mock_response = type("obj", (object,), {"data": [type("obj", (object,), {"payment_status": "SUCCESS"})]})
+        mock_response = type("obj", (object,), {"data": type("obj2", (object,), {"order_status": "PAID"})})
         mock_fetch.return_value = mock_response
 
-        response = self.client.post(self.url, {"order_id": "order_123"}, format="json")
+        response = self.client.post(self.url, {"booking_id": self.booking.id}, format="json")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["status"], "paid")
         self.booking.refresh_from_db()
         self.assertEqual(self.booking.status, Bookings.STATUS_CONFIRMED)
 
-    @patch("bookings.views.Cashfree.PGOrderFetchPayments")
+    @patch("bookings.views.Cashfree.PGFetchOrder")
     def test_verify_payment_expired_hold(self, mock_fetch):
         from django.utils import timezone
         from datetime import timedelta
         self.booking.hold_expires_at = timezone.now() - timedelta(minutes=5)
         self.booking.save()
-        mock_response = type("obj", (object,), {"data": [type("obj", (object,), {"payment_status": "SUCCESS"})]})
+        mock_response = type("obj", (object,), {"data": type("obj2", (object,), {"order_status": "PAID"})})
         mock_fetch.return_value = mock_response
 
-        response = self.client.post(self.url, {"order_id": "order_123"}, format="json")
+        response = self.client.post(self.url, {"booking_id": self.booking.id}, format="json")
         self.assertEqual(response.status_code, 409)
         self.assertIn("expired", response.data["error"])
         self.booking.refresh_from_db()

@@ -1,5 +1,6 @@
-import axiosInstance from "../../public/connect";
-import type { ChatMessage, ChatRoom } from "../types";
+import axiosInstance from "./connect";
+import type { ChatMessage, ChatRoom, PaginatedResponse } from "../types";
+import { extractResults } from "../utils/pagination";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api/";
 
@@ -9,13 +10,15 @@ export async function getOrCreateListingRoom(listingId: number): Promise<ChatRoo
 }
 
 export async function getChatRooms(): Promise<ChatRoom[]> {
-    const res = await axiosInstance.get<ChatRoom[]>("/chat/rooms/");
-    return res.data;
+    const res = await axiosInstance.get<ChatRoom[] | PaginatedResponse<ChatRoom>>("/chat/rooms/");
+    return extractResults(res.data);
 }
 
 export async function getChatMessages(roomId: number): Promise<ChatMessage[]> {
-    const res = await axiosInstance.get<ChatMessage[]>(`/chat/rooms/${roomId}/messages/`);
-    return res.data;
+    const res = await axiosInstance.get<ChatMessage[] | PaginatedResponse<ChatMessage>>(
+        `/chat/rooms/${roomId}/messages/`
+    );
+    return extractResults(res.data);
 }
 
 export function createChatSocket(roomId: number, token: string): WebSocket {

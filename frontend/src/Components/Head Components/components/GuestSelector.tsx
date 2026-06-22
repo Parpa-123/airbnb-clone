@@ -44,10 +44,10 @@ const GuestRow: React.FC<GuestRowProps> = ({
             }}
         >
             <Box>
-                <Typography variant="body1" sx={{ fontWeight: 500, color: "#222" }}>
+                <Typography variant="body1" sx={{ fontWeight: 500, color: "#f8fafc" }}>
                     {label}
                 </Typography>
-                <Typography variant="body2" sx={{ color: "#717171" }}>
+                <Typography variant="body2" sx={{ color: "#94a3b8" }}>
                     {description}
                 </Typography>
             </Box>
@@ -58,11 +58,12 @@ const GuestRow: React.FC<GuestRowProps> = ({
                     disabled={count <= minCount}
                     sx={{
                         border: "1px solid",
-                        borderColor: count <= minCount ? "#EBEBEB" : "#B0B0B0",
-                        color: count <= minCount ? "#EBEBEB" : "#717171",
+                        borderColor: count <= minCount ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.3)",
+                        color: count <= minCount ? "rgba(255,255,255,0.1)" : "#cbd5e1",
                         "&:hover": {
-                            borderColor: "#222",
-                            color: "#222",
+                            borderColor: "#fff",
+                            color: "#fff",
+                            backgroundColor: "rgba(255,255,255,0.1)",
                         },
                         width: 32,
                         height: 32,
@@ -78,6 +79,7 @@ const GuestRow: React.FC<GuestRowProps> = ({
                         minWidth: 24,
                         textAlign: "center",
                         fontWeight: 500,
+                        color: "#f8fafc"
                     }}
                 >
                     {count}
@@ -88,11 +90,12 @@ const GuestRow: React.FC<GuestRowProps> = ({
                     disabled={count >= maxCount}
                     sx={{
                         border: "1px solid",
-                        borderColor: count >= maxCount ? "#EBEBEB" : "#B0B0B0",
-                        color: count >= maxCount ? "#EBEBEB" : "#717171",
+                        borderColor: count >= maxCount ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.3)",
+                        color: count >= maxCount ? "rgba(255,255,255,0.1)" : "#cbd5e1",
                         "&:hover": {
-                            borderColor: "#222",
-                            color: "#222",
+                            borderColor: "#fff",
+                            color: "#fff",
+                            backgroundColor: "rgba(255,255,255,0.1)",
                         },
                         width: 32,
                         height: 32,
@@ -160,7 +163,7 @@ const GuestSelector: React.FC<GuestSelectorProps> = ({
             <button
                 aria-describedby={id}
                 onClick={handleClick}
-                className="px-6 py-2 text-sm text-gray-500 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
+                className="px-6 py-2 text-sm text-slate-300 hover:text-white hover:bg-white/10 rounded-full transition-colors cursor-pointer font-medium"
             >
                 {getDisplayText()}
             </button>
@@ -185,7 +188,9 @@ const GuestSelector: React.FC<GuestSelectorProps> = ({
                         sx: {
                             mt: 1,
                             borderRadius: "24px",
-                            boxShadow: "0 4px 32px rgba(0,0,0,0.15)",
+                            backgroundColor: "#0f172a",
+                            border: "1px solid rgba(255,255,255,0.1)",
+                            boxShadow: "0 10px 40px rgba(0,0,0,0.5)",
                             width: 320,
                             overflow: "hidden",
                         },
@@ -193,7 +198,6 @@ const GuestSelector: React.FC<GuestSelectorProps> = ({
                 }}
             >
                 <Box sx={{ p: 3 }}>
-                    {}
                     <GuestRow
                         label="Adults"
                         description="Ages 13 or above"
@@ -204,9 +208,8 @@ const GuestSelector: React.FC<GuestSelectorProps> = ({
                         maxCount={16}
                     />
 
-                    <Divider />
+                    <Divider sx={{ borderColor: "rgba(255,255,255,0.1)" }} />
 
-                    {}
                     <GuestRow
                         label="Children"
                         description="Ages 2–12"
@@ -216,9 +219,8 @@ const GuestSelector: React.FC<GuestSelectorProps> = ({
                         maxCount={15}
                     />
 
-                    <Divider />
+                    <Divider sx={{ borderColor: "rgba(255,255,255,0.1)" }} />
 
-                    {}
                     <GuestRow
                         label="Infants"
                         description="Under 2"
@@ -228,9 +230,8 @@ const GuestSelector: React.FC<GuestSelectorProps> = ({
                         maxCount={5}
                     />
 
-                    <Divider />
+                    <Divider sx={{ borderColor: "rgba(255,255,255,0.1)" }} />
 
-                    {}
                     <GuestRow
                         label="Pets"
                         description="Bringing a service animal?"
@@ -240,14 +241,13 @@ const GuestSelector: React.FC<GuestSelectorProps> = ({
                         maxCount={5}
                     />
 
-                    {}
                     {guests.pets > 0 && (
                         <Typography
                             variant="caption"
                             sx={{
                                 display: "block",
                                 mt: 2,
-                                color: "#717171",
+                                color: "#94a3b8",
                                 fontSize: "12px",
                             }}
                         >

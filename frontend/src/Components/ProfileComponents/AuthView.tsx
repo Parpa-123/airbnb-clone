@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axiosInstance from "../../../public/connect";
+import axiosInstance from "../../services/connect";
 import { showSuccess, showError, extractErrorMessage, MESSAGES } from "../../utils/toastMessages";
 import { useForm } from "@mantine/form";
 import { Dropzone } from "@mantine/dropzone";
+import { useAuth } from "../Head Components/hooks/useAuth";
 
 interface AuthDetails {
   username: string;
@@ -13,7 +13,7 @@ interface AuthDetails {
 }
 
 const AuthView = () => {
-  const navigate = useNavigate();
+  const { setUser } = useAuth();
   const [dets, setDets] = useState<AuthDetails | null>(null);
   const [loading, setLoading] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
@@ -81,7 +81,7 @@ const AuthView = () => {
       setDets(res.data);
       form.setFieldValue("avatar", null);
       showSuccess(MESSAGES.AUTH.PROFILE_UPDATED);
-      navigate(0);
+      setUser(res.data);
     } catch (error: any) {
       showError(extractErrorMessage(error, "Failed to update profile!"));
       console.error("Profile update error:", error?.response?.data);

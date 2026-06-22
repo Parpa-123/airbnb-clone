@@ -8,4 +8,4 @@ export const axiosBaseQuery = ({ axiosInstance }: { axiosInstance: AxiosInstance
         } catch (error) {
             return { error };
         }
-    }
+    };

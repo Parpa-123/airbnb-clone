@@ -1,4 +1,4 @@
-import axiosInstance from "../../../../public/connect";
+import axiosInstance from "../../../services/connect";
 import type { LoginType, SignupType, UserProfile } from "../types";
 
 const ACCESS_KEY = "accessToken";

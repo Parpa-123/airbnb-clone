@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import axiosInstance from "../../public/connect";
+import axiosInstance from "./connect";
 import { useState } from "react";
 
 interface OptionsResponse {

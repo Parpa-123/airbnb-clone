@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { FaPlusCircle } from "react-icons/fa";
-import axiosInstance from "../../../public/connect";
+import axiosInstance from "../../services/connect";
 import { showSuccess, showError, extractErrorMessage, MESSAGES } from "../../utils/toastMessages";
 import type { WishlistItem } from "../../types";
 import WishlistCard from "./Cards/WishlistCard";

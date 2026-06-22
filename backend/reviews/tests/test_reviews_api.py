@@ -39,34 +39,70 @@ class ReviewAPITests(APITestCase):
             listing=self.listing,
             start_date="2026-10-01",
             end_date="2026-10-05",
+            total_price=400.00,
             status=Bookings.STATUS_CONFIRMED,
         )
         self.url = reverse("reviews:review-list-create", kwargs={"title_slug": self.listing.title_slug})
 
     def test_list_reviews(self):
         Review.objects.create(
-            user=self.guest, listing=self.listing, booking=self.booking, rating=5, comment="Great stay!"
+            user=self.guest,
+            listing=self.listing,
+            review="Great stay!",
+            accuracy=5,
+            communication=5,
+            cleanliness=5,
+            location=5,
+            check_in=5,
+            value=5,
         )
         res = self.client.get(self.url)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(len(res.data['results']), 1)
-        self.assertEqual(res.data['results'][0]['rating'], 5)
+        self.assertEqual(res.data['results'][0]['avg_rating'], 5)
 
     def test_create_review_success(self):
         self.client.force_authenticate(user=self.guest)
-        payload = {"booking": self.booking.id, "rating": 4, "comment": "Nice place"}
+        payload = {
+            "booking": self.booking.id,
+            "review": "Nice place",
+            "accuracy": 4,
+            "communication": 4,
+            "cleanliness": 4,
+            "location": 4,
+            "check_in": 4,
+            "value": 4,
+        }
         res = self.client.post(self.url, payload)
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Review.objects.count(), 1)
 
     def test_create_review_not_guest(self):
         self.client.force_authenticate(user=self.other_user)
-        payload = {"booking": self.booking.id, "rating": 4, "comment": "Nice place"}
+        payload = {
+            "booking": self.booking.id,
+            "review": "Nice place",
+            "accuracy": 4,
+            "communication": 4,
+            "cleanliness": 4,
+            "location": 4,
+            "check_in": 4,
+            "value": 4,
+        }
         res = self.client.post(self.url, payload)
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("You are not the guest", str(res.data))
 
     def test_create_review_unauthenticated(self):
-        payload = {"booking": self.booking.id, "rating": 4, "comment": "Nice place"}
+        payload = {
+            "booking": self.booking.id,
+            "review": "Nice place",
+            "accuracy": 4,
+            "communication": 4,
+            "cleanliness": 4,
+            "location": 4,
+            "check_in": 4,
+            "value": 4,
+        }
         res = self.client.post(self.url, payload)
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)

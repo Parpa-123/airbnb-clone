@@ -293,3 +293,27 @@ class PrivateListingsTest(TestCase):
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
         self.client.force_authenticate(user=self.testuser)
+
+class ListingGeolocationFilterTest(TestCase):
+    def setUp(self):
+        from users.models import User
+        from listings.models import Listings
+        self.host = User.objects.create_user(email="h2@t.com", password="pwd", username="h2", is_host=True)
+        self.listing_seattle = Listings.objects.create(
+            host=self.host, title="Seattle Home", title_slug="sea", description="D", price_per_night=100, max_guests=4,
+            country="USA", city="Seattle", address="123", property_type="apartment", bhk_choice="1", bed_choice="1", bathrooms=1
+        )
+        self.listing_ny = Listings.objects.create(
+            host=self.host, title="NY Home", title_slug="ny", description="D", price_per_night=100, max_guests=4,
+            country="USA", city="New York", address="124", property_type="apartment", bhk_choice="1", bed_choice="1", bathrooms=1
+        )
+
+    def test_filter_by_city(self):
+        from rest_framework.test import APIClient
+        from django.urls import reverse
+        client = APIClient()
+        url = reverse("listing:public-listings") + "?city=Seattle"
+        res = client.get(url)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(len(res.data['results']), 1)
+        self.assertEqual(res.data['results'][0]['city'], "Seattle")

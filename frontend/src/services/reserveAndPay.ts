@@ -1,4 +1,4 @@
-import axiosInstance from "../../public/connect";
+import axiosInstance from "./connect";
 
 export interface ReserveAndPayParams {
     listingId: number;
@@ -13,6 +13,7 @@ interface BookingResponse {
     end_date: string;
     status?: string;
     created_at?: string;
+    hold_expires_at?: string | null;
 }
 
 interface PaymentResponse {
@@ -42,33 +43,49 @@ export const reserveAndPay = async ({
 }: ReserveAndPayParams): Promise<void> => {
     try {
 
-        const bookingRes = await axiosInstance.post<BookingResponse>("/bookings/create/", {
-            listing: listingId,
-            start_date: checkIn || null,
-            end_date: checkOut || null,
+        const booking = await createBookingHold({
+            listingId,
+            checkIn,
+            checkOut,
         });
-
-        const bookingId = bookingRes.data.id;
-
-        const paymentRes = await axiosInstance.post<PaymentResponse>(
-            "/bookings/payments/create-order/",
-            { booking_id: bookingId }
-        );
-
-        const { payment_session_id } = paymentRes.data;
-
-        const cashfree = window.Cashfree({
-            mode: "sandbox",
-        });
-
-        cashfree.checkout({
-            paymentSessionId: payment_session_id,
-            redirectTarget: "_self",
-        });
+        const payment = await createPaymentOrder(booking.id);
+        redirectToCashfree(payment.payment_session_id);
 
     } catch (error: any) {
         console.error("Payment error:", error);
         console.error("Error response:", error.response?.data);
         throw error;
     }
+};
+
+export const createBookingHold = async ({
+    listingId,
+    checkIn,
+    checkOut,
+}: ReserveAndPayParams): Promise<BookingResponse> => {
+    const bookingRes = await axiosInstance.post<BookingResponse>("/bookings/create/", {
+        listing: listingId,
+        start_date: checkIn || null,
+        end_date: checkOut || null,
+    });
+    return bookingRes.data;
+};
+
+export const createPaymentOrder = async (bookingId: number): Promise<PaymentResponse> => {
+    const paymentRes = await axiosInstance.post<PaymentResponse>(
+        "/bookings/payments/create-order/",
+        { booking_id: bookingId }
+    );
+    return paymentRes.data;
+};
+
+export const redirectToCashfree = (paymentSessionId: string): void => {
+    const cashfree = window.Cashfree({
+        mode: "sandbox",
+    });
+
+    cashfree.checkout({
+        paymentSessionId,
+        redirectTarget: "_self",
+    });
 };

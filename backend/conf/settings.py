@@ -232,6 +232,7 @@ REST_FRAMEWORK = {
         'booking_detail_retrieve': '120/min',
         'booking_destroy': '30/min',
         'booking_payment_create_order': '30/min',
+        'booking_payment_verify': '120/min',
         'webhook_cashfree': '120/min',
     },
 

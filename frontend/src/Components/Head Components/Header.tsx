@@ -12,7 +12,7 @@ import AuthDialogs from "./components/AuthDialogs";
 const HostingDialog = lazy(() => import("./components/HostingDialog"));
 
 import { showApiError, showSuccess } from "../../utils/toastMessages";
-import axiosInstance from "../../../public/connect";
+import axiosInstance from "../../services/connect";
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
@@ -92,7 +92,7 @@ const Header: React.FC = () => {
   return (
     <>
       { }
-      <nav className="sticky top-0 z-50 bg-white border-b border-gray-200">
+      <nav className="sticky top-0 z-50 glass-header">
         <div className="max-w-screen-2xl mx-auto px-6 lg:px-12 py-4">
           <div className="flex flex-wrap md:flex-nowrap items-center justify-between gap-y-4 gap-x-4">
             { }
