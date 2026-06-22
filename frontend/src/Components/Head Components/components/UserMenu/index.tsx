@@ -32,7 +32,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
                 onClick={onHostingClick}
                 className="hidden lg:block px-4 py-2 text-sm font-semibold text-slate-200 hover:bg-white/10 rounded-full transition-colors cursor-pointer"
             >
-                {user?.is_host ? "List your home" : "Airbnb your home"}
+                {user ? (user.is_host ? "List your home" : "Airbnb your home") : "List Your Home"}
             </button>
 
             {/* Wishlist Link */}
@@ -97,7 +97,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
                                     }}
                                     className="lg:hidden px-4 py-3 text-sm font-medium hover:bg-white/10 cursor-pointer outline-none transition-colors"
                                 >
-                                    Airbnb your home
+                                    List Your Home
                                 </DropdownMenu.Item>
                             </>
                         ) : (
