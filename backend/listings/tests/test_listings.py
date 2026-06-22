@@ -136,7 +136,7 @@ class PublicListingsTest(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
 
-        self.assertEqual(res.data, serializer.data)
+        self.assertEqual(res.data["results"], serializer.data)
 
 class PrivateListingsTest(TestCase):
 
@@ -178,7 +178,7 @@ class PrivateListingsTest(TestCase):
 
         serializer = ListingSerializer(estates, many=True)
 
-        self.assertEqual(res.data, serializer.data)
+        self.assertEqual(res.data["results"], serializer.data)
 
     def test_retrieving_self_list(self):
 
@@ -204,7 +204,7 @@ class PrivateListingsTest(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
 
-        self.assertEqual(res.data, serializer.data)
+        self.assertEqual(res.data["results"], serializer.data)
 
     def test_unable_to_create_estate_with_invalid_params(self):
 

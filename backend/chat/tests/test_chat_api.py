@@ -123,9 +123,10 @@ class PrivateChatRoomTests(TestCase):
         res = self.client.get(ROOM_LIST_URL)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(res.data), 1)
-        self.assertEqual(res.data[0]["id"], own_room.id)
-        self.assertNotEqual(res.data[0]["id"], other_room.id)
+        self.assertEqual(res.data["count"], 1)
+        self.assertEqual(len(res.data["results"]), 1)
+        self.assertEqual(res.data["results"][0]["id"], own_room.id)
+        self.assertNotEqual(res.data["results"][0]["id"], other_room.id)
 
     def test_room_response_includes_last_message(self):
         room = Room.objects.create(
@@ -139,7 +140,7 @@ class PrivateChatRoomTests(TestCase):
         res = self.client.get(ROOM_LIST_URL)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(res.data[0]["last_message"]["content"], "Latest msg")
+        self.assertEqual(res.data["results"][0]["last_message"]["content"], "Latest msg")
 
 
 class PrivateChatMessageTests(TestCase):
@@ -164,7 +165,8 @@ class PrivateChatMessageTests(TestCase):
         res = self.client.get(message_list_url(self.room.id))
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(res.data), 2)
+        self.assertEqual(res.data["count"], 2)
+        self.assertEqual(len(res.data["results"]), 2)
 
     def test_host_can_list_messages_in_room(self):
         self.client.force_authenticate(user=self.host)
@@ -173,7 +175,8 @@ class PrivateChatMessageTests(TestCase):
         res = self.client.get(message_list_url(self.room.id))
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(res.data), 1)
+        self.assertEqual(res.data["count"], 1)
+        self.assertEqual(len(res.data["results"]), 1)
 
     def test_cannot_list_messages_in_other_room(self):
         self.client.force_authenticate(user=self.other)
@@ -182,4 +185,5 @@ class PrivateChatMessageTests(TestCase):
         res = self.client.get(message_list_url(self.room.id))
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(res.data), 0)
+        self.assertEqual(res.data["count"], 0)
+        self.assertEqual(len(res.data["results"]), 0)

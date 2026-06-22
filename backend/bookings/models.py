@@ -11,6 +11,7 @@ from django.db.models import Q
 from users.base_models import TimeStampedModel
 
 from datetime import date
+from django.utils import timezone
 
 class Bookings(TimeStampedModel):
 
@@ -61,6 +62,7 @@ class Bookings(TimeStampedModel):
     infants = models.PositiveIntegerField(default=0)
 
     pets = models.PositiveIntegerField(default=0)
+    hold_expires_at = models.DateTimeField(null=True, blank=True, db_index=True)
 
     STATUS_CHOICES = [
 
@@ -120,6 +122,30 @@ class Bookings(TimeStampedModel):
 
             not hasattr(self, "review")
 
+        )
+
+    @classmethod
+    def active_reservation_q(cls, at_time=None):
+        at_time = at_time or timezone.now()
+        return (
+            Q(status__in=[cls.STATUS_CONFIRMED, cls.STATUS_PAID, cls.STATUS_ONGOING])
+            | Q(status=cls.STATUS_PENDING, hold_expires_at__gt=at_time)
+        )
+
+    @classmethod
+    def conflicting_reservations(cls, *, listing, start_date, end_date, at_time=None):
+        return cls.objects.filter(
+            listing=listing,
+            start_date__lte=end_date,
+            end_date__gte=start_date,
+        ).filter(cls.active_reservation_q(at_time=at_time))
+
+    def is_hold_active(self, at_time=None):
+        at_time = at_time or timezone.now()
+        return (
+            self.status == self.STATUS_PENDING
+            and self.hold_expires_at is not None
+            and self.hold_expires_at > at_time
         )
 
     class Meta:

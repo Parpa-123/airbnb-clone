@@ -132,13 +132,13 @@ class Listings(TimeStampedModel):
 
     address = models.CharField(max_length=255)
 
-    country = models.CharField(max_length=100)
+    country = models.CharField(max_length=100, db_index=True)
 
-    city = models.CharField(max_length=100)
+    city = models.CharField(max_length=100, db_index=True)
 
-    property_type = models.CharField(max_length=15, choices=PROPERTY_TYPES)
+    property_type = models.CharField(max_length=15, choices=PROPERTY_TYPES, db_index=True)
 
-    max_guests = models.IntegerField(choices=GUEST_COUNT_CHOICES)
+    max_guests = models.IntegerField(choices=GUEST_COUNT_CHOICES, db_index=True)
 
     bhk_choice = models.IntegerField(choices=BEDROOM_CHOICES)
 
@@ -146,15 +146,15 @@ class Listings(TimeStampedModel):
 
     bathrooms = models.DecimalField(max_digits=3, decimal_places=1, choices=BATHROOM_CHOICES)
 
-    price_per_night = models.DecimalField(max_digits=10, decimal_places=2)
+    price_per_night = models.DecimalField(max_digits=10, decimal_places=2, db_index=True)
 
     amenities = models.ManyToManyField(Amenities, blank=True)
 
-    allows_children = models.BooleanField(default=True)
+    allows_children = models.BooleanField(default=True, db_index=True)
 
     allows_infants = models.BooleanField(default=True)
 
-    allows_pets = models.BooleanField(default=False)
+    allows_pets = models.BooleanField(default=False, db_index=True)
 
     title_slug = models.SlugField(unique=True, blank=True, max_length=255, null=True)
 

@@ -15,6 +15,7 @@ from .models import Wishlist
 from listings.models import Listings
 
 from django.shortcuts import get_object_or_404
+from django.db.models import Count, Prefetch
 
 class WishlistListView(AuthAPIView,generics.ListCreateAPIView):
 
@@ -24,7 +25,19 @@ class WishlistListView(AuthAPIView,generics.ListCreateAPIView):
 
     def get_queryset(self):
 
-        return self.queryset.filter(user=self.request.user)
+        listing_queryset = Listings.objects.select_related("host").prefetch_related("listingimages")
+        return (
+            self.queryset
+            .filter(user=self.request.user)
+            .annotate(listings_count=Count("listings", distinct=True))
+            .prefetch_related(
+                Prefetch(
+                    "listings",
+                    queryset=listing_queryset,
+                    to_attr="prefetched_listings_for_cover",
+                )
+            )
+        )
 
     def perform_create(self, serializer):
 
@@ -38,7 +51,10 @@ class WishlistDetailView(AuthAPIView,generics.RetrieveDestroyAPIView):
 
     def get_queryset(self):
 
-        return Wishlist.objects.filter(user=self.request.user)
+        listing_queryset = Listings.objects.select_related("host").prefetch_related("listingimages")
+        return Wishlist.objects.filter(user=self.request.user).prefetch_related(
+            Prefetch("listings", queryset=listing_queryset)
+        )
 
 class DeleteListingFromWishlistView(AuthAPIView,generics.DestroyAPIView):
 
@@ -74,16 +90,29 @@ class BulkAddToWishlistView(AuthAPIView, generics.GenericAPIView):
 
         wishlists = serializer.validated_data['wishlists_qs']
 
-        added = []
+        through_model = Wishlist.listings.through
+        wishlist_pairs = list(wishlists.values("id", "slug"))
+        wishlist_ids = [item["id"] for item in wishlist_pairs]
 
-        for wishlist in wishlists:
+        existing_wishlist_ids = set(
+            through_model.objects.filter(
+                wishlist_id__in=wishlist_ids,
+                listings_id=listing.pk,
+            ).values_list("wishlist_id", flat=True)
+        )
 
-            if wishlist.listings.filter(pk=listing.pk).exists():
+        to_create = [
+            through_model(wishlist_id=wishlist_id, listings_id=listing.pk)
+            for wishlist_id in wishlist_ids
+            if wishlist_id not in existing_wishlist_ids
+        ]
+        if to_create:
+            through_model.objects.bulk_create(to_create, ignore_conflicts=True)
 
-                continue
-
-            wishlist.listings.add(listing)
-
-            added.append(wishlist.slug)
+        added = [
+            item["slug"]
+            for item in wishlist_pairs
+            if item["id"] not in existing_wishlist_ids
+        ]
 
         return Response({"added": added}, status=status.HTTP_200_OK)

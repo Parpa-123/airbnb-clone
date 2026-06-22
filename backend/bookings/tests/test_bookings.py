@@ -30,6 +30,22 @@ def booking_delete_url(id):
 
     return reverse('bookings:booking-delete', args=[id])
 
+from datetime import timedelta
+from django.utils import timezone
+
+_now = timezone.now()
+d0 = (_now + timedelta(days=9)).strftime("%Y-%m-%d")
+d1 = (_now + timedelta(days=10)).strftime("%Y-%m-%d")
+d2 = (_now + timedelta(days=15)).strftime("%Y-%m-%d")
+d3 = (_now + timedelta(days=31)).strftime("%Y-%m-%d")
+d4 = (_now + timedelta(days=35)).strftime("%Y-%m-%d")
+d5 = (_now + timedelta(days=40)).strftime("%Y-%m-%d")
+d6 = (_now + timedelta(days=45)).strftime("%Y-%m-%d")
+d7 = (_now + timedelta(days=50)).strftime("%Y-%m-%d")
+d8 = (_now + timedelta(days=55)).strftime("%Y-%m-%d")
+d9 = (_now + timedelta(days=60)).strftime("%Y-%m-%d")
+d10 = (_now + timedelta(days=65)).strftime("%Y-%m-%d")
+
 class BookingTest(TestCase):
 
     def setUp(self):
@@ -96,8 +112,6 @@ class BookingTest(TestCase):
 
             allows_pets=True,
 
-            pet_fee=Decimal('15.00'),
-
         )
 
     def test_failure_to_create_booking_on_own_property(self):
@@ -108,9 +122,9 @@ class BookingTest(TestCase):
 
                 "listing": listing.id,
 
-                "start_date": "2026-01-10",
+                "start_date": d1,
 
-                "end_date": "2026-01-15",
+                "end_date": d2,
 
         }
 
@@ -126,9 +140,9 @@ class BookingTest(TestCase):
 
                 "listing": listing.id,
 
-                "start_date": "2026-01-10",
+                "start_date": d1,
 
-                "end_date": "2026-01-15",
+                "end_date": d2,
 
         }
 
@@ -144,9 +158,9 @@ class BookingTest(TestCase):
 
                 "listing": listing.id,
 
-                "start_date": "2026-01-10",
+                "start_date": d1,
 
-                "end_date": "2026-01-09",
+                "end_date": d0,
 
         }
 
@@ -174,9 +188,9 @@ class BookingTest(TestCase):
 
                 "listing": listing.id,
 
-                "start_date": "2026-01-10",
+                "start_date": d1,
 
-                "end_date": "2026-01-15",
+                "end_date": d2,
 
         }
 
@@ -196,9 +210,9 @@ class BookingTest(TestCase):
 
             listing=listing,
 
-            start_date="2026-01-10",
+            start_date=d1,
 
-            end_date="2026-01-15",
+            end_date=d2,
 
             total_price=Decimal("500.00"),
 
@@ -220,9 +234,9 @@ class BookingTest(TestCase):
 
             listing=listing,
 
-            start_date="2026-01-10",
+            start_date=d1,
 
-            end_date="2026-01-15",
+            end_date=d2,
 
             total_price=Decimal("500.00"),
 
@@ -244,9 +258,9 @@ class BookingTest(TestCase):
 
             listing=listing,
 
-            start_date="2026-01-10",
+            start_date=d1,
 
-            end_date="2026-01-15",
+            end_date=d2,
 
             total_price=Decimal("500.00"),
 
@@ -268,9 +282,9 @@ class BookingTest(TestCase):
 
             listing=listing,
 
-            start_date="2026-01-10",
+            start_date=d1,
 
-            end_date="2026-01-15",
+            end_date=d2,
 
             total_price=Decimal("500.00"),
 
@@ -294,9 +308,9 @@ class BookingTest(TestCase):
 
             listing=listing1,
 
-            start_date="2026-01-10",
+            start_date=d1,
 
-            end_date="2026-01-15",
+            end_date=d2,
 
             total_price=Decimal("500.00"),
 
@@ -310,9 +324,9 @@ class BookingTest(TestCase):
 
             listing=listing2,
 
-            start_date="2026-01-10",
+            start_date=d1,
 
-            end_date="2026-01-15",
+            end_date=d2,
 
             total_price=Decimal("500.00"),
 
@@ -324,9 +338,10 @@ class BookingTest(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
 
-        self.assertEqual(len(res.data), 1)
+        self.assertEqual(res.data["count"], 1)
+        self.assertEqual(len(res.data["results"]), 1)
 
-        self.assertEqual(res.data[0]['id'], booking1.id)
+        self.assertEqual(res.data["results"][0]['id'], booking1.id)
 
     def test_create_booking_with_guest_breakdown(self):
 
@@ -336,9 +351,9 @@ class BookingTest(TestCase):
 
             "listing": listing.id,
 
-            "start_date": "2026-02-01",
+            "start_date": d3,
 
-            "end_date": "2026-02-05",
+            "end_date": d4,
 
             "adults": 2,
 
@@ -390,9 +405,9 @@ class BookingTest(TestCase):
 
             "listing": listing.id,
 
-            "start_date": "2026-02-10",
+            "start_date": d5,
 
-            "end_date": "2026-02-15",
+            "end_date": d6,
 
             "adults": 1,
 
@@ -440,9 +455,9 @@ class BookingTest(TestCase):
 
             "listing": listing.id,
 
-            "start_date": "2026-02-20",
+            "start_date": d7,
 
-            "end_date": "2026-02-25",
+            "end_date": d8,
 
             "adults": 1,
 
@@ -462,9 +477,9 @@ class BookingTest(TestCase):
 
             "listing": listing.id,
 
-            "start_date": "2026-03-01",
+            "start_date": d9,
 
-            "end_date": "2026-03-05",
+            "end_date": d10,
 
             "adults": 6,
 

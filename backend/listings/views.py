@@ -14,6 +14,9 @@ from listings.serializers import ListingSerializer, ListingDetailSerializer, Cre
 
 from listings.filters import ListingFilter
 
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+
 class BaseAuthenticatedView:
 
     authentication_classes = [JWTAuthentication]
@@ -135,7 +138,7 @@ class PublicListingView(generics.ListAPIView):
 class OptionsView(BaseAuthenticatedView, views.APIView):
 
     @extend_schema(responses={200: OpenApiTypes.OBJECT})
-
+    @method_decorator(cache_page(60 * 60 * 24))
     def get(self, request):
 
         return Response({

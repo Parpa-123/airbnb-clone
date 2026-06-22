@@ -196,6 +196,10 @@ REST_FRAMEWORK = {
 
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 
+    'DEFAULT_PAGINATION_CLASS': 'conf.pagination.DefaultPagePagination',
+
+    'PAGE_SIZE': 20,
+
     'DEFAULT_AUTHENTICATION_CLASSES': (
 
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -207,6 +211,29 @@ REST_FRAMEWORK = {
         'django_filters.rest_framework.DjangoFilterBackend',
 
     ),
+
+    'DEFAULT_THROTTLE_CLASSES': (
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle',
+    ),
+
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '120/min',
+        'user': '300/min',
+        'auth_signup': '30/min',
+        'auth_login': '60/min',
+        'auth_refresh': '90/min',
+        'chat_room_create': '60/min',
+        'chat_rooms_list': '120/min',
+        'chat_messages_list': '240/min',
+        'booking_create': '30/min',
+        'booking_list': '120/min',
+        'booking_detail': '180/min',
+        'booking_detail_retrieve': '120/min',
+        'booking_destroy': '30/min',
+        'booking_payment_create_order': '30/min',
+        'webhook_cashfree': '120/min',
+    },
 
 }
 
@@ -249,3 +276,8 @@ CASHFREE_ENV = os.getenv("CASHFREE_ENV", "TEST")
 CASHFREE_BASE_URL = os.getenv("CASHFREE_BASE_URL")
 
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
+
+BOOKING_HOLD_MINUTES = int(os.getenv("BOOKING_HOLD_MINUTES", "10"))
+BOOKING_PAYMENT_HOLD_EXTENSION_MINUTES = int(
+    os.getenv("BOOKING_PAYMENT_HOLD_EXTENSION_MINUTES", "20")
+)

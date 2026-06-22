@@ -7,6 +7,8 @@ from listings.models import Listings
 from users.models import User
 
 from django.utils import timezone
+from django.conf import settings
+from datetime import timedelta
 
 from listings.serializers import ListingSerializer
 
@@ -14,7 +16,7 @@ from users.serializers import UserProfileSerializer
 
 class BookingOrderCreateSerializer(serializers.Serializer):
 
-    booking_id = serializers.UUIDField()
+    booking_id = serializers.IntegerField()
 
 class BookingSerializer(serializers.ModelSerializer):
 
@@ -31,6 +33,7 @@ class BookingSerializer(serializers.ModelSerializer):
     infants = serializers.IntegerField(min_value=0, max_value=5, default=0)
 
     pets = serializers.IntegerField(min_value=0, max_value=5, default=0)
+    hold_expires_at = serializers.DateTimeField(read_only=True)
 
     class Meta:
 
@@ -53,6 +56,7 @@ class BookingSerializer(serializers.ModelSerializer):
             "infants",
 
             "pets",
+            "hold_expires_at",
 
         ]
 
@@ -90,9 +94,14 @@ class BookingSerializer(serializers.ModelSerializer):
 
             raise serializers.ValidationError("Start date must be before end date")
 
-        if Bookings.objects.filter(listing=listing, start_date__lte=end_date, end_date__gte=start_date, status=Bookings.STATUS_CONFIRMED).exists():
+        if Bookings.conflicting_reservations(
+            listing=listing,
+            start_date=start_date,
+            end_date=end_date,
+            at_time=timezone.now(),
+        ).exists():
 
-            raise serializers.ValidationError("Listing is already booked for this period")
+            raise serializers.ValidationError("Listing is temporarily unavailable for this period")
 
         if adults > listing.max_guests:
 
@@ -133,6 +142,9 @@ class BookingSerializer(serializers.ModelSerializer):
         validated_data["total_price"] = listing.price_per_night * nights
 
         validated_data['status'] = Bookings.STATUS_PENDING
+        validated_data["hold_expires_at"] = timezone.now() + timedelta(
+            minutes=settings.BOOKING_HOLD_MINUTES
+        )
 
         return super().create(validated_data)
 

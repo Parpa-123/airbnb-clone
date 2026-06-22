@@ -40,9 +40,19 @@ class RoomSerializer(serializers.ModelSerializer):
         read_only_fields = fields
 
     def get_last_message(self, obj):
-        last = obj.messages.order_by("-created_at").first()
-        if last:
-            return MessageSerializer(last).data
+        last_message_id = getattr(obj, "last_message_id", None)
+        if last_message_id:
+            return {
+                "id": last_message_id,
+                "room": obj.id,
+                "content": getattr(obj, "last_message_content", ""),
+                "created_at": getattr(obj, "last_message_created_at", None),
+                "updated_at": getattr(obj, "last_message_updated_at", None),
+                "user": {
+                    "email": getattr(obj, "last_message_user_email", None),
+                    "username": getattr(obj, "last_message_username", None),
+                },
+            }
         return None
 
     def get_other_user(self, obj):

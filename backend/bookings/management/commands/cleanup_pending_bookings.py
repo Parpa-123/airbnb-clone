@@ -1,24 +1,23 @@
 from django.core.management.base import BaseCommand
 
 from django.utils import timezone
-
-from datetime import timedelta
+from django.db.models import Q
 
 from bookings.models import Bookings
 
 class Command(BaseCommand):
 
-    help = 'Cancel pending bookings older than 2 minutes'
+    help = 'Cancel pending bookings whose hold has expired'
 
     def handle(self, *args, **options):
 
-        cutoff_time = timezone.now() - timedelta(minutes=2)
+        now = timezone.now()
 
         pending_bookings = Bookings.objects.filter(
 
             status=Bookings.STATUS_PENDING,
-
-            created_at__lt=cutoff_time
+        ).filter(
+            Q(hold_expires_at__lte=now) | Q(hold_expires_at__isnull=True)
 
         )
 

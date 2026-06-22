@@ -36,19 +36,21 @@ class WishlistSerializer(serializers.ModelSerializer):
 
     def get_count(self, obj):
 
-        return obj.listings.count()
+        return getattr(obj, "listings_count", obj.listings.count())
 
     @extend_schema_field(serializers.URLField)
 
     def get_cover_image(self, obj):
 
-        first_listing = obj.listings.first()
+        prefetched_listings = getattr(obj, "prefetched_listings_for_cover", None)
+        first_listing = prefetched_listings[0] if prefetched_listings else obj.listings.first()
 
         if not first_listing:
 
             return None
 
-        first_image = first_listing.listingimages.first()
+        prefetched_images = getattr(first_listing, "_prefetched_objects_cache", {}).get("listingimages")
+        first_image = prefetched_images[0] if prefetched_images else first_listing.listingimages.first()
 
         if not first_image or not first_image.image:
 

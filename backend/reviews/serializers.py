@@ -34,16 +34,18 @@ class ReviewSerializer(serializers.ModelSerializer):
 
         }
 
-        def validate(self, attrs):
+    def validate(self, attrs):
 
-            booking = attrs.get('booking')
+        booking = attrs.get('booking')
 
-            user = self.context['request'].user
+        user = self.context['request'].user
 
-            if not booking:
+        if not booking:
 
-                raise serializers.ValidationError('Booking is required')
+            raise serializers.ValidationError('Booking is required')
 
-            if booking.guest != user:
+        if booking.guest != user:
 
-                raise serializers.ValidationError('You are not the guest of this booking')
+            raise serializers.ValidationError('You are not the guest of this booking')
+
+        return attrs

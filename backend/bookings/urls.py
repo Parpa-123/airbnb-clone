@@ -1,9 +1,7 @@
 from django.urls import path
 
 from .views import (
-
     BookingCreateView,
-
     BookingListView,
 
     BookingDestroyView,
@@ -15,6 +13,8 @@ from .views import (
     BookingDetailView,
 
     BookingDetailRetrieveView,
+
+    VerifyCashfreePaymentView,
 
 )
 
@@ -30,9 +30,11 @@ urlpatterns = [
 
     path("delete/<int:pk>/", BookingDestroyView.as_view(), name="booking-delete"),
 
-    path("payments/create-order/", CreateCashfreeOrderView.as_view()),
+    path("payments/create-order/", CreateCashfreeOrderView.as_view(), name="payment-create-order"),
 
     path("payments/webhook/", CashfreeWebhookView.as_view(), name="cashfree-webhook"),
+
+    path("payments/verify/", VerifyCashfreePaymentView.as_view(), name="payment-verify"),
 
     path('<int:pk>/', BookingDetailView.as_view(), name='booking-detail'),
 

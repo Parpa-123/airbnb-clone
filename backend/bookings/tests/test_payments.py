@@ -33,6 +33,8 @@ from rest_framework.test import APIClient
 from django.test import TestCase
 
 from bookings.models import Payment, Bookings
+from django.utils import timezone
+from datetime import timedelta
 
 from users.models import User
 
@@ -98,8 +100,6 @@ class PaymentTest(TestCase):
 
             allows_pets=True,
 
-            pet_fee=Decimal('10.00'),
-
         )
 
         self.url = reverse("bookings:cashfree-webhook")
@@ -153,6 +153,7 @@ class PaymentTest(TestCase):
             total_price=100,
 
             status=Bookings.STATUS_PENDING,
+            hold_expires_at=timezone.now() + timedelta(minutes=10),
 
         )
 
@@ -213,3 +214,67 @@ class PaymentTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
         self.assertEqual(response.data["status"], "already processed")
+
+    def test_payment_success_with_expired_hold(self):
+        from django.utils import timezone
+        from datetime import timedelta
+        self.booking.hold_expires_at = timezone.now() - timedelta(minutes=5)
+        self.booking.save()
+        response = self.client.post(self.url, data=self.payload, content_type="application/json", **self.headers)
+        self.assertEqual(response.status_code, 409)
+        self.payment.refresh_from_db()
+        self.booking.refresh_from_db()
+        self.assertEqual(self.payment.status, Payment.FAILED)
+        self.assertEqual(self.booking.status, Bookings.STATUS_CANCELLED)
+
+from unittest.mock import patch
+from rest_framework.test import APIClient
+
+class VerifyCashfreePaymentTest(TestCase):
+    def setUp(self):
+        from django.utils import timezone
+        from datetime import timedelta
+        self.client = APIClient()
+        self.guest = User.objects.create_user(email="g@test.com", password="pwd", username="g")
+        self.host = User.objects.create_user(email="h@test.com", password="pwd", username="h", is_host=True)
+        self.client.force_authenticate(user=self.guest)
+        self.listing = Listings.objects.create(
+            host=self.host, title="T", title_slug="t", description="D", price_per_night=100, max_guests=4,
+            country="USA", city="Seattle", address="123", property_type="apartment", bhk_choice="1", bed_choice="1", bathrooms=1
+        )
+        self.booking = Bookings.objects.create(
+            guest=self.guest, listing=self.listing, start_date="2026-10-01", end_date="2026-10-05", status=Bookings.STATUS_PENDING,
+            hold_expires_at=timezone.now() + timedelta(minutes=10)
+        )
+        self.payment = Payment.objects.create(
+            booking=self.booking, order_id="order_123", payment_session_id="session_123", amount=1000, status=Payment.INITIATED
+        )
+        self.url = reverse("bookings:payment-verify")
+
+    @patch("bookings.views.Cashfree.PGOrderFetchPayments")
+    def test_verify_payment_success(self, mock_fetch):
+        mock_response = type("obj", (object,), {"data": [type("obj", (object,), {"payment_status": "SUCCESS"})]})
+        mock_fetch.return_value = mock_response
+
+        response = self.client.post(self.url, {"order_id": "order_123"}, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["status"], "paid")
+        self.booking.refresh_from_db()
+        self.assertEqual(self.booking.status, Bookings.STATUS_CONFIRMED)
+
+    @patch("bookings.views.Cashfree.PGOrderFetchPayments")
+    def test_verify_payment_expired_hold(self, mock_fetch):
+        from django.utils import timezone
+        from datetime import timedelta
+        self.booking.hold_expires_at = timezone.now() - timedelta(minutes=5)
+        self.booking.save()
+        mock_response = type("obj", (object,), {"data": [type("obj", (object,), {"payment_status": "SUCCESS"})]})
+        mock_fetch.return_value = mock_response
+
+        response = self.client.post(self.url, {"order_id": "order_123"}, format="json")
+        self.assertEqual(response.status_code, 409)
+        self.assertIn("expired", response.data["error"])
+        self.booking.refresh_from_db()
+        self.payment.refresh_from_db()
+        self.assertEqual(self.booking.status, Bookings.STATUS_CANCELLED)
+        self.assertEqual(self.payment.status, Payment.FAILED)
