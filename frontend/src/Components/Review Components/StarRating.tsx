@@ -17,7 +17,7 @@ export const StarRating: React.FC<StarRatingProps> = ({
           key={star}
           onClick={() => !readonly && onChange?.(star)}
           className={`text-lg ${
-            star <= value ? "text-rose-500" : "text-gray-300"
+            star <= value ? "text-brand" : "text-gray-300"
           } ${readonly ? "cursor-default" : "cursor-pointer hover:scale-110"} transition`}
         >
           ★

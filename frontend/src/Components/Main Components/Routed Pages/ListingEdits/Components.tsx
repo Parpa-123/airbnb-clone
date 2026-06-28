@@ -47,9 +47,9 @@ export function EditableSection({ title, fields, listing, onPatch, children }: E
                     </button>
                     <button
                         type="submit"
-                        className="px-5 py-2.5 bg-linear-to-r from-[#2563EB] to-[#16A34A] text-white
-                                   rounded-lg font-medium shadow-md hover:shadow-lg hover:from-[#16A34A]
-                                   hover:to-[#15803D] transition-all duration-200 cursor-pointer"
+                        className="px-5 py-2.5 bg-brand text-white
+                                   rounded-lg font-medium shadow-md hover:shadow-lg hover:bg-brand-hover
+                                   transition-all duration-200 cursor-pointer"
                     >
                         Save Changes
                     </button>
@@ -249,7 +249,7 @@ export function ListingImagesComponents(
                                     <img
                                         src={URL.createObjectURL(file)}
                                         alt={file.name}
-                                        className="w-full h-40 object-cover rounded-lg border-2 border-[#22C55E]"
+                                        className="w-full h-40 object-cover rounded-lg border-2 border-brand"
                                     />
 
                                     <div className="absolute inset-0 flex items-center justify-center rounded-lg
@@ -280,7 +280,7 @@ export function ListingImagesComponents(
                 {totalImages < MAX_IMAGES && (
                     <label className="block border-2 border-dashed border-gray-300
                                       rounded-xl p-8 text-center cursor-pointer
-                                      hover:border-[#22C55E] hover:bg-[#22C55E]/5
+                                      hover:border-brand hover:bg-brand/5
                                       transition-all">
                         <div className="space-y-2">
                             <div className="text-4xl">📸</div>
@@ -322,9 +322,9 @@ export function ListingImagesComponents(
                         <button
                             type="submit"
                             disabled={uploading}
-                            className="px-5 py-2.5 bg-[#2563EB] text-white
+                            className="px-5 py-2.5 bg-brand text-white
                                        rounded-lg font-medium shadow-md
-                                       hover:bg-[#1D4ED8] disabled:opacity-50 cursor-pointer"
+                                       hover:bg-brand-hover disabled:opacity-50 cursor-pointer"
                         >
                             {uploading ? "Uploading..." : "Upload Images"}
                         </button>

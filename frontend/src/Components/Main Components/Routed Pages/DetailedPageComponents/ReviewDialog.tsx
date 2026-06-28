@@ -79,7 +79,7 @@ const ReviewDialog: React.FC<ReviewDialogProps> = ({ open, onOpenChange, onSubmi
                                 name="review"
                                 required
                                 placeholder="What did you like? Anything to improve?"
-                                className="w-full border rounded-xl p-3 h-28 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                                className="w-full border rounded-xl p-3 h-28 focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand"
                             />
 
                             {RATING_LABELS.map(([key, label]) => (
@@ -94,7 +94,7 @@ const ReviewDialog: React.FC<ReviewDialogProps> = ({ open, onOpenChange, onSubmi
 
                             <button
                                 type="submit"
-                                className="w-full bg-rose-500 text-white py-3 rounded-xl font-semibold hover:bg-rose-600 transition cursor-pointer"
+                                className="w-full bg-brand text-white py-3 rounded-xl font-semibold hover:bg-brand-hover transition cursor-pointer"
                             >
                                 Submit review
                             </button>

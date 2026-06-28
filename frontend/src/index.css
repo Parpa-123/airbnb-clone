@@ -75,6 +75,6 @@ body {
   }
 
   .airbnb-pagination .swiper-pagination-bullet-active {
-    @apply bg-[#22C55E] w-[10px] h-[10px];
+    @apply bg-brand w-[10px] h-[10px];
   }
 }

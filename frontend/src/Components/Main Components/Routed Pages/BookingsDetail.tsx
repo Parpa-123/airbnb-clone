@@ -134,7 +134,7 @@ const BookingDetails = () => {
             </div>
 
             { }
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 shadow-sm border border-blue-100">
+            <div className="bg-gradient-to-br from-brand/5 to-cyan-50/50 rounded-xl p-6 shadow-sm border border-brand/10">
                 <h3 className="font-semibold text-lg mb-4 text-gray-900">Price Calculation Details</h3>
 
                 <div className="space-y-3">
@@ -152,7 +152,7 @@ const BookingDetails = () => {
                         </span>
                     </div>
 
-                    <div className="border-t border-blue-200 my-3"></div>
+                    <div className="border-t border-brand/20 my-3"></div>
 
                     { }
                     <div className="flex justify-between text-sm">
@@ -166,21 +166,21 @@ const BookingDetails = () => {
                         </span>
                     </div>
 
-                    <div className="border-t border-blue-200 my-3"></div>
+                    <div className="border-t border-brand/20 my-3"></div>
 
                     { }
                     <div className="bg-white/60 rounded-lg p-3 text-sm">
                         <div className="text-gray-600 mb-1">Calculation:</div>
-                        <div className="font-mono text-indigo-700">
+                        <div className="font-mono text-brand-hover">
                             ${Number(booking.listing.price_per_night).toFixed(2)} × {nights} nights = ${totalPrice.toFixed(2)}
                         </div>
                     </div>
 
                     { }
-                    <div className="border-t border-blue-200 my-3"></div>
+                    <div className="border-t border-brand/20 my-3"></div>
                     <div className="flex justify-between items-center">
                         <span className="font-semibold text-lg text-gray-900">Total Amount:</span>
-                        <span className="font-bold text-2xl text-indigo-600">
+                        <span className="font-bold text-2xl text-brand">
                             ${totalPrice.toFixed(2)}
                         </span>
                     </div>

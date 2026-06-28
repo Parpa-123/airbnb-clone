@@ -79,7 +79,7 @@ const BookingCard: React.FC<BookingCardProps> = React.memo(({
                         ${Math.abs(Number(booking.total_price))}
                     </p>
 
-                    <button className="text-sm font-medium text-rose-600 hover:underline cursor-pointer">
+                    <button className="text-sm font-medium text-brand hover:text-brand-hover hover:underline cursor-pointer">
                         <Link to={`/bookings/details/${booking.id}`}>View details</Link>
                     </button>
 

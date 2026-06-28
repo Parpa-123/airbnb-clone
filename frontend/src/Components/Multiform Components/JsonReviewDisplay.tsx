@@ -64,7 +64,7 @@ const JsonReviewDisplay = ({
                     { }
                     <div className="flex flex-col sm:flex-row justify-between items-start gap-4 border-b border-gray-100 pb-6">
                         <div>
-                            <div className="flex items-center gap-2 text-rose-500 font-semibold text-sm uppercase tracking-wider mb-2">
+                            <div className="flex items-center gap-2 text-brand font-semibold text-sm uppercase tracking-wider mb-2">
                                 <FaHome /> {property_type}
                             </div>
                             <h3 className="text-2xl font-bold text-gray-900 mb-2">{propTitle}</h3>
@@ -144,7 +144,7 @@ const JsonReviewDisplay = ({
 
 const StatItem = ({ icon, label, value }: { icon: any, label: string, value: any }) => (
     <div className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl text-center">
-        <div className="text-2xl text-rose-500 mb-2">{icon}</div>
+        <div className="text-2xl text-brand mb-2">{icon}</div>
         <div className="font-bold text-gray-900 text-lg">{value}</div>
         <div className="text-xs text-gray-500 uppercase tracking-wide">{label}</div>
     </div>

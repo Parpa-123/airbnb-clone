@@ -21,7 +21,7 @@ const Booking: React.FC = () => {
                                 to={item.path}
                                 className={({ isActive }) =>
                                     `px-4 py-3 rounded-lg font-medium transition-colors whitespace-nowrap ${isActive
-                                        ? "bg-[#2563EB] text-white"
+                                        ? "bg-brand text-white"
                                         : "text-gray-700 hover:bg-gray-100"
                                     }`
                                 }
@@ -45,7 +45,7 @@ const Booking: React.FC = () => {
                                 to={item.path}
                                 className={({ isActive }) =>
                                     `block px-4 py-3 rounded-lg font-medium transition-colors ${isActive
-                                        ? "bg-[#2563EB] text-white"
+                                        ? "bg-brand text-white"
                                         : "text-gray-700 hover:bg-gray-100"
                                     }`
                                 }

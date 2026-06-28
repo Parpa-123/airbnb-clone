@@ -92,7 +92,7 @@ const ChatConversation = () => {
         return (
             <div className="max-w-3xl mx-auto px-6 py-12 text-center">
                 <h1 className="text-xl font-semibold text-gray-900">Conversation not found</h1>
-                <Link to="/messages" className="inline-block mt-4 text-[#22C55E] font-medium">
+                <Link to="/messages" className="inline-block mt-4 text-brand font-medium hover:text-brand-hover">
                     Back to messages
                 </Link>
             </div>

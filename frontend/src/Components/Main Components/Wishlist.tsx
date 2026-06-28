@@ -53,7 +53,7 @@ const Wishlist: React.FC = () => {
 
           {wishlists.length > 0 && (
             <Dialog.Trigger asChild>
-              <button className="flex items-center gap-2 text-[#22C55E] hover:opacity-80 cursor-pointer">
+              <button className="flex items-center gap-2 text-brand hover:opacity-80 cursor-pointer">
                 <FaPlusCircle size={22} />
                 <span className="text-sm font-medium">Add</span>
               </button>
@@ -65,8 +65,8 @@ const Wishlist: React.FC = () => {
         {wishlists.length === 0 && (
           <Dialog.Trigger asChild>
             <div className="flex flex-col items-center justify-center h-[60vh] cursor-pointer text-center">
-              <FaPlusCircle size={96} className="text-[#22C55E]" />
-              <p className="mt-6 text-lg font-medium text-[#22C55E]">
+              <FaPlusCircle size={96} className="text-brand" />
+              <p className="mt-6 text-lg font-medium text-brand">
                 Create your first wishlist
               </p>
             </div>
@@ -98,7 +98,7 @@ const Wishlist: React.FC = () => {
               value={wishlistName}
               onChange={(e) => setWishlistName(e.target.value)}
               placeholder="e.g. Mountain Retreats"
-              className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#2563EB]"
+              className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-brand/30 focus:border-brand outline-none"
             />
 
             <div className="mt-6 flex justify-end gap-3">
@@ -112,7 +112,7 @@ const Wishlist: React.FC = () => {
                 <button
                   onClick={createWishlist}
                   disabled={!wishlistName.trim()}
-                  className="px-4 py-2 bg-[#2563EB] text-white rounded-lg disabled:opacity-50 cursor-pointer"
+                  className="px-4 py-2 bg-brand text-white rounded-lg disabled:opacity-50 hover:bg-brand-hover cursor-pointer"
                 >
                   Create
                 </button>
