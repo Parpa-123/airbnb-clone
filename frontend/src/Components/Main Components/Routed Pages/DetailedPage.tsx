@@ -79,7 +79,8 @@ const DetailedPage: React.FC = () => {
       {/* Back Button */}
       <NavLink
         to=".."
-        className="inline-flex items-center gap-2 text-gray-600 hover:text-[#22C55E] transition-colors mb-4 group"
+        className="inline-flex items-center gap-2 text-gray-600 hover:text-brand transition-colors mb-4 group"
+        style={{ '--tw-text-opacity': 1, '&:hover': { color: 'var(--color-brand)' } } as React.CSSProperties}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -131,7 +132,8 @@ const DetailedPage: React.FC = () => {
               <button
                 type="button"
                 onClick={handleContactHost}
-                className="px-5 py-3 rounded-lg bg-[#22C55E] text-white font-semibold hover:bg-[#16A34A] transition-colors cursor-pointer"
+                className="px-5 py-3 rounded-lg text-white font-semibold transition-opacity hover:opacity-90 cursor-pointer"
+                style={{ backgroundColor: "var(--color-brand)" }}
               >
                 Contact host
               </button>

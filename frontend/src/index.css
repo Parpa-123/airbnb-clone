@@ -3,6 +3,10 @@
 @theme {
   --font-sans: "Nunito Sans", sans-serif;
 
+  /* Airbnb Green-Blue Colors */
+  --color-brand: #14B8A6; /* Tailwind teal-500 */
+  --color-brand-hover: #0F766E; /* Tailwind teal-700 */
+
   /* Custom breakpoints for responsive search bar */
   --breakpoint-smd: 640px;
   /* Small-medium devices (tablets) */
@@ -12,8 +16,8 @@
 
 body {
   font-family: "Nunito Sans", sans-serif;
+  color: #222222; /* Airbnb standard text color */
 }
-
 
 /* Custom Scrollbar for Multiform */
 .custom-scrollbar::-webkit-scrollbar {
@@ -32,7 +36,7 @@ body {
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(to bottom, #22C55E, #16A34A);
+  background: linear-gradient(to bottom, var(--color-brand), var(--color-brand-hover));
 }
 
 /* Firefox Custom Scrollbar */

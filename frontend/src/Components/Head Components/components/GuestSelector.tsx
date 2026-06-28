@@ -44,10 +44,10 @@ const GuestRow: React.FC<GuestRowProps> = ({
             }}
         >
             <Box>
-                <Typography variant="body1" sx={{ fontWeight: 500, color: "#f8fafc" }}>
+                <Typography variant="body1" sx={{ fontWeight: 600, color: "#222" }}>
                     {label}
                 </Typography>
-                <Typography variant="body2" sx={{ color: "#94a3b8" }}>
+                <Typography variant="body2" sx={{ color: "#71717a" }}>
                     {description}
                 </Typography>
             </Box>
@@ -58,12 +58,11 @@ const GuestRow: React.FC<GuestRowProps> = ({
                     disabled={count <= minCount}
                     sx={{
                         border: "1px solid",
-                        borderColor: count <= minCount ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.3)",
-                        color: count <= minCount ? "rgba(255,255,255,0.1)" : "#cbd5e1",
+                        borderColor: count <= minCount ? "#e5e7eb" : "#b0b0b0",
+                        color: count <= minCount ? "#e5e7eb" : "#71717a",
                         "&:hover": {
-                            borderColor: "#fff",
-                            color: "#fff",
-                            backgroundColor: "rgba(255,255,255,0.1)",
+                            borderColor: "#222",
+                            color: "#222",
                         },
                         width: 32,
                         height: 32,
@@ -78,8 +77,8 @@ const GuestRow: React.FC<GuestRowProps> = ({
                     sx={{
                         minWidth: 24,
                         textAlign: "center",
-                        fontWeight: 500,
-                        color: "#f8fafc"
+                        fontWeight: 400,
+                        color: "#222"
                     }}
                 >
                     {count}
@@ -90,12 +89,11 @@ const GuestRow: React.FC<GuestRowProps> = ({
                     disabled={count >= maxCount}
                     sx={{
                         border: "1px solid",
-                        borderColor: count >= maxCount ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.3)",
-                        color: count >= maxCount ? "rgba(255,255,255,0.1)" : "#cbd5e1",
+                        borderColor: count >= maxCount ? "#e5e7eb" : "#b0b0b0",
+                        color: count >= maxCount ? "#e5e7eb" : "#71717a",
                         "&:hover": {
-                            borderColor: "#fff",
-                            color: "#fff",
-                            backgroundColor: "rgba(255,255,255,0.1)",
+                            borderColor: "#222",
+                            color: "#222",
                         },
                         width: 32,
                         height: 32,
@@ -133,9 +131,10 @@ const GuestSelector: React.FC<GuestSelectorProps> = ({
     const open = Boolean(anchorEl);
     const id = open ? "guest-selector-popover" : undefined;
 
+    const totalGuests = guests.adults + guests.children;
+
     const getDisplayText = () => {
         const parts: string[] = [];
-        const totalGuests = guests.adults + guests.children;
 
         if (totalGuests === 0) {
             return "Add guests";
@@ -163,7 +162,9 @@ const GuestSelector: React.FC<GuestSelectorProps> = ({
             <button
                 aria-describedby={id}
                 onClick={handleClick}
-                className="px-6 py-2 text-sm text-slate-300 hover:text-white hover:bg-white/10 rounded-full transition-colors cursor-pointer font-medium"
+                className={`px-4 xz:px-6 py-2 text-sm font-semibold rounded-full transition-colors cursor-pointer ${
+                    totalGuests === 0 ? "text-gray-800 hover:bg-gray-100" : "text-gray-800 hover:bg-gray-100"
+                }`}
             >
                 {getDisplayText()}
             </button>
@@ -188,16 +189,16 @@ const GuestSelector: React.FC<GuestSelectorProps> = ({
                         sx: {
                             mt: 1,
                             borderRadius: "24px",
-                            backgroundColor: "#0f172a",
-                            border: "1px solid rgba(255,255,255,0.1)",
-                            boxShadow: "0 10px 40px rgba(0,0,0,0.5)",
-                            width: 320,
+                            backgroundColor: "#fff",
+                            border: "1px solid #e5e7eb",
+                            boxShadow: "0 10px 40px rgba(0,0,0,0.15)",
+                            width: 380,
                             overflow: "hidden",
                         },
                     },
                 }}
             >
-                <Box sx={{ p: 3 }}>
+                <Box sx={{ p: 4 }}>
                     <GuestRow
                         label="Adults"
                         description="Ages 13 or above"
@@ -208,7 +209,7 @@ const GuestSelector: React.FC<GuestSelectorProps> = ({
                         maxCount={16}
                     />
 
-                    <Divider sx={{ borderColor: "rgba(255,255,255,0.1)" }} />
+                    <Divider sx={{ borderColor: "#e5e7eb" }} />
 
                     <GuestRow
                         label="Children"
@@ -219,7 +220,7 @@ const GuestSelector: React.FC<GuestSelectorProps> = ({
                         maxCount={15}
                     />
 
-                    <Divider sx={{ borderColor: "rgba(255,255,255,0.1)" }} />
+                    <Divider sx={{ borderColor: "#e5e7eb" }} />
 
                     <GuestRow
                         label="Infants"
@@ -230,7 +231,7 @@ const GuestSelector: React.FC<GuestSelectorProps> = ({
                         maxCount={5}
                     />
 
-                    <Divider sx={{ borderColor: "rgba(255,255,255,0.1)" }} />
+                    <Divider sx={{ borderColor: "#e5e7eb" }} />
 
                     <GuestRow
                         label="Pets"
@@ -247,7 +248,7 @@ const GuestSelector: React.FC<GuestSelectorProps> = ({
                             sx={{
                                 display: "block",
                                 mt: 2,
-                                color: "#94a3b8",
+                                color: "#71717a",
                                 fontSize: "12px",
                             }}
                         >

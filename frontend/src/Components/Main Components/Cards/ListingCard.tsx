@@ -20,9 +20,9 @@ const ListingCard: React.FC<ListingCardProps> = React.memo(({
 
     return (
         <Link to={`/${listing.title_slug}`}>
-            <div className="relative rounded-xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition cursor-pointer group">
+            <div className="relative rounded-xl overflow-hidden border-none cursor-pointer group">
                 { }
-                <div className="relative aspect-4/3 bg-gray-100">
+                <div className="relative aspect-square bg-gray-100 rounded-xl overflow-hidden">
                     {coverImage ? (
                         <img
                             src={coverImage}
@@ -46,29 +46,30 @@ const ListingCard: React.FC<ListingCardProps> = React.memo(({
                         >
                             <FaHeart
                                 size={18}
-                                className={isFavorited ? "text-[#22C55E]" : "text-gray-400 hover:text-[#22C55E]"}
+                                className={isFavorited ? "text-brand" : "text-gray-400 hover:text-brand"}
+                                style={{ color: isFavorited ? "var(--color-brand)" : undefined }}
                             />
                         </button>
                     )}
                 </div>
 
                 { }
-                <div className="p-4">
-                    <h3 className="text-lg font-semibold truncate">
+                <div className="pt-3">
+                    <h3 className="text-[15px] font-semibold text-gray-900 truncate">
                         {listing.title}
                     </h3>
 
-                    <p className="text-sm text-gray-500">
+                    <p className="text-[15px] text-gray-500 mt-0.5">
                         {listing.city}, {listing.country}
                     </p>
 
-                    <p className="text-sm text-gray-600 mt-1">
-                        {listing.property_type_display} · {listing.bhk_choice} BHK · {listing.bed_choice} Beds · {listing.bathrooms} Bath
+                    <p className="text-[15px] text-gray-500 mt-0.5 truncate">
+                        {listing.property_type_display} · {listing.bhk_choice} BHK · {listing.bed_choice} Beds
                     </p>
 
-                    <p className="mt-3 text-md font-semibold">
+                    <p className="mt-1 text-[15px] text-gray-900 font-semibold">
                         ${listing.price_per_night}{" "}
-                        <span className="text-sm text-gray-500 font-normal">night</span>
+                        <span className="font-normal text-gray-900">night</span>
                     </p>
 
                     {showHost && (

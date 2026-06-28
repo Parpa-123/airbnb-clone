@@ -30,7 +30,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
             {/* Hosting Link */}
             <button
                 onClick={onHostingClick}
-                className="hidden lg:block px-4 py-2 text-sm font-semibold text-slate-200 hover:bg-white/10 rounded-full transition-colors cursor-pointer"
+                className="hidden lg:block px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
             >
                 {user ? (user.is_host ? "List your home" : "Airbnb your home") : "List Your Home"}
             </button>
@@ -38,7 +38,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
             {/* Wishlist Link */}
             <Link
                 to="/me/wishlist"
-                className="hidden lg:block px-4 py-2 text-sm font-semibold text-slate-200 hover:bg-white/10 rounded-full transition-colors cursor-pointer"
+                className="hidden lg:block px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
             >
                 Wishlist
             </Link>
@@ -46,8 +46,8 @@ const UserMenu: React.FC<UserMenuProps> = ({
             {/* User Menu Dropdown */}
             <DropdownMenu.Root open={menuOpen} onOpenChange={onMenuOpenChange}>
                 <DropdownMenu.Trigger asChild>
-                    <button className="flex items-center gap-3 pl-3 pr-2 py-1 border border-white/20 glass rounded-full hover:shadow-[0_0_15px_rgba(251,113,133,0.3)] transition-all cursor-pointer">
-                        <FaBars className="w-4 h-4 text-slate-200" />
+                    <button className="flex items-center gap-3 pl-3 pr-2 py-1 border border-gray-300 bg-white rounded-full hover:shadow-md transition-all cursor-pointer">
+                        <FaBars className="w-4 h-4 text-gray-600" />
                         {user?.avatar ? (
                             <img
                                 src={user.avatar}
@@ -55,7 +55,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
                                 className="w-8 h-8 rounded-full object-cover"
                             />
                         ) : (
-                            <div className="w-8 h-8 bg-gradient-to-br from-rose-400 to-purple-500 rounded-full flex items-center justify-center text-white text-sm font-medium shadow-inner">
+                            <div className="w-8 h-8 bg-brand rounded-full flex items-center justify-center text-white text-sm font-medium shadow-inner" style={{ backgroundColor: "var(--color-brand)" }}>
                                 {user?.username?.[0]?.toUpperCase() || "U"}
                             </div>
                         )}
@@ -66,7 +66,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
                     <DropdownMenu.Content
                         sideOffset={8}
                         align="end"
-                        className="z-50 w-60 py-2 bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl text-slate-200"
+                        className="z-50 w-60 py-2 bg-white border border-gray-200 rounded-xl shadow-xl text-gray-800"
                     >
                         {!user ? (
                             <>
@@ -75,7 +75,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
                                         handleMenuClose();
                                         onLoginClick();
                                     }}
-                                    className="px-4 py-3 text-sm font-medium hover:bg-white/10 cursor-pointer outline-none transition-colors"
+                                    className="px-4 py-3 text-sm font-semibold hover:bg-gray-100 cursor-pointer outline-none transition-colors"
                                 >
                                     Log in
                                 </DropdownMenu.Item>
@@ -85,7 +85,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
                                         handleMenuClose();
                                         onSignupClick();
                                     }}
-                                    className="px-4 py-3 text-sm hover:bg-white/10 cursor-pointer outline-none transition-colors"
+                                    className="px-4 py-3 text-sm hover:bg-gray-100 cursor-pointer outline-none transition-colors"
                                 >
                                     Sign up
                                 </DropdownMenu.Item>
@@ -95,7 +95,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
                                         handleMenuClose();
                                         onHostingClick();
                                     }}
-                                    className="lg:hidden px-4 py-3 text-sm font-medium hover:bg-white/10 cursor-pointer outline-none transition-colors"
+                                    className="lg:hidden px-4 py-3 text-sm font-medium hover:bg-gray-100 cursor-pointer outline-none transition-colors"
                                 >
                                     List Your Home
                                 </DropdownMenu.Item>
@@ -106,7 +106,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
                                     <Link
                                         to="/me"
                                         onClick={handleMenuClose}
-                                        className="block px-4 py-3 text-sm font-medium hover:bg-white/10 cursor-pointer outline-none transition-colors"
+                                        className="block px-4 py-3 text-sm font-semibold hover:bg-gray-100 cursor-pointer outline-none transition-colors"
                                     >
                                         Profile
                                     </Link>
@@ -116,7 +116,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
                                     <Link
                                         to="bookings"
                                         onClick={handleMenuClose}
-                                        className="block px-4 py-3 text-sm hover:bg-white/10 cursor-pointer outline-none transition-colors"
+                                        className="block px-4 py-3 text-sm hover:bg-gray-100 cursor-pointer outline-none transition-colors"
                                     >
                                         Trips
                                     </Link>
@@ -126,7 +126,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
                                     <Link
                                         to="/messages"
                                         onClick={handleMenuClose}
-                                        className="block px-4 py-3 text-sm hover:bg-white/10 cursor-pointer outline-none transition-colors"
+                                        className="block px-4 py-3 text-sm hover:bg-gray-100 cursor-pointer outline-none transition-colors"
                                     >
                                         Messages
                                     </Link>
@@ -136,7 +136,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
                                     <Link
                                         to="/me/wishlist"
                                         onClick={handleMenuClose}
-                                        className="lg:hidden block px-4 py-3 text-sm hover:bg-white/10 cursor-pointer outline-none transition-colors"
+                                        className="lg:hidden block px-4 py-3 text-sm hover:bg-gray-100 cursor-pointer outline-none transition-colors"
                                     >
                                         Wishlists
                                     </Link>
@@ -147,33 +147,33 @@ const UserMenu: React.FC<UserMenuProps> = ({
                                         <Link
                                             to="/me/listings"
                                             onClick={handleMenuClose}
-                                            className="block px-4 py-3 text-sm hover:bg-white/10 cursor-pointer outline-none transition-colors"
+                                            className="block px-4 py-3 text-sm hover:bg-gray-100 cursor-pointer outline-none transition-colors"
                                         >
                                             Manage listings
                                         </Link>
                                     </DropdownMenu.Item>
                                 )}
 
-                                <DropdownMenu.Separator className="my-2 h-px bg-white/10" />
+                                <DropdownMenu.Separator className="my-2 h-px bg-gray-200" />
 
                                 <DropdownMenu.Item
                                     onSelect={() => {
                                         handleMenuClose();
                                         onHostingClick();
                                     }}
-                                    className="lg:hidden px-4 py-3 text-sm hover:bg-white/10 cursor-pointer outline-none transition-colors"
+                                    className="lg:hidden px-4 py-3 text-sm hover:bg-gray-100 cursor-pointer outline-none transition-colors"
                                 >
                                     {user?.is_host ? "List your home" : "Airbnb your home"}
                                 </DropdownMenu.Item>
 
-                                <DropdownMenu.Separator className="my-2 h-px bg-white/10" />
+                                <DropdownMenu.Separator className="my-2 h-px bg-gray-200" />
 
                                 <DropdownMenu.Item
                                     onSelect={() => {
                                         handleMenuClose();
                                         onLogoutClick();
                                     }}
-                                    className="px-4 py-3 text-sm hover:bg-white/10 cursor-pointer outline-none transition-colors"
+                                    className="px-4 py-3 text-sm hover:bg-gray-100 cursor-pointer outline-none transition-colors"
                                 >
                                     Log out
                                 </DropdownMenu.Item>

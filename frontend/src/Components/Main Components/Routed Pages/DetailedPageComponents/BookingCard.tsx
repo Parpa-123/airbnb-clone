@@ -144,7 +144,8 @@ const BookingCard: React.FC<BookingCardProps> = ({
                     <button
                         onClick={handleReserve}
                         disabled={bookingLoading}
-                        className="w-full bg-linear-to-r from-[#E61E4D] to-[#D70466] text-white py-3.5 rounded-lg font-semibold disabled:opacity-60 cursor-pointer"
+                        className="w-full text-white py-3.5 rounded-lg font-semibold transition-opacity disabled:opacity-60 hover:opacity-90 cursor-pointer"
+                        style={{ backgroundColor: "var(--color-brand)" }}
                     >
                         {bookingLoading
                             ? "Processing..."
