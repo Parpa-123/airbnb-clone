@@ -18,7 +18,7 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { user, loading, doLogin, doSignup, logout } = useAuth();
+  const { user, loading, doLogin, doSignup, logout, loadProfile } = useAuth();
   const dialogState = useDialogState();
   const searchState = useSearchFilters();
 
@@ -26,6 +26,12 @@ const Header: React.FC = () => {
   const shouldHideSearch = searchHidePaths.some(path =>
     location.pathname.startsWith(path)
   );
+
+  useEffect(() => {
+    if (localStorage.getItem("accessToken") && !user) {
+      loadProfile();
+    }
+  }, [user, loadProfile]);
 
   useEffect(() => {
     const handleResize = () => {

@@ -162,7 +162,13 @@ const DetailedPage: React.FC = () => {
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-semibold">Reviews</h2>
               <button
-                onClick={() => setOpenReviewDialog(true)}
+                onClick={() => {
+                  if (!localStorage.getItem("accessToken")) {
+                    showError("Please log in to write a review");
+                    return;
+                  }
+                  setOpenReviewDialog(true);
+                }}
                 className="px-4 py-2 border border-black rounded-lg font-medium hover:bg-gray-50 cursor-pointer"
               >
                 Write a review

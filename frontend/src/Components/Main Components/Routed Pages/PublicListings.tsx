@@ -97,6 +97,10 @@ const PublicListings: React.FC = () => {
   }, [filters]);
 
   const openWishlistDialog = (listing: Listing) => {
+    if (!localStorage.getItem("accessToken")) {
+      showError("Please log in to add items to your wishlist");
+      return;
+    }
     setActiveListing(listing);
     setDialogOpen(true);
   };

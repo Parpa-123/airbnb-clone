@@ -6,7 +6,7 @@ import {
     createPaymentOrder,
     redirectToCashfree,
 } from "../../../../services/reserveAndPay";
-import { showApiError, MESSAGES } from "../../../../utils/toastMessages";
+import { showApiError, showError, MESSAGES } from "../../../../utils/toastMessages";
 import type { DatePickerRef } from "../../../../types";
 
 interface BookingCardProps {
@@ -68,6 +68,10 @@ const BookingCard: React.FC<BookingCardProps> = ({
     }, [listingId, selectedDates.checkIn, selectedDates.checkOut]);
 
     const handleReserve = async () => {
+        if (!localStorage.getItem("accessToken")) {
+            showError("Please log in to reserve this stay");
+            return;
+        }
         try {
             setBookingLoading(true);
             const checkIn = datePickerRef.current?.getDates()?.checkIn;
