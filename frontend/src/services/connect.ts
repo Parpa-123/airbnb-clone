@@ -50,9 +50,21 @@ axiosInstance.interceptors.response.use(
                 og_config.headers['Authorization'] = `Bearer ${res.data.access}`;
                 return axiosInstance(og_config);
             } catch (error) {
+                // If refresh fails, fully log out the user
                 localStorage.removeItem('accessToken');
                 localStorage.removeItem('refreshToken');
-                return Promise.reject(error);
+
+                // Dispatch logout action to Redux dynamically to avoid circular dependency
+                import('../redux/store/store').then(({ store }) => {
+                    import('../redux/slices/authSlice').then(({ logout }) => {
+                        store.dispatch(logout());
+                    });
+                }).catch(console.error);
+
+                // Retry original request without the token.
+                // Public endpoints will succeed anonymously. Protected will fail correctly with 401.
+                delete og_config.headers['Authorization'];
+                return axiosInstance(og_config);
             } finally {
                 isRefreshing = false;
             }

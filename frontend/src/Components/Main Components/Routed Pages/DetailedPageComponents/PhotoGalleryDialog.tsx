@@ -21,38 +21,36 @@ const PhotoGalleryDialog = React.memo(({
     onOpenChange,
 }: PhotoGalleryDialogProps) => {
     return (
-        <div className="mt-6 relative group">
-            {/* Grid Container */}
-            <div className="grid grid-cols-4 gap-2 h-[420px] rounded-2xl overflow-hidden shadow-2xl ring-1 ring-white/10">
-                {/* Main large image */}
-                <div className="col-span-2 row-span-2 overflow-hidden relative">
+        <div className="mt-6 relative">
+            { }
+            <div className="grid grid-cols-4 gap-2 h-[420px] rounded-xl overflow-hidden">
+                { }
+                <div className="col-span-2 row-span-2">
                     <img
                         src={images[0]?.image}
                         alt={images[0]?.name || "Main"}
-                        className="w-full h-full object-cover cursor-pointer hover:scale-105 hover:brightness-110 transition-all duration-500"
+                        className="w-full h-full object-cover cursor-pointer hover:brightness-90 transition"
                         onClick={() => onOpenChange(true)}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent pointer-events-none" />
                 </div>
 
-                {/* Grid images */}
+                { }
                 {images.slice(1, 5).map((img, idx) => (
-                    <div key={idx} className="col-span-1 row-span-1 overflow-hidden relative">
+                    <div key={idx} className="col-span-1 row-span-1">
                         <img
                             src={img.image}
                             alt={img.name}
-                            className="w-full h-full object-cover cursor-pointer hover:scale-105 hover:brightness-110 transition-all duration-500"
+                            className="w-full h-full object-cover cursor-pointer hover:brightness-90 transition"
                             onClick={() => onOpenChange(true)}
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent pointer-events-none" />
                     </div>
                 ))}
             </div>
 
-            {/* View All Button */}
+            { }
             <button
                 onClick={() => onOpenChange(true)}
-                className="absolute bottom-6 right-6 glass border border-white/20 px-5 py-2.5 rounded-xl text-white font-medium hover:bg-white/10 backdrop-blur-md shadow-lg transition-all cursor-pointer flex items-center gap-2 z-10"
+                className="absolute bottom-4 right-4 bg-white border border-gray-800 px-4 py-2 rounded-lg font-medium hover:bg-gray-50 transition cursor-pointer flex items-center gap-2"
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -71,31 +69,30 @@ const PhotoGalleryDialog = React.memo(({
                 View all photos
             </button>
 
-            {/* Fullscreen Dialog */}
+            { }
             <Dialog.Root open={open} onOpenChange={onOpenChange}>
                 <Dialog.Portal>
-                    <Dialog.Overlay className="fixed inset-0 bg-slate-900/95 backdrop-blur-xl z-50 transition-opacity" />
-                    <Dialog.Content className="fixed inset-0 z-50 overflow-y-auto custom-scrollbar">
-                        <div className="min-h-screen px-4 py-8 relative">
-                            <div className="max-w-6xl mx-auto">
-                                <div className="flex items-center justify-between mb-8 sticky top-0 z-10 py-4 glass-header px-6 rounded-2xl border border-white/10">
-                                    <Dialog.Title className="text-3xl font-bold text-white tracking-tight">
+                    <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50" />
+                    <Dialog.Content className="fixed inset-0 z-50 overflow-y-auto">
+                        <div className="min-h-screen px-4 py-8">
+                            <div className="max-w-5xl mx-auto">
+                                <div className="flex items-center justify-between mb-6">
+                                    <Dialog.Title className="text-2xl font-semibold text-white">
                                         {title}
                                     </Dialog.Title>
-                                    <Dialog.Close className="text-slate-400 hover:text-white bg-white/5 hover:bg-white/20 p-2.5 rounded-full backdrop-blur-md transition-all cursor-pointer border border-white/10">
+                                    <Dialog.Close className="text-white hover:text-gray-300 transition cursor-pointer">
                                         <Cross2Icon className="w-6 h-6" />
                                     </Dialog.Close>
                                 </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-20">
+                                <div className="grid grid-cols-1 gap-4">
                                     {images.map((img, idx) => (
-                                        <div key={idx} className="overflow-hidden rounded-2xl glass-card border border-white/10 shadow-xl">
-                                            <img
-                                                src={img.image}
-                                                alt={img.name}
-                                                className="w-full h-[500px] object-cover hover:scale-[1.02] transition-transform duration-700"
-                                            />
-                                        </div>
+                                        <img
+                                            key={idx}
+                                            src={img.image}
+                                            alt={img.name}
+                                            className="w-full rounded-lg"
+                                        />
                                     ))}
                                 </div>
                             </div>

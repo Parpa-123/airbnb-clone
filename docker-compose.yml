@@ -30,6 +30,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      target: builder
     container_name: react-frontend
     command: npm run dev -- --host 0.0.0.0
     environment:

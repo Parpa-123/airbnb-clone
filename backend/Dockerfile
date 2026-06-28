@@ -1,7 +1,7 @@
-FROM python:3.12-alpine
+# Stage 1: Builder
+FROM python:3.12-alpine AS builder
 
-ENV PYTHONUNBUFFERED=1 \
-    PATH="/py/bin:$PATH"
+ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
@@ -13,22 +13,34 @@ RUN apk add --no-cache \
     zlib-dev \
     tzdata
 
-# Copy all application files first
-COPY . /app
+COPY requirements.txt .
 
-# Install dependencies from copied requirements.txt
 RUN python -m venv /py && \
-    pip install --upgrade pip && \
-    pip install --no-cache-dir -r /app/requirements.txt && \
+    /py/bin/pip install --upgrade pip && \
+    /py/bin/pip install --no-cache-dir -r requirements.txt
+
+# Stage 2: Runner
+FROM python:3.12-alpine AS runner
+
+ENV PYTHONUNBUFFERED=1 \
+    PATH="/py/bin:$PATH" \
+    DJANGO_SETTINGS_MODULE=conf.deployment_settings
+
+WORKDIR /app
+
+RUN apk add --no-cache \
+    jpeg \
+    zlib \
+    tzdata \
+    libffi \
+    openssl && \
     adduser --disabled-password --no-create-home django-user
 
-ENV DJANGO_SETTINGS_MODULE=conf.deployment_settings
+COPY --from=builder /py /py
+COPY . /app
 
-# Make build script executable (already copied via COPY . /app)
-RUN chmod +x /app/build.sh
-
-# Create static directory with proper permissions
-RUN mkdir -p /app/static && \
+RUN chmod +x /app/build.sh && \
+    mkdir -p /app/static && \
     chown -R django-user:django-user /app/static
 
 EXPOSE 8000

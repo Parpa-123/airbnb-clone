@@ -20,17 +20,17 @@ const ListingCard: React.FC<ListingCardProps> = React.memo(({
 
     return (
         <Link to={`/${listing.title_slug}`}>
-            <div className="relative rounded-xl overflow-hidden glass-card group cursor-pointer border border-white/10 hover:border-white/20 hover:shadow-[0_10px_40px_rgba(168,85,247,0.15)] transition-all duration-300">
-                {/* Image Section */}
-                <div className="relative aspect-4/3 bg-slate-800">
+            <div className="relative rounded-xl overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition cursor-pointer group">
+                { }
+                <div className="relative aspect-4/3 bg-gray-100">
                     {coverImage ? (
                         <img
                             src={coverImage}
                             alt={listing.title}
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                         />
                     ) : (
-                        <div className="flex items-center justify-center h-full text-slate-500 text-sm">
+                        <div className="flex items-center justify-center h-full text-gray-400 text-sm">
                             No image
                         </div>
                     )}
@@ -42,44 +42,44 @@ const ListingCard: React.FC<ListingCardProps> = React.memo(({
                                 e.stopPropagation();
                                 onHeartClick(listing);
                             }}
-                            className="absolute top-3 right-3 p-2 rounded-full bg-slate-900/50 backdrop-blur-md border border-white/10 hover:bg-white/20 shadow cursor-pointer transition-all hover:scale-110"
+                            className="absolute top-3 right-3 p-2 rounded-full bg-white/90 hover:bg-white shadow cursor-pointer transition hover:scale-105"
                         >
                             <FaHeart
                                 size={18}
-                                className={isFavorited ? "text-rose-400 drop-shadow-[0_0_8px_rgba(251,113,133,0.8)]" : "text-slate-300 hover:text-rose-400 transition-colors"}
+                                className={isFavorited ? "text-[#22C55E]" : "text-gray-400 hover:text-[#22C55E]"}
                             />
                         </button>
                     )}
                 </div>
 
-                {/* Content Section */}
-                <div className="p-5">
-                    <h3 className="text-lg font-semibold truncate text-white">
+                { }
+                <div className="p-4">
+                    <h3 className="text-lg font-semibold truncate">
                         {listing.title}
                     </h3>
 
-                    <p className="text-sm text-slate-400 mt-0.5">
+                    <p className="text-sm text-gray-500">
                         {listing.city}, {listing.country}
                     </p>
 
-                    <p className="text-sm text-slate-400 mt-2 line-clamp-1">
+                    <p className="text-sm text-gray-600 mt-1">
                         {listing.property_type_display} · {listing.bhk_choice} BHK · {listing.bed_choice} Beds · {listing.bathrooms} Bath
                     </p>
 
-                    <p className="mt-4 text-lg font-bold text-white flex items-baseline gap-1">
-                        ${listing.price_per_night}
-                        <span className="text-sm font-medium text-slate-400">/ night</span>
+                    <p className="mt-3 text-md font-semibold">
+                        ${listing.price_per_night}{" "}
+                        <span className="text-sm text-gray-500 font-normal">night</span>
                     </p>
 
                     {showHost && (
-                        <div className="flex items-center mt-5 pt-4 border-t border-white/10">
+                        <div className="flex items-center mt-4">
                             <img
                                 src={listing.host.avatar || "https://placehold.co/100?text=User"}
                                 alt={listing.host.username}
-                                className="w-8 h-8 rounded-full object-cover border border-white/20"
+                                className="w-8 h-8 rounded-full object-cover bg-gray-200"
                             />
-                            <p className="ml-3 text-sm font-medium text-slate-300">
-                                {listing.host.username}
+                            <p className="ml-3 text-sm text-gray-700">
+                                Host: {listing.host.username}
                             </p>
                         </div>
                     )}

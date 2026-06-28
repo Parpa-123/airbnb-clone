@@ -69,49 +69,49 @@ const AddToWishlistDialog: React.FC<AddToWishlistDialogProps> = ({
     return (
         <Dialog.Root open={open} onOpenChange={onOpenChange}>
             <Dialog.Portal>
-                <Dialog.Overlay className="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[999]" />
+                <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
 
                 <Dialog.Content
                     className="
             fixed top-1/2 left-1/2
             w-[90vw] max-w-sm
             -translate-x-1/2 -translate-y-1/2
-            glass-card border border-white/10 p-6 shadow-[0_10px_40px_rgba(0,0,0,0.5)] bg-slate-900/90 text-slate-200 rounded-2xl z-[1000]
+            bg-white rounded-xl p-6 shadow-xl
           "
                 >
-                    <Dialog.Title className="text-xl font-semibold mb-4 text-white">
+                    <Dialog.Title className="text-lg font-semibold mb-4">
                         Add to wishlist
                     </Dialog.Title>
 
                     {wishlists.length === 0 ? (
-                        <p className="text-sm text-slate-400">
+                        <p className="text-sm text-gray-500">
                             No wishlists yet. Create one first.
                         </p>
                     ) : (
                         <form
                             onSubmit={handleSubmit}
-                            className="space-y-3 max-h-60 overflow-y-auto custom-scrollbar pr-2"
+                            className="space-y-3 max-h-60 overflow-y-auto"
                         >
                             {wishlists.map((wl) => (
                                 <label
                                     key={wl.slug}
-                                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 cursor-pointer transition-colors border border-transparent hover:border-white/5"
+                                    className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"
                                 >
                                     <input
                                         type="checkbox"
                                         checked={selectedWishlists.includes(wl.slug)}
                                         onChange={() => handleCheckboxChange(wl.slug)}
-                                        className="h-4 w-4 accent-purple-500 bg-slate-800 border-white/20 rounded"
+                                        className="h-4 w-4"
                                     />
-                                    <span className="text-sm font-medium text-slate-200">{wl.name}</span>
+                                    <span className="text-sm">{wl.name}</span>
                                 </label>
                             ))}
 
-                            <div className="mt-6 flex justify-end gap-3 pt-4 border-t border-white/10">
+                            <div className="mt-6 flex justify-end gap-3">
                                 <Dialog.Close asChild>
                                     <button
                                         type="button"
-                                        className="px-4 py-2 border border-white/10 rounded-lg text-slate-300 hover:bg-white/10 hover:text-white cursor-pointer transition font-medium"
+                                        className="px-4 py-2 border rounded-lg cursor-pointer"
                                     >
                                         Cancel
                                     </button>
@@ -119,7 +119,7 @@ const AddToWishlistDialog: React.FC<AddToWishlistDialogProps> = ({
 
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium hover:from-purple-400 hover:to-pink-400 border border-white/10 rounded-lg cursor-pointer transition shadow-[0_0_15px_rgba(168,85,247,0.4)]"
+                                    className="px-4 py-2 bg-[#2563EB] text-white rounded-lg cursor-pointer"
                                 >
                                     Save
                                 </button>
