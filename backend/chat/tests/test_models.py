@@ -24,8 +24,8 @@ def create_listing(host, title="Test Home", address="123 Main Street"):
         city="Delhi",
         property_type="apartment",
         max_guests=2,
-        bhk_choice=1,
-        bed_choice=1,
+        bedrooms=1,
+        beds=1,
         bathrooms=1,
         price_per_night=100,
     )

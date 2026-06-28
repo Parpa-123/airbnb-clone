@@ -167,12 +167,6 @@ class OptionsView(BaseAuthenticatedView, views.APIView):
 
             ],
 
-            'bathroom_options' : [
-
-                {'value':v[0],'label':v[1]} for v in Listings.BATHROOM_CHOICES
-
-            ],
-
             'bed_options' : [
 
                 {'value':v[0],'label':v[1]} for v in Listings.BED_CHOICES

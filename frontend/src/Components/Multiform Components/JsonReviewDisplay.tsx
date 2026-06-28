@@ -26,8 +26,8 @@ const JsonReviewDisplay = ({
         address,
         property_type,
         max_guests,
-        bhk_choice,
-        bed_choice,
+        bedrooms,
+        beds,
         bathrooms,
         price_per_night,
         allows_children,
@@ -89,8 +89,8 @@ const JsonReviewDisplay = ({
                     { }
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 py-6 border-y border-gray-100">
                         <StatItem icon={<FaUsers />} label="Guests" value={max_guests} />
-                        <StatItem icon={<FaHome />} label="Bedrooms" value={bhk_choice} />
-                        <StatItem icon={<FaBed />} label="Beds" value={bed_choice} />
+                        <StatItem icon={<FaHome />} label="Bedrooms" value={bedrooms} />
+                        <StatItem icon={<FaBed />} label="Beds" value={beds} />
                         <StatItem icon={<FaBath />} label="Baths" value={bathrooms} />
                     </div>
 

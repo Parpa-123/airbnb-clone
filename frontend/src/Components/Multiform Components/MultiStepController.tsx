@@ -40,8 +40,8 @@ const MultiStepController = ({ onClose }: MultiStepControllerProps) => {
             formData.append("city", data.city);
             formData.append("property_type", data.property_type);
             formData.append("max_guests", data.max_guests.toString());
-            formData.append("bhk_choice", data.bhk_choice.toString());
-            formData.append("bed_choice", data.bed_choice.toString());
+            formData.append("bedrooms", data.bedrooms.toString());
+            formData.append("beds", data.beds.toString());
             formData.append("bathrooms", data.bathrooms.toString());
             formData.append("price_per_night", data.price_per_night.toString());
 

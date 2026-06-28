@@ -62,7 +62,7 @@ const ListingEditPage = () => {
 
                     <EditableSection
                         title="Property features"
-                        fields={["max_guests", "bhk_choice", "bed_choice", "bathrooms"]}
+                        fields={["max_guests", "bedrooms", "beds", "bathrooms"]}
                         listing={listing}
                         onPatch={onPatch}
                     >
@@ -77,14 +77,14 @@ const ListingEditPage = () => {
                                 />
                                 <FormSelect
                                     label="BHK"
-                                    name="bhk_choice"
+                                    name="bedrooms"
                                     register={register}
                                     options={{ valueAsNumber: true }}
                                     selectOptions={options?.bedroom_options}
                                 />
                                 <FormSelect
                                     label="Beds"
-                                    name="bed_choice"
+                                    name="beds"
                                     register={register}
                                     options={{ valueAsNumber: true }}
                                     selectOptions={options?.bed_options}

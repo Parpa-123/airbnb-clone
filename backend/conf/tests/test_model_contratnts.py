@@ -20,68 +20,6 @@ from django.core.exceptions import ValidationError
 
 class ListingsConstraintTest(TestCase):
 
-    def test_unique_host_address(self):
-
-        user = User.objects.create_user(username='testUser', email='test@example.com', password='testpass123')
-
-        Listings.objects.create(
-
-            host=user,
-
-            title="Sample Listing Title",
-
-            description="This is a sample description for testing the Listings model.",
-
-            address="123 Test Street",
-
-            country="IN",
-
-            city="Mumbai",
-
-            property_type="apartment",
-
-            max_guests=4,
-
-            bhk_choice=2,
-
-            bed_choice=3,
-
-            bathrooms=2.0,
-
-            price_per_night=59.99
-
-        )
-
-        with self.assertRaises(IntegrityError):
-
-            Listings.objects.create(
-
-            host=user,
-
-            title="Sample Listing Title",
-
-            description="This is a sample description for testing the Listings model.",
-
-            address="123 Test Street",
-
-            country="IN",
-
-            city="Mumbai",
-
-            property_type="apartment",
-
-            max_guests=4,
-
-            bhk_choice=2,
-
-            bed_choice=3,
-
-            bathrooms=2.0,
-
-            price_per_night=59.99
-
-        )
-
     def test_price_per_night_must_be_positive(self):
 
         user = User.objects.create_user(username='testUser', email='test@example.com', password='testpass123')
@@ -106,9 +44,9 @@ class ListingsConstraintTest(TestCase):
 
             max_guests=4,
 
-            bhk_choice=2,
+            bedrooms=2,
 
-            bed_choice=3,
+            beds=3,
 
             bathrooms=2.0,
 
@@ -140,9 +78,9 @@ class BookingsConstraintsTest(TestCase):
 
             max_guests=4,
 
-            bhk_choice=2,
+            bedrooms=2,
 
-            bed_choice=3,
+            beds=3,
 
             bathrooms=2.0,
 
@@ -202,9 +140,9 @@ class ReviewConstraintsTest(TestCase):
 
             max_guests=4,
 
-            bhk_choice=2,
+            bedrooms=2,
 
-            bed_choice=3,
+            beds=3,
 
             bathrooms=2.0,
 

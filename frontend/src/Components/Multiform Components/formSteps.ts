@@ -57,14 +57,14 @@ export const createFormSteps = (apiOptions: any): Step[] => {
                     rules: { required: true }
                 },
                 {
-                    name: "bhk_choice",
+                    name: "bedrooms",
                     label: "Bedroom Count (BHK)",
                     type: "select",
                     options: apiOptions?.bedroom_options || [],
                     rules: { required: true }
                 },
                 {
-                    name: "bed_choice",
+                    name: "beds",
                     label: "Bed Count",
                     type: "select",
                     options: apiOptions?.bed_options || [],

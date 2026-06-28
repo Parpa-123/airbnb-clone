@@ -30,8 +30,8 @@ class ReviewAPITests(APITestCase):
             property_type="apartment",
             allows_pets=True,
             allows_children=True,
-            bhk_choice="1",
-            bed_choice="1",
+            bedrooms="1",
+            beds="1",
             bathrooms=1,
         )
         self.booking = Bookings.objects.create(

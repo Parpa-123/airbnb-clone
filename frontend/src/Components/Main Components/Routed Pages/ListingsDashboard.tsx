@@ -123,7 +123,7 @@ const ListingsDashboard: React.FC = () => {
                   </p>
 
                   <p className="text-sm text-gray-500">
-                    {listing.bed_choice} bed · {listing.bathrooms} bath
+                    {listing.beds} bed · {listing.bathrooms} bath
                   </p>
 
                   <p className="text-sm text-gray-900">

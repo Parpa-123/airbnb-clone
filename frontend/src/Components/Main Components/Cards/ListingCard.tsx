@@ -64,7 +64,7 @@ const ListingCard: React.FC<ListingCardProps> = React.memo(({
                     </p>
 
                     <p className="text-[15px] text-gray-500 mt-0.5 truncate">
-                        {listing.property_type_display} · {listing.bhk_choice} BHK · {listing.bed_choice} Beds
+                        {listing.property_type_display} · {listing.bedrooms} BHK · {listing.beds} Beds
                     </p>
 
                     <p className="mt-1 text-[15px] text-gray-900 font-semibold">

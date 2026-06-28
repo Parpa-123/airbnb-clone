@@ -90,9 +90,9 @@ class ListingSerializer(serializers.ModelSerializer):
 
             "max_guests",
 
-            "bhk_choice",
+            "bedrooms",
 
-            "bed_choice",
+            "beds",
 
             "bathrooms",
 
@@ -161,9 +161,9 @@ class CreateUpdateListSerializer(serializers.ModelSerializer):
 
     max_guests = serializers.IntegerField(required=True)
 
-    bhk_choice = serializers.IntegerField(required=True)
+    bedrooms = serializers.IntegerField(required=True)
 
-    bed_choice = serializers.IntegerField(required=True)
+    beds = serializers.IntegerField(required=True)
 
     bathrooms = serializers.DecimalField(
 
@@ -219,9 +219,9 @@ class CreateUpdateListSerializer(serializers.ModelSerializer):
 
             "max_guests",
 
-            "bhk_choice",
+            "bedrooms",
 
-            "bed_choice",
+            "beds",
 
             "bathrooms",
 
@@ -253,7 +253,7 @@ class CreateUpdateListSerializer(serializers.ModelSerializer):
 
         return value
 
-    def validate_bhk_choice(self, value):
+    def validate_bedrooms(self, value):
 
         valid_choices = [choice[0] for choice in Listings.BEDROOM_CHOICES]
 
@@ -267,23 +267,9 @@ class CreateUpdateListSerializer(serializers.ModelSerializer):
 
         return value
 
-    def validate_bed_choice(self, value):
+    def validate_beds(self, value):
 
         valid_choices = [choice[0] for choice in Listings.BED_CHOICES]
-
-        if value not in valid_choices:
-
-            raise serializers.ValidationError(
-
-                f"Invalid choice. Valid options are: {valid_choices}"
-
-            )
-
-        return value
-
-    def validate_bathrooms(self, value):
-
-        valid_choices = [choice[0] for choice in Listings.BATHROOM_CHOICES]
 
         if value not in valid_choices:
 
@@ -370,6 +356,8 @@ class CreateUpdateListSerializer(serializers.ModelSerializer):
                     images_list.append(img_data)
 
             if images_list:
+                if len(images_list) > 5:
+                    raise serializers.ValidationError({"images": "Maximum of 5 images allowed per listing."})
 
                 attrs['images'] = images_list
 

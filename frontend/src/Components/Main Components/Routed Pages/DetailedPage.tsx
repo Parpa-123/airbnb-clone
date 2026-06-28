@@ -125,8 +125,8 @@ const DetailedPage: React.FC = () => {
                   Hosted by {listing.host.username}
                 </p>
                 <p className="text-gray-600 mt-1">
-                  {listing.max_guests} guests · {listing.bed_choice} beds ·{" "}
-                  {listing.bhk_choice} bedrooms · {listing.bathrooms} baths
+                  {listing.max_guests} guests · {listing.beds} beds ·{" "}
+                  {listing.bedrooms} bedrooms · {listing.bathrooms} baths
                 </p>
               </div>
               <button

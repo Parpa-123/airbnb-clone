@@ -15,8 +15,8 @@ export interface EntireFormData {
     title: string;
     property_type: string;
     max_guests: number;
-    bhk_choice: number;
-    bed_choice: number;
+    bedrooms: number;
+    beds: number;
     bathrooms: number;
     country: string;
     city: string;
@@ -35,8 +35,8 @@ const initialState: EntireFormData = {
     title: "",
     property_type: "",
     max_guests: 0,
-    bhk_choice: 0,
-    bed_choice: 0,
+    bedrooms: 0,
+    beds: 0,
     bathrooms: 0,
     country: "",
     city: "",

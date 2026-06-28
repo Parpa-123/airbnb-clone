@@ -11,6 +11,7 @@ from django.db.models import Q
 from users.base_models import TimeStampedModel
 
 from django.utils import timezone
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 from .queryset import ListingsQuerySet
 
@@ -98,24 +99,6 @@ class Listings(TimeStampedModel):
 
     BED_CHOICES = [(i, str(i)) for i in range(1, 20)]
 
-    BATHROOM_CHOICES = [
-
-        (0.5, "0.5"),
-
-        (1.0, "1.0"),
-
-        (1.5, "1.5"),
-
-        (2.0, "2.0"),
-
-        (2.5, "2.5"),
-
-        (3.0, "3.0"),
-
-        (4.0, "4.0"),
-
-    ]
-
     host = models.ForeignKey(
 
         settings.AUTH_USER_MODEL,
@@ -140,11 +123,11 @@ class Listings(TimeStampedModel):
 
     max_guests = models.IntegerField(choices=GUEST_COUNT_CHOICES, db_index=True)
 
-    bhk_choice = models.IntegerField(choices=BEDROOM_CHOICES)
+    bedrooms = models.IntegerField(choices=BEDROOM_CHOICES)
 
-    bed_choice = models.IntegerField(choices=BED_CHOICES)
+    beds = models.IntegerField(choices=BED_CHOICES)
 
-    bathrooms = models.DecimalField(max_digits=3, decimal_places=1, choices=BATHROOM_CHOICES)
+    bathrooms = models.DecimalField(max_digits=3, decimal_places=1, validators=[MinValueValidator(0), MaxValueValidator(20)])
 
     price_per_night = models.DecimalField(max_digits=10, decimal_places=2, db_index=True)
 
@@ -200,19 +183,11 @@ class Listings(TimeStampedModel):
 
             ),
 
-            models.UniqueConstraint(
-
-                fields = ["host", "address"],
-
-                name = "unique_host_address"
-
-            )
-
         ]
 
     @property
 
-    def remove_prev_bookings(self):
+    def active_bookings(self):
 
         now = timezone.now()
 

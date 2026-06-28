@@ -68,9 +68,9 @@ class WishlistTestCase(TestCase):
 
             max_guests=4,
 
-            bhk_choice=2,
+            bedrooms=2,
 
-            bed_choice=2,
+            beds=2,
 
             bathrooms=1.0,
 

@@ -35,8 +35,8 @@ export interface Listing {
     property_type?: string;
     property_type_display: string;
     max_guests: number;
-    bhk_choice: number;
-    bed_choice: number;
+    bedrooms: number;
+    beds: number;
     bathrooms: number;
     price_per_night: string;
     images: ListingImage[];

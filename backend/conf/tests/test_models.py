@@ -120,9 +120,9 @@ class ListingModelTest(TestCase):
 
             max_guests=4,
 
-            bhk_choice=2,
+            bedrooms=2,
 
-            bed_choice=3,
+            beds=3,
 
             bathrooms=2.0,
 
@@ -160,9 +160,9 @@ class ListingModelTest(TestCase):
 
             max_guests=4,
 
-            bhk_choice=2,
+            bedrooms=2,
 
-            bed_choice=3,
+            beds=3,
 
             bathrooms=2.0,
 
@@ -212,9 +212,9 @@ class WishlistModelTest(TestCase):
 
             max_guests=4,
 
-            bhk_choice=2,
+            bedrooms=2,
 
-            bed_choice=3,
+            beds=3,
 
             bathrooms=2.0,
 
@@ -250,9 +250,9 @@ class BookingModelTest(TestCase):
 
             max_guests=4,
 
-            bhk_choice=2,
+            bedrooms=2,
 
-            bed_choice=3,
+            beds=3,
 
             bathrooms=2.0,
 
@@ -286,9 +286,9 @@ class BookingModelTest(TestCase):
 
             max_guests=4,
 
-            bhk_choice=2,
+            bedrooms=2,
 
-            bed_choice=3,
+            beds=3,
 
             bathrooms=2.0,
 
@@ -326,9 +326,9 @@ class ReviewModelTest(TestCase):
 
             max_guests=4,
 
-            bhk_choice=2,
+            bedrooms=2,
 
-            bed_choice=3,
+            beds=3,
 
             bathrooms=2.0,
 

@@ -86,9 +86,9 @@ class PaymentTest(TestCase):
 
             max_guests=4,
 
-            bhk_choice=2,
+            bedrooms=2,
 
-            bed_choice=3,
+            beds=3,
 
             bathrooms=2.0,
 
@@ -240,7 +240,7 @@ class VerifyCashfreePaymentTest(TestCase):
         self.client.force_authenticate(user=self.guest)
         self.listing = Listings.objects.create(
             host=self.host, title="T", title_slug="t", description="D", price_per_night=100, max_guests=4,
-            country="USA", city="Seattle", address="123", property_type="apartment", bhk_choice="1", bed_choice="1", bathrooms=1
+            country="USA", city="Seattle", address="123", property_type="apartment", bedrooms="1", beds="1", bathrooms=1
         )
         self.booking = Bookings.objects.create(
             guest=self.guest, listing=self.listing, start_date="2026-10-01", end_date="2026-10-05", status=Bookings.STATUS_PENDING,

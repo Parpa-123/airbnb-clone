@@ -98,9 +98,9 @@ class BookingTest(TestCase):
 
             max_guests=4,
 
-            bhk_choice=2,
+            bedrooms=2,
 
-            bed_choice=3,
+            beds=3,
 
             bathrooms=2.0,
 
@@ -389,9 +389,9 @@ class BookingTest(TestCase):
 
             max_guests=2,
 
-            bhk_choice=1,
+            bedrooms=1,
 
-            bed_choice=1,
+            beds=1,
 
             bathrooms=1.0,
 
@@ -439,9 +439,9 @@ class BookingTest(TestCase):
 
             max_guests=2,
 
-            bhk_choice=1,
+            bedrooms=1,
 
-            bed_choice=1,
+            beds=1,
 
             bathrooms=1.0,
 
