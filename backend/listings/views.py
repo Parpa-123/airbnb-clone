@@ -61,6 +61,7 @@ class ListingDetailView(generics.RetrieveAPIView):
 
     serializer_class = ListingDetailSerializer
 
+    authentication_classes = []
     permission_classes = [permissions.AllowAny]
 
     lookup_field = 'title_slug'
@@ -131,6 +132,7 @@ class PublicListingView(generics.ListAPIView):
 
     serializer_class = ListingSerializer
 
+    authentication_classes = []
     permission_classes = [permissions.AllowAny]
 
     filterset_class = ListingFilter

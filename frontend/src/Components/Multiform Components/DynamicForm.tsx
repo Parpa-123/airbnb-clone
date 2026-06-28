@@ -32,18 +32,14 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
       onSubmit={handleSubmit(handleNext)}
       className="
         relative
-        w-full max-w-3xl mx-auto
-        bg-linear-to-br from-white to-gray-50
-        rounded-2xl shadow-2xl
-        border border-gray-100
-        min-h-[500px] h-[75vh] max-h-[800px]
+        w-full h-full
         flex flex-col
         overflow-visible
       "
     >
       { }
-      <div className="p-8 pb-6 shrink-0 border-b border-gray-100">
-        <h2 className="text-3xl font-bold bg-linear-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
+      <div className="p-8 pb-6 shrink-0 border-b border-gray-100 mt-2">
+        <h2 className="text-3xl font-bold bg-linear-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent text-center">
           {step.title}
         </h2>
       </div>

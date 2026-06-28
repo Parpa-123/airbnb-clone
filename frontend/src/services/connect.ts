@@ -14,8 +14,11 @@ let isRefreshing = false;
 axiosInstance.interceptors.request.use(
     function (config) {
         const access = localStorage.getItem('accessToken');
-        if (access)
+        const isPublicEndpoint = config.url?.includes('/public/') || (config.method?.toLowerCase() === 'get' && /^\/listings\/[^\/]+\/?$/.test(config.url || ''));
+        
+        if (access && !isPublicEndpoint) {
             config.headers['Authorization'] = `Bearer ${access}`;
+        }
         return config;
     }
 );

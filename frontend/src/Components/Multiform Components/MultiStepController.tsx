@@ -3,7 +3,7 @@ import DynamicForm from "./DynamicForm";
 import useOptionsService from "../../services/optionsService";
 import { createFormSteps } from "./formSteps";
 import { useDispatch, useSelector } from "react-redux";
-import { updateForm, type EntireFormData } from "../../redux/slices/formSlice";
+import { updateForm, resetForm, type EntireFormData } from "../../redux/slices/formSlice";
 import axiosInstance from "../../services/connect";
 import { showSuccess, showError, extractErrorMessage, MESSAGES } from "../../utils/toastMessages";
 import { useAuth } from "../Head Components/hooks/useAuth";
@@ -20,10 +20,15 @@ interface MultiStepControllerProps {
 const MultiStepController = ({ onClose }: MultiStepControllerProps) => {
     const [currentStep, setCurrentStep] = useState(0);
     const [reviewMode, setReviewMode] = useState(false);
+    
+    const { user } = useAuth();
+    const [phoneProvided, setPhoneProvided] = useState(!!user?.phone);
+    const [phoneUpdateLoading, setPhoneUpdateLoading] = useState(false);
+    const [phoneUpdateError, setPhoneUpdateError] = useState("");
+    const [phoneInput, setPhoneInput] = useState("");
 
     const formData = useSelector((state: RootState) => state.form);
     const dispatch = useDispatch();
-    const { user } = useAuth();
 
     const { options, loading, error, fetchOptions } = useOptionsService();
 
@@ -68,7 +73,7 @@ const MultiStepController = ({ onClose }: MultiStepControllerProps) => {
                 },
             });
             showSuccess(MESSAGES.LISTING.CREATE_SUCCESS);
-
+            dispatch(resetForm());
             onClose?.();
         } catch (error: any) {
             console.error("=== Listing Creation Error ===");
@@ -109,6 +114,45 @@ const MultiStepController = ({ onClose }: MultiStepControllerProps) => {
             <div className="flex flex-col items-center justify-center py-20 text-gray-600">
                 <p className="text-xl font-medium mb-2">Please login to register a property</p>
                 <p className="text-sm text-gray-400">You need to be logged in to list your property</p>
+            </div>
+        );
+    }
+
+    if (!phoneProvided) {
+        const handlePhoneSubmit = async (e: React.FormEvent) => {
+            e.preventDefault();
+            setPhoneUpdateLoading(true);
+            setPhoneUpdateError("");
+            try {
+                await axiosInstance.patch("/users/me/", { phone: phoneInput });
+                setPhoneProvided(true);
+            } catch (err: any) {
+                setPhoneUpdateError(err.response?.data?.phone?.[0] || "Failed to update phone number.");
+            } finally {
+                setPhoneUpdateLoading(false);
+            }
+        };
+
+        return (
+            <div className="flex flex-col items-center justify-center h-full p-8 max-w-md mx-auto">
+                <h2 className="text-2xl font-bold mb-4 text-center">Phone Number Required</h2>
+                <p className="text-gray-600 mb-6 text-center">
+                    To keep our community safe, hosts must have a valid phone number before listing a property.
+                </p>
+                <form onSubmit={handlePhoneSubmit} className="w-full">
+                    <input
+                        type="tel"
+                        value={phoneInput}
+                        onChange={(e) => setPhoneInput(e.target.value)}
+                        placeholder="Enter your phone number"
+                        className="w-full p-3 border rounded-lg mb-4 outline-brand transition-all focus:ring-2 focus:ring-brand"
+                        required
+                    />
+                    {phoneUpdateError && <p className="text-red-500 mb-4 text-sm text-center">{phoneUpdateError}</p>}
+                    <button type="submit" disabled={phoneUpdateLoading} className="w-full bg-brand text-white font-semibold p-3 rounded-lg hover:brightness-95 transition-all cursor-pointer">
+                        {phoneUpdateLoading ? "Saving..." : "Continue"}
+                    </button>
+                </form>
             </div>
         );
     }

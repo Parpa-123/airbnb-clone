@@ -3,6 +3,7 @@ from rest_framework import serializers
 from drf_spectacular.utils import extend_schema_field
 
 from decimal import Decimal
+from django.db import transaction
 
 from .models import Listings, ListingImages, Amenities
 
@@ -368,124 +369,83 @@ class CreateUpdateListSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-
         request = self.context.get('request')
-
         amenities_data = validated_data.pop("amenities", [])
-
         images_data = validated_data.pop("images", [])
 
-        listing = Listings.objects.create(
-
-            host=request.user,
-
-            **validated_data
-
-        )
-
-        for a in amenities_data:
-
-            amenity, _ = Amenities.objects.get_or_create(name=a)
-
-            listing.amenities.add(amenity)
-
-        for img_data in images_data:
-
-            image_file = img_data.get('image')
-
-            image_name = img_data.get('name')
-
-            if image_file and image_name:
-
-                ListingImages.objects.create(
-
-                    listings=listing,
-
-                    name=image_name,
-
-                    image=image_file
-
-                )
-
-        return listing
-
-    def update(self, instance, validated_data):
-
-        amenities_data = validated_data.pop("amenities", None)
-
-        images_data = validated_data.pop("images", None)
-
-        delete_images = validated_data.pop("delete_images", None)
-
-        for attr, value in validated_data.items():
-
-            setattr(instance, attr, value)
-
-        instance.save()
-
-        if amenities_data is not None:
-
-            instance.amenities.clear()
+        with transaction.atomic():
+            listing = Listings.objects.create(
+                host=request.user,
+                **validated_data
+            )
 
             for a in amenities_data:
-
                 amenity, _ = Amenities.objects.get_or_create(name=a)
+                listing.amenities.add(amenity)
 
-                instance.amenities.add(amenity)
+            try:
+                for img_data in images_data:
+                    image_file = img_data.get('image')
+                    image_name = img_data.get('name')
+                    if image_file and image_name:
+                        ListingImages.objects.create(
+                            listings=listing,
+                            name=image_name,
+                            image=image_file
+                        )
+            except Exception as e:
+                raise serializers.ValidationError({"images": f"Failed to upload images: {str(e)}"})
 
-        if delete_images:
+            return listing
 
-            for image_url in delete_images:
+    def update(self, instance, validated_data):
+        amenities_data = validated_data.pop("amenities", None)
+        images_data = validated_data.pop("images", None)
+        delete_images = validated_data.pop("delete_images", None)
 
-                if 'cloudinary.com' in image_url:
+        with transaction.atomic():
+            for attr, value in validated_data.items():
+                setattr(instance, attr, value)
+            instance.save()
 
-                    try:
+            if amenities_data is not None:
+                instance.amenities.clear()
+                for a in amenities_data:
+                    amenity, _ = Amenities.objects.get_or_create(name=a)
+                    instance.amenities.add(amenity)
 
-                        instance.listingimages.filter(image__icontains=image_url.split('/')[-1].split('.')[0]).delete()
+            if delete_images:
+                for image_url in delete_images:
+                    if 'cloudinary.com' in image_url:
+                        try:
+                            instance.listingimages.filter(image__icontains=image_url.split('/')[-1].split('.')[0]).delete()
+                        except:
+                            pass
+                    elif '/media/' in image_url:
+                        image_path = image_url.split('/media/')[-1]
+                        instance.listingimages.filter(image=image_path).delete()
+                    else:
+                        try:
+                            filename = image_url.split('/')[-1]
+                            instance.listingimages.filter(name__icontains=filename).delete()
+                        except:
+                            pass
 
-                    except:
+            if images_data is not None:
+                try:
+                    for img_data in images_data:
+                        image_file = img_data.get('image')
+                        image_name = img_data.get('name')
+                        if image_file and image_name:
+                            ListingImages.objects.create(
+                                listings=instance,
+                                name=image_name,
+                                image=image_file
+                            )
+                except Exception as e:
+                    raise serializers.ValidationError({"images": f"Failed to upload images: {str(e)}"})
 
-                        pass
-
-                elif '/media/' in image_url:
-
-                    image_path = image_url.split('/media/')[-1]
-
-                    instance.listingimages.filter(image=image_path).delete()
-
-                else:
-
-                    try:
-
-                        filename = image_url.split('/')[-1]
-
-                        instance.listingimages.filter(name__icontains=filename).delete()
-
-                    except:
-
-                        pass
-
-        if images_data is not None:
-
-            for img_data in images_data:
-
-                image_file = img_data.get('image')
-
-                image_name = img_data.get('name')
-
-                if image_file and image_name:
-
-                    ListingImages.objects.create(
-
-                        listings=instance,
-
-                        name=image_name,
-
-                        image=image_file
-
-                    )
-
-        return instance
+            return instance
 
     def to_representation(self, instance):
 

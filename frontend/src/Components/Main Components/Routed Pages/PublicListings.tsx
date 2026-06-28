@@ -34,7 +34,8 @@ const PublicListings: React.FC = () => {
           setNearbyListings(extractResults(res.data));
         }
       } catch (err) {
-        console.error("Failed to fetch nearby listings", err);
+        // Silently ignore tracking prevention blocks for IP lookup
+        console.warn("Could not fetch nearby listings (IP block or network issue).");
       }
     })();
   }, []);
