@@ -240,7 +240,9 @@ const ReusableTextField = ({
               <input
                 {...field}
                 type={type}
-                min={type === "number" ? 0 : undefined}
+                min={type === "number" ? (rules as any)?.min ?? 0 : undefined}
+                max={type === "number" ? (rules as any)?.max : undefined}
+                step={type === "number" && name === "bathrooms" ? "0.5" : undefined}
                 placeholder={placeholder}
                 disabled={disabled}
                 className={baseClassName}

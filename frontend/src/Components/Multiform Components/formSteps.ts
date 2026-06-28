@@ -73,9 +73,8 @@ export const createFormSteps = (apiOptions: any): Step[] => {
                 {
                     name: "bathrooms",
                     label: "Bathrooms",
-                    type: "select",
-                    options: apiOptions?.bathroom_options || [],
-                    rules: { required: true }
+                    type: "number",
+                    rules: { required: true, min: 0.5, max: 20 }
                 },
             ]
         },

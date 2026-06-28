@@ -22,10 +22,6 @@ const MultiStepController = ({ onClose }: MultiStepControllerProps) => {
     const [reviewMode, setReviewMode] = useState(false);
     
     const { user } = useAuth();
-    const [phoneProvided, setPhoneProvided] = useState(!!user?.phone);
-    const [phoneUpdateLoading, setPhoneUpdateLoading] = useState(false);
-    const [phoneUpdateError, setPhoneUpdateError] = useState("");
-    const [phoneInput, setPhoneInput] = useState("");
 
     const formData = useSelector((state: RootState) => state.form);
     const dispatch = useDispatch();
@@ -118,41 +114,22 @@ const MultiStepController = ({ onClose }: MultiStepControllerProps) => {
         );
     }
 
-    if (!phoneProvided) {
-        const handlePhoneSubmit = async (e: React.FormEvent) => {
-            e.preventDefault();
-            setPhoneUpdateLoading(true);
-            setPhoneUpdateError("");
-            try {
-                await axiosInstance.patch("/users/me/", { phone: phoneInput });
-                setPhoneProvided(true);
-            } catch (err: any) {
-                setPhoneUpdateError(err.response?.data?.phone?.[0] || "Failed to update phone number.");
-            } finally {
-                setPhoneUpdateLoading(false);
-            }
-        };
-
+    if (!user?.phone) {
         return (
-            <div className="flex flex-col items-center justify-center h-full p-8 max-w-md mx-auto">
-                <h2 className="text-2xl font-bold mb-4 text-center">Phone Number Required</h2>
-                <p className="text-gray-600 mb-6 text-center">
-                    To keep our community safe, hosts must have a valid phone number before listing a property.
+            <div className="flex flex-col items-center justify-center h-full p-8 max-w-md mx-auto text-center">
+                <div className="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center mb-5">
+                    <span className="text-3xl">⚠️</span>
+                </div>
+                <h2 className="text-2xl font-bold mb-3 text-gray-900">Phone Number Required</h2>
+                <p className="text-gray-500 mb-6 leading-relaxed">
+                    A verified phone number is required to list a property. Please add one from your <strong>profile settings</strong> before continuing.
                 </p>
-                <form onSubmit={handlePhoneSubmit} className="w-full">
-                    <input
-                        type="tel"
-                        value={phoneInput}
-                        onChange={(e) => setPhoneInput(e.target.value)}
-                        placeholder="Enter your phone number"
-                        className="w-full p-3 border rounded-lg mb-4 outline-brand transition-all focus:ring-2 focus:ring-brand"
-                        required
-                    />
-                    {phoneUpdateError && <p className="text-red-500 mb-4 text-sm text-center">{phoneUpdateError}</p>}
-                    <button type="submit" disabled={phoneUpdateLoading} className="w-full bg-brand text-white font-semibold p-3 rounded-lg hover:brightness-95 transition-all cursor-pointer">
-                        {phoneUpdateLoading ? "Saving..." : "Continue"}
-                    </button>
-                </form>
+                <button
+                    onClick={onClose}
+                    className="px-8 py-3 bg-brand text-white font-semibold rounded-xl hover:brightness-95 transition-all cursor-pointer"
+                >
+                    Got it
+                </button>
             </div>
         );
     }
