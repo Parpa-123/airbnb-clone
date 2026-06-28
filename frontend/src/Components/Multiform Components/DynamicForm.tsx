@@ -36,7 +36,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
         bg-linear-to-br from-white to-gray-50
         rounded-2xl shadow-2xl
         border border-gray-100
-        h-[450px]
+        min-h-[500px] h-[75vh] max-h-[800px]
         flex flex-col
         overflow-visible
       "
@@ -86,14 +86,13 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
             type="submit"
             className="
               ml-auto px-8 py-3
-              bg-linear-to-r from-[#2563EB] to-[#16A34A]
               text-white font-semibold rounded-xl
-              hover:from-[#16A34A] hover:to-[#15803D]
-              transition-all duration-300
-              shadow-lg hover:shadow-xl
+              transition-opacity duration-300
+              shadow-lg hover:shadow-xl hover:opacity-90
               transform hover:scale-105 active:scale-95
               cursor-pointer
             "
+            style={{ backgroundColor: "var(--color-brand)" }}
           >
             {isLastStep ? "Submit ✓" : "Next →"}
           </button>

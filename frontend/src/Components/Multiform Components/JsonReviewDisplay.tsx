@@ -132,10 +132,8 @@ const JsonReviewDisplay = ({
 
                 <button
                     onClick={onSubmit}
-                    className="px-8 py-3 bg-linear-to-r from-[#2563EB] to-[#16A34A]
-                        text-white font-semibold rounded-xl hover:from-[#16A34A] hover:to-[#15803D]
-                        transition-all duration-300 shadow-lg hover:shadow-xl
-                        transform hover:scale-105 active:scale-95 cursor-pointer"
+                    className="px-8 py-3 text-white font-semibold rounded-xl transition-opacity duration-300 shadow-lg hover:shadow-xl hover:opacity-90 transform hover:scale-105 active:scale-95 cursor-pointer"
+                    style={{ backgroundColor: "var(--color-brand)" }}
                 >
                     {submitLabel}
                 </button>

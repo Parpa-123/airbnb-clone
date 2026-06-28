@@ -79,8 +79,8 @@ const ReusableTextField = ({
       rules={rules}
       render={({ field, fieldState: { error } }) => {
         const baseClassName = `w-full bg-white border-2 border-gray-200 rounded-xl px-4 py-3
-                text-gray-900 shadow-sm hover:shadow-md focus:ring-2 focus:ring-[#22C55E]/30
-                focus:border-[#22C55E] transition-all
+                text-gray-900 shadow-sm hover:shadow-md focus:ring-2 focus:ring-brand/30
+                focus:border-brand transition-all
                 ${error ? "border-red-500" : ""}`;
 
         return (
@@ -143,12 +143,12 @@ const ReusableTextField = ({
 
             { }
             {type === "checkbox_single" && (
-              <label className="flex items-center gap-3 cursor-pointer bg-white border-2 border-gray-200 rounded-xl p-4 hover:shadow-md hover:border-[#22C55E] transition-all">
+              <label className="flex items-center gap-3 cursor-pointer bg-white border-2 border-gray-200 rounded-xl p-4 hover:shadow-md hover:border-brand transition-all">
                 <input
                   type="checkbox"
                   checked={field.value === true}
                   onChange={(e) => field.onChange(e.target.checked)}
-                  className="w-5 h-5 rounded border-gray-300 text-[#22C55E] focus:ring-[#22C55E] cursor-pointer"
+                  className="w-5 h-5 rounded border-gray-300 text-brand focus:ring-brand cursor-pointer"
                 />
                 <span className="text-gray-800 font-medium">{label}</span>
               </label>
@@ -204,7 +204,7 @@ const ReusableTextField = ({
 
                 <label className="border-2 border-dashed border-gray-300 rounded-xl
                       flex justify-center items-center h-32 cursor-pointer
-                      hover:border-[#22C55E] hover:bg-[#22C55E]/5">
+                      hover:border-brand hover:bg-brand/5">
                   <span className="text-lg text-gray-500">+ Upload Images</span>
 
                   <input
