@@ -14,6 +14,7 @@ const AuthView = lazy(() => import("./Components/ProfileComponents/AuthView"));
 const DetailedPage = lazy(() => import("./Components/Main Components/Routed Pages/DetailedPage"));
 const PublicListings = lazy(() => import("./Components/Main Components/Routed Pages/PublicListings"));
 const ListingsDashboard = lazy(() => import("./Components/Main Components/Routed Pages/ListingsDashboard"));
+const HostBookings = lazy(() => import("./Components/Main Components/Routed Pages/HostBookings"));
 const ListingEditPage = lazy(() => import("./Components/Main Components/Routed Pages/ListingEdits/ListingPatch"));
 const Wishlist = lazy(() => import("./Components/Main Components/Wishlist"));
 const WishlistDetail = lazy(() => import("./Components/Main Components/Routed Pages/WishlistDetail"));
@@ -57,6 +58,15 @@ const App: React.FC = () => {
                   element={
                     <ProtectedRoute>
                       <ListingsDashboard />
+                    </ProtectedRoute>
+                  }
+                />
+
+                <Route
+                  path="me/host/bookings"
+                  element={
+                    <ProtectedRoute>
+                      <HostBookings />
                     </ProtectedRoute>
                   }
                 />

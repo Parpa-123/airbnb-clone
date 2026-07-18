@@ -4,6 +4,8 @@ from .views import (
     BookingCreateView,
     BookingListView,
 
+    HostBookingListView,
+
     BookingDestroyView,
 
     CreateCashfreeOrderView,
@@ -27,6 +29,8 @@ urlpatterns = [
     path("create/", BookingCreateView.as_view(), name="booking-create"),
 
     path("view/", BookingListView.as_view(), name="booking-list"),
+
+    path("host/", HostBookingListView.as_view(), name="host-booking-list"),
 
     path("delete/<int:pk>/", BookingDestroyView.as_view(), name="booking-delete"),
 

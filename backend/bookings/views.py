@@ -39,7 +39,13 @@ from listings.models import Listings
 
 from .models import Bookings, Payment
 
-from .serializers import BookingSerializer, ViewBookingSerializer, BookingDetailSerializer, BookingOrderCreateSerializer
+from .serializers import (
+    BookingSerializer,
+    ViewBookingSerializer,
+    HostBookingSerializer,
+    BookingDetailSerializer,
+    BookingOrderCreateSerializer,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -125,6 +131,42 @@ class BookingListView(AuthAPIView, generics.ListAPIView):
             "listing",
             "listing__host",
         ).prefetch_related("listing__listingimages")
+
+
+class HostBookingListView(AuthAPIView, generics.ListAPIView):
+    """Return reservations for listings owned by the authenticated host only."""
+
+    serializer_class = HostBookingSerializer
+    pagination_class = BookingsPagination
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "booking_list"
+
+    def get_queryset(self):
+        if getattr(self, "swagger_fake_view", False) or self.request.user.is_anonymous:
+            return Bookings.objects.none()
+
+        queryset = (
+            Bookings.objects.filter(
+                listing__host=self.request.user,
+                status__in=[
+                    Bookings.STATUS_CONFIRMED,
+                    Bookings.STATUS_PAID,
+                    Bookings.STATUS_ONGOING,
+                ],
+            )
+            .select_related("guest", "listing", "listing__host")
+            .prefetch_related("listing__listingimages")
+            .order_by("start_date", "-created_at")
+        )
+
+        listing_id = self.request.query_params.get("listing")
+        if listing_id:
+            try:
+                queryset = queryset.filter(listing_id=int(listing_id))
+            except (TypeError, ValueError):
+                return Bookings.objects.none()
+
+        return queryset
 
 class BookingDestroyView(AuthAPIView, generics.DestroyAPIView):
 

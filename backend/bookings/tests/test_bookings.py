@@ -343,6 +343,64 @@ class BookingTest(TestCase):
 
         self.assertEqual(res.data["results"][0]['id'], booking1.id)
 
+    def test_host_can_only_view_reservations_for_own_listings(self):
+        own_listing = self.create_sample_listing(self.host, "Host Reservation")
+        other_host = User.objects.create_host(
+            email="other-host@example.com",
+            password="hostpass123",
+            username="otherhost",
+            phone="1234567891",
+        )
+        other_guest = User.objects.create_user(
+            email="other-guest@example.com",
+            password="guestpass123",
+            username="otherguest",
+            phone="1234567892",
+        )
+        other_listing = self.create_sample_listing(other_host, "Other Host Reservation")
+
+        own_booking = Bookings.objects.create(
+            guest=self.user,
+            listing=own_listing,
+            start_date=d1,
+            end_date=d2,
+            total_price=Decimal("500.00"),
+            status=Bookings.STATUS_CONFIRMED,
+        )
+        Bookings.objects.create(
+            guest=other_guest,
+            listing=other_listing,
+            start_date=d1,
+            end_date=d2,
+            total_price=Decimal("500.00"),
+            status=Bookings.STATUS_CONFIRMED,
+        )
+
+        self.client.force_authenticate(user=self.host)
+        res = self.client.get("/api/bookings/host/")
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data["count"], 1)
+        self.assertEqual(res.data["results"][0]["id"], own_booking.id)
+        self.assertEqual(res.data["results"][0]["duration_nights"], 5)
+        self.assertEqual(set(res.data["results"][0]["guest"].keys()), {"username", "avatar"})
+
+    def test_guest_cannot_see_host_reservations(self):
+        listing = self.create_sample_listing(self.host, "Private Host Reservation")
+        Bookings.objects.create(
+            guest=self.user,
+            listing=listing,
+            start_date=d1,
+            end_date=d2,
+            total_price=Decimal("500.00"),
+            status=Bookings.STATUS_CONFIRMED,
+        )
+
+        res = self.client.get("/api/bookings/host/")
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data["count"], 0)
+
     def test_create_booking_with_guest_breakdown(self):
 
         listing = self.create_sample_listing(self.host)

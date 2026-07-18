@@ -14,6 +14,21 @@ from listings.serializers import ListingSerializer
 
 from users.serializers import UserProfileSerializer
 
+
+class HostBookingGuestSerializer(serializers.ModelSerializer):
+    """The guest details a host needs to manage a reservation."""
+
+    avatar = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = User
+        fields = ["username", "avatar"]
+
+    def get_avatar(self, obj):
+        if obj.avatar:
+            return obj.avatar.url if hasattr(obj.avatar, "url") else str(obj.avatar)
+        return None
+
 class BookingOrderCreateSerializer(serializers.Serializer):
 
     booking_id = serializers.IntegerField()
@@ -195,6 +210,32 @@ class ViewBookingSerializer(serializers.ModelSerializer):
             "can_review"
 
         ]
+
+
+class HostBookingSerializer(serializers.ModelSerializer):
+    guest = HostBookingGuestSerializer(read_only=True)
+    listing = ListingSerializer(read_only=True)
+    duration_nights = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = Bookings
+        fields = [
+            "id",
+            "guest",
+            "listing",
+            "start_date",
+            "end_date",
+            "duration_nights",
+            "adults",
+            "children",
+            "infants",
+            "pets",
+            "total_price",
+            "status",
+        ]
+
+    def get_duration_nights(self, obj):
+        return (obj.end_date - obj.start_date).days
 
 class PaymentSerializer(serializers.ModelSerializer):
 

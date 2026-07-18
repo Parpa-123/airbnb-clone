@@ -51,7 +51,7 @@ export interface ListingDetail extends Listing {
     updated_at?: string;
 }
 
-export type BookingStatus = "confirmed" | "pending" | "cancelled" | "failed" | "paid" | "refunded" | "CONFIRMED" | "PENDING" | "CANCELLED" | "FAILED" | "COMPLETED";
+export type BookingStatus = "confirmed" | "pending" | "cancelled" | "failed" | "paid" | "refunded" | "ongoing" | "CONFIRMED" | "PENDING" | "CANCELLED" | "FAILED" | "COMPLETED";
 
 export interface Booking {
     id: number;
@@ -59,6 +59,11 @@ export interface Booking {
     listing: Listing;
     start_date: string;
     end_date: string;
+    duration_nights?: number;
+    adults?: number;
+    children?: number;
+    infants?: number;
+    pets?: number;
     total_price: string;
     status: BookingStatus;
 }

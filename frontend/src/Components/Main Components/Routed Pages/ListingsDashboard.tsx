@@ -98,6 +98,16 @@ const ListingsDashboard: React.FC = () => {
                     Edit
                   </button>
 
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(`/me/host/bookings?listing=${listing.id}`);
+                    }}
+                    className="cursor-pointer bg-brand hover:bg-brand-hover text-white text-xs px-3 py-1 rounded-md shadow"
+                  >
+                    Bookings
+                  </button>
+
                   {}
                   <button
                     onClick={(e) => {

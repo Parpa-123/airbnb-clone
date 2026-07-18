@@ -143,15 +143,26 @@ const UserMenu: React.FC<UserMenuProps> = ({
                                 </DropdownMenu.Item>
 
                                 {user?.is_host && (
-                                    <DropdownMenu.Item asChild>
-                                        <Link
-                                            to="/me/listings"
-                                            onClick={handleMenuClose}
-                                            className="block px-4 py-3 text-sm hover:bg-gray-100 cursor-pointer outline-none transition-colors"
-                                        >
-                                            Manage listings
-                                        </Link>
-                                    </DropdownMenu.Item>
+                                    <>
+                                        <DropdownMenu.Item asChild>
+                                            <Link
+                                                to="/me/listings"
+                                                onClick={handleMenuClose}
+                                                className="block px-4 py-3 text-sm hover:bg-gray-100 cursor-pointer outline-none transition-colors"
+                                            >
+                                                Manage listings
+                                            </Link>
+                                        </DropdownMenu.Item>
+                                        <DropdownMenu.Item asChild>
+                                            <Link
+                                                to="/me/host/bookings"
+                                                onClick={handleMenuClose}
+                                                className="block px-4 py-3 text-sm hover:bg-gray-100 cursor-pointer outline-none transition-colors"
+                                            >
+                                                Reservations
+                                            </Link>
+                                        </DropdownMenu.Item>
+                                    </>
                                 )}
 
                                 <DropdownMenu.Separator className="my-2 h-px bg-gray-200" />
