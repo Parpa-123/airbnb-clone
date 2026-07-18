@@ -4,6 +4,8 @@ import { showSuccess, showError, extractErrorMessage, MESSAGES } from "../../uti
 import { useForm } from "@mantine/form";
 import { Dropzone } from "@mantine/dropzone";
 import { useAuth } from "../Head Components/hooks/useAuth";
+import Loading from "../Loading";
+import Spinner from "../Spinner";
 
 interface AuthDetails {
   username: string;
@@ -91,7 +93,7 @@ const AuthView = () => {
   };
 
   if (loading && !dets) {
-    return <p className="text-center py-20">Loading...</p>;
+    return <Loading />;
   }
 
   if (!dets) return null;
@@ -174,7 +176,7 @@ const AuthView = () => {
             disabled={loading}
             className="w-full bg-brand hover:bg-brand-hover disabled:opacity-50 transition text-white p-3 rounded-lg font-semibold cursor-pointer"
           >
-            {loading ? "Saving..." : "Save Changes"}
+            {loading ? <span className="flex justify-center"><Spinner size="sm" className="text-white" label="Saving profile" /></span> : "Save Changes"}
           </button>
         </form>
       </div>

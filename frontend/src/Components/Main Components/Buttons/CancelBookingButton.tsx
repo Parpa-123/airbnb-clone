@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import * as Dialog from "@radix-ui/react-dialog"
 import axiosInstance from "../../../services/connect"
 import { showSuccess, showError, extractErrorMessage, MESSAGES } from "../../../utils/toastMessages"
+import Spinner from "../../Spinner"
 
 interface CancelBookingButtonProps {
     bookingId: number
@@ -74,7 +75,7 @@ const CancelBookingButton: React.FC<CancelBookingButtonProps> = ({
                                 disabled={loading}
                                 className="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition font-medium disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                             >
-                                {loading ? "Cancelling..." : "Yes, Cancel Booking"}
+                                {loading ? <Spinner size="sm" className="text-white" label="Cancelling booking" /> : "Yes, Cancel Booking"}
                             </button>
                         </div>
                     </Dialog.Content>

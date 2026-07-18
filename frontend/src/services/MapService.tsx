@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { MapFunc } from "../Components/Main Components/Routed Pages/MapFunc";
+import Spinner from "../Components/Spinner";
 import "leaflet/dist/leaflet.css";
 
 interface MapProps {
@@ -24,7 +25,7 @@ const ListMap = ({ city, country }: MapProps) => {
     fetchCoords();
   }, [city, country]);
 
-  if (!coords) return <p>Loading map...</p>;
+  if (!coords) return <div className="flex h-80 items-center justify-center"><Spinner label="Loading map" /></div>;
 
   return (
     <MapContainer

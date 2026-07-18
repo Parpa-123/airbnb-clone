@@ -8,6 +8,7 @@ import axiosInstance from "../../services/connect";
 import { showSuccess, showError, extractErrorMessage, MESSAGES } from "../../utils/toastMessages";
 import { useAuth } from "../Head Components/hooks/useAuth";
 import JsonReviewDisplay from "./JsonReviewDisplay";
+import Spinner from "../Spinner";
 
 interface RootState {
     form: EntireFormData;
@@ -134,7 +135,7 @@ const MultiStepController = ({ onClose }: MultiStepControllerProps) => {
         );
     }
 
-    if (loading) return <p className="text-center py-10">Loading...</p>;
+    if (loading) return <div className="flex justify-center py-10"><Spinner /></div>;
 
     if (error)
         return (

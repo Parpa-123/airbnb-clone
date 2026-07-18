@@ -1,6 +1,7 @@
 import React, { type FormEvent } from "react";
 import ReusableDialog from "../ui/ReusableDialog";
 import type { LoginType } from "../../types";
+import Spinner from "../../../Spinner";
 
 interface LoginDialogProps {
     open: boolean;
@@ -58,8 +59,8 @@ const LoginDialog: React.FC<LoginDialogProps> = ({
                     required
                 />
 
-                <button className="w-full bg-black text-white py-2 rounded-md hover:bg-gray-800 cursor-pointer">
-                    {loading ? "Loading..." : "Log In"}
+                <button disabled={loading} className="w-full bg-black text-white py-2 rounded-md hover:bg-gray-800 disabled:opacity-60 cursor-pointer">
+                    {loading ? <span className="flex justify-center"><Spinner size="sm" className="text-white" /></span> : "Log In"}
                 </button>
             </form>
 

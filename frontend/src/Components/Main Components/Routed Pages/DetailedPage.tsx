@@ -15,6 +15,7 @@ import { getOrCreateListingRoom } from "../../../services/chatService";
 import { showError } from "../../../utils/toastMessages";
 
 import AmenitiesDisplay from "./DetailedPageComponents/AmenitiesDisplay";
+import Loading from "../../Loading";
 
 import type { DatePickerRef } from "../../../types";
 
@@ -67,11 +68,7 @@ const DetailedPage: React.FC = () => {
   }, [listing?.id, navigate]);
 
   if (loading || !listing) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        Loading…
-      </div>
-    );
+    return <Loading />;
   }
 
   return (

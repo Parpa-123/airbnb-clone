@@ -2,19 +2,13 @@ import { NavLink } from "react-router-dom";
 import { EditableSection, ListingImagesComponents } from "./Components";
 import { useListingPatch } from "./useListingPatch";
 import { FormInput, FormSelect, FormCheckbox, FormTextarea } from "./FormFields";
+import Loading from "../../../Loading";
 
 const ListingEditPage = () => {
     const { listing, loading, options, onPatch } = useListingPatch();
 
     if (loading || !listing) {
-        return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-                <div className="text-center">
-                    <div className="animate-spin inline-block w-10 h-10 border-4 border-gray-300 border-t-brand rounded-full mb-4"></div>
-                    <p className="text-gray-600 font-medium">Loading listing details...</p>
-                </div>
-            </div>
-        );
+        return <Loading />;
     }
 
     return (

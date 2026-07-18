@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import Spinner from "../../../Spinner";
 
 interface EditableSectionProps {
     title: string;
@@ -326,7 +327,7 @@ export function ListingImagesComponents(
                                        rounded-lg font-medium shadow-md
                                        hover:bg-brand-hover disabled:opacity-50 cursor-pointer"
                         >
-                            {uploading ? "Uploading..." : "Upload Images"}
+                            {uploading ? <Spinner size="sm" className="text-white" label="Uploading images" /> : "Upload Images"}
                         </button>
                     </div>
                 )}

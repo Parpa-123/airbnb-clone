@@ -1,7 +1,7 @@
 import React from "react";
 import ReusableDialog from "../ui/ReusableDialog";
 import Input from "../ui/Input";
-import { FaSpinner } from "react-icons/fa";
+import Spinner from "../../../Spinner";
 
 type Props = {
   open: boolean;
@@ -28,7 +28,7 @@ const SignupDialog: React.FC<Props> = ({ open, onOpenChange, onSubmit, loading }
           <Input name="conf_password" type="password" placeholder="Confirm Password" required />
 
           <button className="bg-black text-white py-2 rounded-md hover:bg-gray-800 flex justify-center cursor-pointer">
-            {loading ? <FaSpinner className="animate-spin" /> : "Sign Up"}
+            {loading ? <Spinner size="sm" className="text-white" /> : "Sign Up"}
           </button>
         </form>
       </div>

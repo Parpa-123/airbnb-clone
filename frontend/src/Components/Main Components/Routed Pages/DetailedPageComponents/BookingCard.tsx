@@ -8,6 +8,7 @@ import {
 } from "../../../../services/reserveAndPay";
 import { showApiError, showError, MESSAGES } from "../../../../utils/toastMessages";
 import type { DatePickerRef } from "../../../../types";
+import Spinner from "../../../Spinner";
 
 interface BookingCardProps {
     pricePerNight: number | string;
@@ -152,7 +153,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
                         style={{ backgroundColor: "var(--color-brand)" }}
                     >
                         {bookingLoading
-                            ? "Processing..."
+                            ? <Spinner size="sm" className="text-white" label="Processing reservation" />
                             : heldBookingId && secondsLeft > 0
                                 ? "Continue to payment"
                                 : "Reserve"}
