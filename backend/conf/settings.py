@@ -282,3 +282,19 @@ BOOKING_HOLD_MINUTES = int(os.getenv("BOOKING_HOLD_MINUTES", "10"))
 BOOKING_PAYMENT_HOLD_EXTENSION_MINUTES = int(
     os.getenv("BOOKING_PAYMENT_HOLD_EXTENSION_MINUTES", "20")
 )
+
+# Celery Settings
+CELERY_BROKER_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+CELERY_RESULT_BACKEND = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE
+
+CELERY_BEAT_SCHEDULE = {
+    'ping_health_endpoint': {
+        'task': 'users.tasks.ping_health',
+        'schedule': 45.0, # Every 45 seconds
+    },
+}
+
