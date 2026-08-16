@@ -1,7 +1,6 @@
-import React, { useState } from "react";
-import { Popover, Box, Typography, IconButton, Divider } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove";
+import React from "react";
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import { FiPlus, FiMinus, FiUsers } from "react-icons/fi";
 
 export interface GuestCounts {
     adults: number;
@@ -13,6 +12,7 @@ export interface GuestCounts {
 interface GuestSelectorProps {
     guests: GuestCounts;
     onGuestsChange: (guests: GuestCounts) => void;
+    embedded?: boolean;
 }
 
 interface GuestRowProps {
@@ -35,92 +35,49 @@ const GuestRow: React.FC<GuestRowProps> = ({
     maxCount = 16,
 }) => {
     return (
-        <Box
-            sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                py: 2,
-            }}
-        >
-            <Box>
-                <Typography variant="body1" sx={{ fontWeight: 600, color: "#222" }}>
-                    {label}
-                </Typography>
-                <Typography variant="body2" sx={{ color: "#71717a" }}>
-                    {description}
-                </Typography>
-            </Box>
+        <div className="flex items-center justify-between py-3">
+            <div className="flex flex-col">
+                <span className="text-sm font-semibold text-gray-900">{label}</span>
+                <span className="text-xs text-gray-500">{description}</span>
+            </div>
 
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-                <IconButton
-                    onClick={onDecrement}
+            <div className="flex items-center gap-3">
+                <button
+                    type="button"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onDecrement();
+                    }}
                     disabled={count <= minCount}
-                    sx={{
-                        border: "1px solid",
-                        borderColor: count <= minCount ? "#e5e7eb" : "#b0b0b0",
-                        color: count <= minCount ? "#e5e7eb" : "#71717a",
-                        "&:hover": {
-                            borderColor: "#222",
-                            color: "#222",
-                        },
-                        width: 32,
-                        height: 32,
-                    }}
-                    size="small"
+                    className="w-8 h-8 rounded-full border border-gray-300 hover:border-gray-900 text-gray-600 hover:text-gray-900 disabled:border-gray-200 disabled:text-gray-300 disabled:hover:border-gray-200 flex items-center justify-center transition-colors cursor-pointer disabled:cursor-not-allowed"
                 >
-                    <RemoveIcon sx={{ fontSize: 16 }} />
-                </IconButton>
+                    <FiMinus className="w-3.5 h-3.5" />
+                </button>
 
-                <Typography
-                    variant="body1"
-                    sx={{
-                        minWidth: 24,
-                        textAlign: "center",
-                        fontWeight: 400,
-                        color: "#222"
-                    }}
-                >
+                <span className="w-6 text-center text-sm font-medium text-gray-900">
                     {count}
-                </Typography>
+                </span>
 
-                <IconButton
-                    onClick={onIncrement}
-                    disabled={count >= maxCount}
-                    sx={{
-                        border: "1px solid",
-                        borderColor: count >= maxCount ? "#e5e7eb" : "#b0b0b0",
-                        color: count >= maxCount ? "#e5e7eb" : "#71717a",
-                        "&:hover": {
-                            borderColor: "#222",
-                            color: "#222",
-                        },
-                        width: 32,
-                        height: 32,
+                <button
+                    type="button"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onIncrement();
                     }}
-                    size="small"
+                    disabled={count >= maxCount}
+                    className="w-8 h-8 rounded-full border border-gray-300 hover:border-gray-900 text-gray-600 hover:text-gray-900 disabled:border-gray-200 disabled:text-gray-300 disabled:hover:border-gray-200 flex items-center justify-center transition-colors cursor-pointer disabled:cursor-not-allowed"
                 >
-                    <AddIcon sx={{ fontSize: 16 }} />
-                </IconButton>
-            </Box>
-        </Box>
+                    <FiPlus className="w-3.5 h-3.5" />
+                </button>
+            </div>
+        </div>
     );
 };
 
-const GuestSelector: React.FC<GuestSelectorProps> = ({
-    guests,
-    onGuestsChange,
-}) => {
-    const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-
-    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
-
+export const GuestRowsContent: React.FC<{
+    guests: GuestCounts;
+    onGuestsChange: (guests: GuestCounts) => void;
+}> = ({ guests, onGuestsChange }) => {
     const updateGuests = (field: keyof GuestCounts, delta: number) => {
         onGuestsChange({
             ...guests,
@@ -128,23 +85,69 @@ const GuestSelector: React.FC<GuestSelectorProps> = ({
         });
     };
 
-    const open = Boolean(anchorEl);
-    const id = open ? "guest-selector-popover" : undefined;
+    return (
+        <div className="divide-y divide-gray-100">
+            <GuestRow
+                label="Adults"
+                description="Ages 13 or above"
+                count={guests.adults}
+                onIncrement={() => updateGuests("adults", 1)}
+                onDecrement={() => updateGuests("adults", -1)}
+                minCount={1}
+                maxCount={16}
+            />
 
+            <GuestRow
+                label="Children"
+                description="Ages 2–12"
+                count={guests.children}
+                onIncrement={() => updateGuests("children", 1)}
+                onDecrement={() => updateGuests("children", -1)}
+                maxCount={15}
+            />
+
+            <GuestRow
+                label="Infants"
+                description="Under 2"
+                count={guests.infants}
+                onIncrement={() => updateGuests("infants", 1)}
+                onDecrement={() => updateGuests("infants", -1)}
+                maxCount={5}
+            />
+
+            <GuestRow
+                label="Pets"
+                description="Bringing a service animal?"
+                count={guests.pets}
+                onIncrement={() => updateGuests("pets", 1)}
+                onDecrement={() => updateGuests("pets", -1)}
+                maxCount={5}
+            />
+
+            {guests.pets > 0 && (
+                <p className="pt-3 text-[11px] text-gray-500">
+                    If you're bringing an assistance animal, you don't need to add them here.
+                </p>
+            )}
+        </div>
+    );
+};
+
+const GuestSelector: React.FC<GuestSelectorProps> = ({
+    guests,
+    onGuestsChange,
+    embedded = false,
+}) => {
     const totalGuests = guests.adults + guests.children;
 
     const getDisplayText = () => {
         const parts: string[] = [];
 
-        if (totalGuests === 0) {
-            return "Add guests";
+        if (totalGuests === 0 || (totalGuests === 1 && guests.infants === 0 && guests.pets === 0)) {
+            return totalGuests === 1 ? "1 guest" : "Add guests";
         }
 
-        if (totalGuests === 1) {
-            parts.push("1 guest");
-        } else {
-            parts.push(`${totalGuests} guests`);
-        }
+        parts.push(`${totalGuests} guests`);
 
         if (guests.infants > 0) {
             parts.push(guests.infants === 1 ? "1 infant" : `${guests.infants} infants`);
@@ -157,107 +160,37 @@ const GuestSelector: React.FC<GuestSelectorProps> = ({
         return parts.join(", ");
     };
 
+    if (embedded) {
+        return <GuestRowsContent guests={guests} onGuestsChange={onGuestsChange} />;
+    }
+
     return (
-        <>
-            <button
-                aria-describedby={id}
-                onClick={handleClick}
-                className={`px-4 xz:px-6 py-2 text-sm font-semibold rounded-full transition-colors cursor-pointer ${
-                    totalGuests === 0 ? "text-gray-800 hover:bg-gray-100" : "text-gray-800 hover:bg-gray-100"
-                }`}
-            >
-                {getDisplayText()}
-            </button>
+        <DropdownMenu.Root>
+            <DropdownMenu.Trigger asChild>
+                <button
+                    type="button"
+                    className="px-3.5 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-100/80 rounded-full transition-colors cursor-pointer max-w-[130px] truncate outline-none"
+                    title={getDisplayText()}
+                >
+                    <span className="truncate">{getDisplayText()}</span>
+                </button>
+            </DropdownMenu.Trigger>
 
-            <Popover
-                id={id}
-                open={open}
-                anchorEl={anchorEl}
-                onClose={handleClose}
-                disablePortal
-                disableScrollLock
-                anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "center",
-                }}
-                transformOrigin={{
-                    vertical: "top",
-                    horizontal: "center",
-                }}
-                slotProps={{
-                    paper: {
-                        sx: {
-                            mt: 1,
-                            borderRadius: "24px",
-                            backgroundColor: "#fff",
-                            border: "1px solid #e5e7eb",
-                            boxShadow: "0 10px 40px rgba(0,0,0,0.15)",
-                            width: 380,
-                            overflow: "hidden",
-                        },
-                    },
-                }}
-            >
-                <Box sx={{ p: 4 }}>
-                    <GuestRow
-                        label="Adults"
-                        description="Ages 13 or above"
-                        count={guests.adults}
-                        onIncrement={() => updateGuests("adults", 1)}
-                        onDecrement={() => updateGuests("adults", -1)}
-                        minCount={1}
-                        maxCount={16}
-                    />
+            <DropdownMenu.Portal>
+                <DropdownMenu.Content
+                    sideOffset={12}
+                    align="end"
+                    className="z-50 w-84 p-5 bg-white/95 backdrop-blur-md border border-gray-200 rounded-3xl shadow-[0_12px_36px_rgba(0,0,0,0.12)] text-gray-800 animate-in fade-in-0 zoom-in-95"
+                >
+                    <DropdownMenu.Label className="flex items-center gap-2 text-xs font-bold text-gray-900 mb-2 uppercase tracking-wider">
+                        <FiUsers className="w-3.5 h-3.5 text-brand" />
+                        <span>Who's coming?</span>
+                    </DropdownMenu.Label>
 
-                    <Divider sx={{ borderColor: "#e5e7eb" }} />
-
-                    <GuestRow
-                        label="Children"
-                        description="Ages 2–12"
-                        count={guests.children}
-                        onIncrement={() => updateGuests("children", 1)}
-                        onDecrement={() => updateGuests("children", -1)}
-                        maxCount={15}
-                    />
-
-                    <Divider sx={{ borderColor: "#e5e7eb" }} />
-
-                    <GuestRow
-                        label="Infants"
-                        description="Under 2"
-                        count={guests.infants}
-                        onIncrement={() => updateGuests("infants", 1)}
-                        onDecrement={() => updateGuests("infants", -1)}
-                        maxCount={5}
-                    />
-
-                    <Divider sx={{ borderColor: "#e5e7eb" }} />
-
-                    <GuestRow
-                        label="Pets"
-                        description="Bringing a service animal?"
-                        count={guests.pets}
-                        onIncrement={() => updateGuests("pets", 1)}
-                        onDecrement={() => updateGuests("pets", -1)}
-                        maxCount={5}
-                    />
-
-                    {guests.pets > 0 && (
-                        <Typography
-                            variant="caption"
-                            sx={{
-                                display: "block",
-                                mt: 2,
-                                color: "#71717a",
-                                fontSize: "12px",
-                            }}
-                        >
-                            If you're bringing a service animal, you don't need to add them here.
-                        </Typography>
-                    )}
-                </Box>
-            </Popover>
-        </>
+                    <GuestRowsContent guests={guests} onGuestsChange={onGuestsChange} />
+                </DropdownMenu.Content>
+            </DropdownMenu.Portal>
+        </DropdownMenu.Root>
     );
 };
 

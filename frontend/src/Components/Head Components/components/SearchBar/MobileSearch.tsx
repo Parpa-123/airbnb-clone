@@ -198,7 +198,7 @@ const MobileSearch: React.FC<MobileSearchProps> = ({
                                     <FiUsers className="w-3.5 h-3.5 text-brand" />
                                     <span>Who</span>
                                 </div>
-                                <GuestSelector guests={guests} onGuestsChange={onGuestsChange} />
+                                <GuestSelector guests={guests} onGuestsChange={onGuestsChange} embedded={true} />
                             </div>
                         </div>
 
