@@ -12,10 +12,10 @@ jobs:
     steps:
       - name: Ping Backend Health Endpoint
         env:
-          TARGET_URL: ${{ secrets.BACKEND_HEALTH_URL || 'https://genna-granitelike-sherill.ngrok-free.dev/health/' }}
+          TARGET_URL: ${{ secrets.BACKEND_HEALTH_URL || 'https://airbnb-clone-1-430j.onrender.com/health/' }}
         run: |
           echo "Sending keep-alive ping to: $TARGET_URL"
-          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 "$TARGET_URL" || echo "FAILED")
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 20 "$TARGET_URL" || echo "FAILED")
           echo "HTTP response status: $HTTP_STATUS"
           if [ "$HTTP_STATUS" -eq 200 ] || [ "$HTTP_STATUS" -eq 301 ] || [ "$HTTP_STATUS" -eq 302 ]; then
             echo "✅ Server successfully pinged and kept warm."
