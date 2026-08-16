@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import ProtectedRoute from "./Components/ProtectedRoute";
 import Loading from "./Components/Loading";
 import TopProgressBar from "./Components/Skeletons/TopProgressBar";
+import useBackendKeepAlive from "./hooks/useBackendKeepAlive";
 
 const AuthView = lazy(() => import("./Components/ProfileComponents/AuthView"));
 const DetailedPage = lazy(() => import("./Components/Main Components/Routed Pages/DetailedPage"));
@@ -25,6 +26,8 @@ const ChatInbox = lazy(() => import("./Components/Main Components/Routed Pages/C
 const ChatConversation = lazy(() => import("./Components/Main Components/Routed Pages/ChatConversation"));
 
 const App: React.FC = () => {
+  useBackendKeepAlive();
+
   return (
     <>
       <Router>

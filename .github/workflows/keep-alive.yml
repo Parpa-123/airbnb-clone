@@ -1,0 +1,24 @@
+name: Backend Keep Alive Ping
+
+on:
+  schedule:
+    # Runs every 14 minutes to prevent Render idle spin-down
+    - cron: "*/14 * * * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Backend Health Endpoint
+        env:
+          TARGET_URL: ${{ secrets.BACKEND_HEALTH_URL || 'https://genna-granitelike-sherill.ngrok-free.dev/health/' }}
+        run: |
+          echo "Sending keep-alive ping to: $TARGET_URL"
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 "$TARGET_URL" || echo "FAILED")
+          echo "HTTP response status: $HTTP_STATUS"
+          if [ "$HTTP_STATUS" -eq 200 ] || [ "$HTTP_STATUS" -eq 301 ] || [ "$HTTP_STATUS" -eq 302 ]; then
+            echo "✅ Server successfully pinged and kept warm."
+          else
+            echo "⚠️ Ping returned status $HTTP_STATUS"
+          fi
