@@ -24,6 +24,7 @@ const DetailedPage: React.FC = () => {
   const navigate = useNavigate();
   const datePickerRef = useRef<DatePickerRef | null>(null);
   const { filters } = useSelector((state: RootState) => state.filters);
+  const { user } = useSelector((state: RootState) => state.auth);
 
   const { listing, reviews, loading, submitReview } = useListingDetails(slug);
 
@@ -33,6 +34,12 @@ const DetailedPage: React.FC = () => {
     checkIn: string | null;
     checkOut: string | null;
   }>({ checkIn: null, checkOut: null });
+
+  const isOwner = Boolean(
+    user &&
+    listing?.host &&
+    (user.id === listing.host.id || user.username === listing.host.username)
+  );
 
   useEffect(() => {
     const tomorrow = dayjs().add(1, "day").format("YYYY-MM-DD");
@@ -52,6 +59,11 @@ const DetailedPage: React.FC = () => {
   }, [submitReview]);
 
   const handleContactHost = useCallback(async () => {
+    if (isOwner) {
+      showError("You cannot message yourself as the host");
+      return;
+    }
+
     if (!listing?.id) return;
 
     if (!localStorage.getItem("accessToken")) {
@@ -65,7 +77,7 @@ const DetailedPage: React.FC = () => {
     } catch {
       showError("Unable to open chat for this listing");
     }
-  }, [listing?.id, navigate]);
+  }, [isOwner, listing?.id, navigate]);
 
   if (loading || !listing) {
     return <DetailedPageSkeleton />;
@@ -122,7 +134,7 @@ const DetailedPage: React.FC = () => {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
                 <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
-                  Hosted by {listing.host.username}
+                  Hosted by {listing.host.username} {isOwner && <span className="text-xs font-medium text-brand bg-red-50 px-2 py-0.5 rounded-full ml-1 border border-red-100">(You)</span>}
                 </h2>
                 <p className="text-sm text-gray-600 mt-1">
                   {listing.max_guests} guests · {listing.beds} beds ·{" "}
@@ -132,10 +144,12 @@ const DetailedPage: React.FC = () => {
               <button
                 type="button"
                 onClick={handleContactHost}
-                className="px-5 py-2.5 rounded-lg text-white text-sm font-semibold transition-opacity hover:opacity-90 cursor-pointer shadow-sm"
+                disabled={isOwner}
+                title={isOwner ? "You are the host of this listing" : "Contact host"}
+                className="px-5 py-2.5 rounded-lg text-white text-sm font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 cursor-pointer shadow-sm"
                 style={{ backgroundColor: "var(--color-brand)" }}
               >
-                Contact host
+                {isOwner ? "Your listing" : "Contact host"}
               </button>
             </div>
           </div>
@@ -169,14 +183,17 @@ const DetailedPage: React.FC = () => {
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-semibold text-gray-900">Reviews</h2>
               <button
+                disabled={isOwner}
                 onClick={() => {
+                  if (isOwner) return;
                   if (!localStorage.getItem("accessToken")) {
                     showError("Please log in to write a review");
                     return;
                   }
                   setOpenReviewDialog(true);
                 }}
-                className="px-4 py-2 border border-gray-900 text-gray-900 rounded-lg text-sm font-medium hover:bg-gray-100 transition cursor-pointer"
+                title={isOwner ? "Hosts cannot review their own listing" : "Write a review"}
+                className="px-4 py-2 border border-gray-900 text-gray-900 rounded-lg text-sm font-medium hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent transition cursor-pointer"
               >
                 Write a review
               </button>
@@ -198,6 +215,7 @@ const DetailedPage: React.FC = () => {
             <BookingCard
               pricePerNight={listing.price_per_night}
               listingId={listing.id}
+              isOwner={isOwner}
               datePickerRef={datePickerRef}
               selectedDates={selectedDates}
               onDatesChange={setSelectedDates}

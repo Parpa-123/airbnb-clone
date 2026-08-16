@@ -13,6 +13,7 @@ import Spinner from "../../../Spinner";
 interface BookingCardProps {
     pricePerNight: number | string;
     listingId: number;
+    isOwner?: boolean;
     datePickerRef: React.RefObject<DatePickerRef | null>;
     selectedDates: { checkIn: string | null; checkOut: string | null };
     onDatesChange: (dates: { checkIn: string | null; checkOut: string | null }) => void;
@@ -21,6 +22,7 @@ interface BookingCardProps {
 const BookingCard: React.FC<BookingCardProps> = ({
     pricePerNight,
     listingId,
+    isOwner = false,
     datePickerRef,
     selectedDates,
     onDatesChange,
@@ -69,6 +71,11 @@ const BookingCard: React.FC<BookingCardProps> = ({
     }, [listingId, selectedDates.checkIn, selectedDates.checkOut]);
 
     const handleReserve = async () => {
+        if (isOwner) {
+            showError("Hosts cannot book their own listings");
+            return;
+        }
+
         if (!localStorage.getItem("accessToken")) {
             showError("Please log in to reserve this stay");
             return;
@@ -148,19 +155,32 @@ const BookingCard: React.FC<BookingCardProps> = ({
                 <div className="mt-5">
                     <button
                         onClick={handleReserve}
-                        disabled={bookingLoading}
-                        className="w-full text-white py-3.5 rounded-xl font-semibold transition-opacity disabled:opacity-60 hover:opacity-90 cursor-pointer shadow-sm"
+                        disabled={bookingLoading || isOwner}
+                        title={isOwner ? "Hosts cannot reserve their own listing" : undefined}
+                        className="w-full text-white py-3.5 rounded-xl font-semibold transition-opacity disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 cursor-pointer shadow-sm"
                         style={{ backgroundColor: "var(--color-brand)" }}
                     >
-                        {bookingLoading
-                            ? <Spinner size="sm" className="text-white" label="Processing reservation" />
-                            : heldBookingId && secondsLeft > 0
-                                ? "Continue to payment"
-                                : "Reserve"}
+                        {isOwner
+                            ? "You own this listing"
+                            : bookingLoading
+                                ? <Spinner size="sm" className="text-white" label="Processing reservation" />
+                                : heldBookingId && secondsLeft > 0
+                                    ? "Continue to payment"
+                                    : "Reserve"}
                     </button>
                 </div>
 
-                {holdExpiresAt && secondsLeft > 0 ? (
+                {isOwner && (
+                    <div className="mt-3 rounded-xl border border-blue-200 bg-blue-50/80 p-3 text-xs text-blue-900 flex items-start gap-2">
+                        <span className="text-sm">🏠</span>
+                        <div>
+                            <p className="font-semibold">Host Preview</p>
+                            <p className="text-blue-700 mt-0.5">You are viewing your own property. Reservations are disabled for the owner.</p>
+                        </div>
+                    </div>
+                )}
+
+                {holdExpiresAt && secondsLeft > 0 && !isOwner ? (
                     <div className="mt-4 rounded-xl border border-amber-500/30 bg-amber-50 px-4 py-3 text-sm text-amber-800">
                         <p className="font-semibold flex items-center gap-2 text-amber-900">
                             <span className="relative flex h-3 w-3">
@@ -176,7 +196,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
                 ) : null}
 
                 <p className="text-center text-xs text-gray-500 mt-3">
-                    You won't be charged yet
+                    {isOwner ? "Host preview mode" : "You won't be charged yet"}
                 </p>
 
                 {selectedDates.checkIn && selectedDates.checkOut && priceBreakdown}

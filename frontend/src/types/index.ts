@@ -1,20 +1,25 @@
 export interface Host {
+    id?: number;
     username: string;
     avatar: string | null;
+    email?: string;
 }
 
 export interface Guest {
+    id?: number;
     username: string;
     avatar: string | null;
     is_host?: boolean;
 }
 
 export interface User {
+    id?: number;
     email: string;
     username: string;
 }
 
 export interface ListingImage {
+    id?: number;
     name: string;
     image: string;
     uploaded_at?: string;
