@@ -2,6 +2,18 @@ import React from "react";
 import { Link } from "react-router-dom";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { FaBars } from "react-icons/fa";
+import {
+    FiUser,
+    FiBriefcase,
+    FiMessageSquare,
+    FiHeart,
+    FiHome,
+    FiCalendar,
+    FiPlusCircle,
+    FiLogOut,
+    FiLogIn,
+    FiUserPlus,
+} from "react-icons/fi";
 import type { UserProfile } from "../../types/index";
 
 interface UserMenuProps {
@@ -27,36 +39,53 @@ const UserMenu: React.FC<UserMenuProps> = ({
 
     return (
         <div className="flex items-center gap-2">
-            {/* Hosting Link */}
+            {/* Direct List Home Button */}
             <button
                 onClick={onHostingClick}
-                className="hidden lg:block px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
+                className="hidden lg:flex items-center gap-1.5 px-3.5 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100/80 rounded-full transition-colors cursor-pointer"
             >
-                List your home
+                <span>{user?.is_host ? "Host an experience" : "Airbnb your home"}</span>
             </button>
 
-            {/* Wishlist Link */}
-            <Link
-                to="/me/wishlist"
-                className="hidden lg:block px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
-            >
-                Wishlist
-            </Link>
+            {/* Direct Wishlist Button for logged-in users */}
+            {user && (
+                <Link
+                    to="/me/wishlist"
+                    className="hidden lg:flex items-center justify-center w-10 h-10 text-gray-600 hover:text-brand hover:bg-gray-100/80 rounded-full transition-colors cursor-pointer"
+                    title="Wishlists"
+                >
+                    <FiHeart className="w-5 h-5" />
+                </Link>
+            )}
+
+            {/* Direct Messages Button for logged-in users */}
+            {user && (
+                <Link
+                    to="/messages"
+                    className="hidden lg:flex items-center justify-center w-10 h-10 text-gray-600 hover:text-gray-900 hover:bg-gray-100/80 rounded-full transition-colors cursor-pointer"
+                    title="Messages"
+                >
+                    <FiMessageSquare className="w-5 h-5" />
+                </Link>
+            )}
 
             {/* User Menu Dropdown */}
             <DropdownMenu.Root open={menuOpen} onOpenChange={onMenuOpenChange}>
                 <DropdownMenu.Trigger asChild>
-                    <button className="flex items-center gap-3 pl-3 pr-2 py-1 border border-gray-300 bg-white rounded-full hover:shadow-md transition-all cursor-pointer">
-                        <FaBars className="w-4 h-4 text-gray-600" />
+                    <button className="flex items-center gap-3 pl-3.5 pr-1.5 py-1.5 border border-gray-200 hover:border-gray-300 bg-white rounded-full shadow-sm hover:shadow-md transition-all duration-200 active:scale-[0.98] cursor-pointer group">
+                        <FaBars className="w-3.5 h-3.5 text-gray-600 group-hover:text-gray-900 transition-colors" />
                         {user?.avatar ? (
                             <img
                                 src={user.avatar}
                                 alt={user.username}
-                                className="w-8 h-8 rounded-full object-cover"
+                                className="w-8 h-8 rounded-full object-cover ring-2 ring-gray-100"
                             />
                         ) : (
-                            <div className="w-8 h-8 bg-brand rounded-full flex items-center justify-center text-white text-sm font-medium shadow-inner" style={{ backgroundColor: "var(--color-brand)" }}>
-                                {user?.username?.[0]?.toUpperCase() || "U"}
+                            <div
+                                className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-semibold shadow-inner"
+                                style={{ backgroundColor: "var(--color-brand)" }}
+                            >
+                                {user?.username?.[0]?.toUpperCase() || <FiUser className="w-4 h-4 text-white" />}
                             </div>
                         )}
                     </button>
@@ -64,9 +93,9 @@ const UserMenu: React.FC<UserMenuProps> = ({
 
                 <DropdownMenu.Portal>
                     <DropdownMenu.Content
-                        sideOffset={8}
+                        sideOffset={10}
                         align="end"
-                        className="z-50 w-60 py-2 bg-white border border-gray-200 rounded-xl shadow-xl text-gray-800"
+                        className="z-50 w-64 py-2 bg-white/95 backdrop-blur-md border border-gray-200 rounded-2xl shadow-[0_12px_36px_rgba(0,0,0,0.12)] text-gray-800 animate-in fade-in-0 zoom-in-95"
                     >
                         {!user ? (
                             <>
@@ -75,9 +104,10 @@ const UserMenu: React.FC<UserMenuProps> = ({
                                         handleMenuClose();
                                         onLoginClick();
                                     }}
-                                    className="px-4 py-3 text-sm font-semibold hover:bg-gray-100 cursor-pointer outline-none transition-colors"
+                                    className="flex items-center gap-3 mx-1.5 px-3.5 py-2.5 text-sm font-semibold text-gray-900 rounded-xl hover:bg-gray-100 cursor-pointer outline-none transition-colors"
                                 >
-                                    Log in
+                                    <FiLogIn className="w-4 h-4 text-brand" />
+                                    <span>Log in</span>
                                 </DropdownMenu.Item>
 
                                 <DropdownMenu.Item
@@ -85,30 +115,52 @@ const UserMenu: React.FC<UserMenuProps> = ({
                                         handleMenuClose();
                                         onSignupClick();
                                     }}
-                                    className="px-4 py-3 text-sm hover:bg-gray-100 cursor-pointer outline-none transition-colors"
+                                    className="flex items-center gap-3 mx-1.5 px-3.5 py-2.5 text-sm font-medium text-gray-700 rounded-xl hover:bg-gray-100 cursor-pointer outline-none transition-colors"
                                 >
-                                    Sign up
+                                    <FiUserPlus className="w-4 h-4 text-gray-500" />
+                                    <span>Sign up</span>
                                 </DropdownMenu.Item>
+
+                                <DropdownMenu.Separator className="my-1.5 h-px bg-gray-100" />
 
                                 <DropdownMenu.Item
                                     onSelect={() => {
                                         handleMenuClose();
                                         onHostingClick();
                                     }}
-                                    className="lg:hidden px-4 py-3 text-sm font-medium hover:bg-gray-100 cursor-pointer outline-none transition-colors"
+                                    className="flex items-center gap-3 mx-1.5 px-3.5 py-2.5 text-sm text-gray-700 rounded-xl hover:bg-gray-100 cursor-pointer outline-none transition-colors"
                                 >
-                                    List Your Home
+                                    <FiPlusCircle className="w-4 h-4 text-gray-500" />
+                                    <span>List your home</span>
                                 </DropdownMenu.Item>
                             </>
                         ) : (
                             <>
+                                {/* User Info Card */}
+                                <div className="px-4 py-2.5 border-b border-gray-100 mb-1">
+                                    <p className="text-sm font-semibold text-gray-900 truncate">
+                                        {user.username}
+                                    </p>
+                                    {user.email && (
+                                        <p className="text-xs text-gray-500 truncate mt-0.5">
+                                            {user.email}
+                                        </p>
+                                    )}
+                                    {user.is_host && (
+                                        <span className="inline-block mt-1.5 px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase bg-red-50 text-brand rounded-full border border-red-100">
+                                            Host
+                                        </span>
+                                    )}
+                                </div>
+
                                 <DropdownMenu.Item asChild>
                                     <Link
                                         to="/me"
                                         onClick={handleMenuClose}
-                                        className="block px-4 py-3 text-sm font-semibold hover:bg-gray-100 cursor-pointer outline-none transition-colors"
+                                        className="flex items-center gap-3 mx-1.5 px-3.5 py-2 text-sm font-medium text-gray-800 rounded-xl hover:bg-gray-100 cursor-pointer outline-none transition-colors"
                                     >
-                                        Profile
+                                        <FiUser className="w-4 h-4 text-gray-500" />
+                                        <span>Account & Profile</span>
                                     </Link>
                                 </DropdownMenu.Item>
 
@@ -116,9 +168,10 @@ const UserMenu: React.FC<UserMenuProps> = ({
                                     <Link
                                         to="bookings"
                                         onClick={handleMenuClose}
-                                        className="block px-4 py-3 text-sm hover:bg-gray-100 cursor-pointer outline-none transition-colors"
+                                        className="flex items-center gap-3 mx-1.5 px-3.5 py-2 text-sm font-medium text-gray-800 rounded-xl hover:bg-gray-100 cursor-pointer outline-none transition-colors"
                                     >
-                                        Trips
+                                        <FiBriefcase className="w-4 h-4 text-gray-500" />
+                                        <span>Trips & Bookings</span>
                                     </Link>
                                 </DropdownMenu.Item>
 
@@ -126,9 +179,10 @@ const UserMenu: React.FC<UserMenuProps> = ({
                                     <Link
                                         to="/messages"
                                         onClick={handleMenuClose}
-                                        className="block px-4 py-3 text-sm hover:bg-gray-100 cursor-pointer outline-none transition-colors"
+                                        className="flex items-center gap-3 mx-1.5 px-3.5 py-2 text-sm font-medium text-gray-800 rounded-xl hover:bg-gray-100 cursor-pointer outline-none transition-colors"
                                     >
-                                        Messages
+                                        <FiMessageSquare className="w-4 h-4 text-gray-500" />
+                                        <span>Messages</span>
                                     </Link>
                                 </DropdownMenu.Item>
 
@@ -136,57 +190,63 @@ const UserMenu: React.FC<UserMenuProps> = ({
                                     <Link
                                         to="/me/wishlist"
                                         onClick={handleMenuClose}
-                                        className="lg:hidden block px-4 py-3 text-sm hover:bg-gray-100 cursor-pointer outline-none transition-colors"
+                                        className="flex items-center gap-3 mx-1.5 px-3.5 py-2 text-sm font-medium text-gray-800 rounded-xl hover:bg-gray-100 cursor-pointer outline-none transition-colors"
                                     >
-                                        Wishlists
+                                        <FiHeart className="w-4 h-4 text-gray-500" />
+                                        <span>Wishlists</span>
                                     </Link>
                                 </DropdownMenu.Item>
 
                                 {user?.is_host && (
                                     <>
+                                        <DropdownMenu.Separator className="my-1.5 h-px bg-gray-100" />
                                         <DropdownMenu.Item asChild>
                                             <Link
                                                 to="/me/listings"
                                                 onClick={handleMenuClose}
-                                                className="block px-4 py-3 text-sm hover:bg-gray-100 cursor-pointer outline-none transition-colors"
+                                                className="flex items-center gap-3 mx-1.5 px-3.5 py-2 text-sm font-medium text-gray-800 rounded-xl hover:bg-gray-100 cursor-pointer outline-none transition-colors"
                                             >
-                                                Manage listings
+                                                <FiHome className="w-4 h-4 text-gray-500" />
+                                                <span>Manage Listings</span>
                                             </Link>
                                         </DropdownMenu.Item>
                                         <DropdownMenu.Item asChild>
                                             <Link
                                                 to="/me/host/bookings"
                                                 onClick={handleMenuClose}
-                                                className="block px-4 py-3 text-sm hover:bg-gray-100 cursor-pointer outline-none transition-colors"
+                                                className="flex items-center gap-3 mx-1.5 px-3.5 py-2 text-sm font-medium text-gray-800 rounded-xl hover:bg-gray-100 cursor-pointer outline-none transition-colors"
                                             >
-                                                Reservations
+                                                <FiCalendar className="w-4 h-4 text-gray-500" />
+                                                <span>Reservations</span>
                                             </Link>
                                         </DropdownMenu.Item>
                                     </>
                                 )}
 
-                                <DropdownMenu.Separator className="my-2 h-px bg-gray-200" />
+                                <DropdownMenu.Separator className="my-1.5 h-px bg-gray-100" />
 
                                 <DropdownMenu.Item
                                     onSelect={() => {
                                         handleMenuClose();
                                         onHostingClick();
                                     }}
-                                    className="lg:hidden px-4 py-3 text-sm hover:bg-gray-100 cursor-pointer outline-none transition-colors"
+                                    className="flex items-center gap-3 mx-1.5 px-3.5 py-2 text-sm font-medium text-gray-700 rounded-xl hover:bg-gray-100 cursor-pointer outline-none transition-colors"
                                 >
-                                    List your home
+                                    <FiPlusCircle className="w-4 h-4 text-gray-500" />
+                                    <span>Airbnb your home</span>
                                 </DropdownMenu.Item>
 
-                                <DropdownMenu.Separator className="my-2 h-px bg-gray-200" />
+                                <DropdownMenu.Separator className="my-1.5 h-px bg-gray-100" />
 
                                 <DropdownMenu.Item
                                     onSelect={() => {
                                         handleMenuClose();
                                         onLogoutClick();
                                     }}
-                                    className="px-4 py-3 text-sm hover:bg-gray-100 cursor-pointer outline-none transition-colors"
+                                    className="flex items-center gap-3 mx-1.5 px-3.5 py-2 text-sm font-medium text-red-600 rounded-xl hover:bg-red-50 cursor-pointer outline-none transition-colors"
                                 >
-                                    Log out
+                                    <FiLogOut className="w-4 h-4 text-red-500" />
+                                    <span>Log out</span>
                                 </DropdownMenu.Item>
                             </>
                         )}

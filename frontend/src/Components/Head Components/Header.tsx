@@ -67,6 +67,8 @@ const Header: React.FC = () => {
 
   const searchBarProps = React.useMemo(() => ({
     shouldHide: shouldHideSearch,
+    country: searchState.country,
+    city: searchState.city,
     checkIn: searchState.checkIn,
     checkOut: searchState.checkOut,
     guests: searchState.guests,
@@ -81,6 +83,8 @@ const Header: React.FC = () => {
     onSearch: searchState.handleSearch,
   }), [
     shouldHideSearch,
+    searchState.country,
+    searchState.city,
     searchState.checkIn,
     searchState.checkOut,
     searchState.guests,
@@ -97,19 +101,20 @@ const Header: React.FC = () => {
 
   return (
     <>
-      { }
-      <nav className="sticky top-0 z-50 bg-white border-b border-gray-200">
-        <div className="max-w-screen-2xl mx-auto px-6 lg:px-12 py-4">
-          <div className="flex flex-wrap md:flex-nowrap items-center justify-between gap-y-4 gap-x-4">
-            { }
-            <Link to="/" className="shrink-0 order-1 md:order-1">
-              <img src={Img} alt="Logo" className="h-12 cursor-pointer" />
+      <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-[0_1px_3px_rgba(0,0,0,0.03)] transition-all">
+        <div className="max-w-screen-2xl mx-auto px-4 sm:px-8 lg:px-12 py-3.5">
+          <div className="flex flex-wrap md:flex-nowrap items-center justify-between gap-y-3 gap-x-4">
+            {/* Brand Logo */}
+            <Link to="/" className="shrink-0 order-1 md:order-1 transition-transform hover:scale-[1.02] active:scale-95">
+              <img src={Img} alt="Airbnb" className="h-10 sm:h-11 w-auto cursor-pointer" />
             </Link>
 
+            {/* Central Search Bar */}
             <div className="order-3 md:order-2 w-full md:w-auto flex justify-center">
               <SearchBar {...searchBarProps} />
             </div>
 
+            {/* Right User Actions & Menu */}
             <div className="order-2 md:order-3">
               <UserMenu
                 user={user}
@@ -125,7 +130,6 @@ const Header: React.FC = () => {
         </div>
       </nav>
 
-      { }
       <AuthDialogs
         loginOpen={dialogState.loginOpen}
         signupOpen={dialogState.signupOpen}
@@ -146,7 +150,6 @@ const Header: React.FC = () => {
         loading={loading}
       />
 
-      { }
       <Suspense fallback={null}>
         <HostingDialog
           open={dialogState.hostingOpen}

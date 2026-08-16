@@ -6,6 +6,8 @@ import type { GuestCounts } from "../GuestSelector";
 
 interface SearchBarProps {
     shouldHide: boolean;
+    country?: string;
+    city?: string;
     checkIn: Dayjs | null;
     checkOut: Dayjs | null;
     guests: GuestCounts;
@@ -22,6 +24,8 @@ interface SearchBarProps {
 
 const SearchBar: React.FC<SearchBarProps> = ({
     shouldHide,
+    country = "",
+    city = "",
     checkIn,
     checkOut,
     guests,
@@ -41,10 +45,11 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
     return (
         <>
-            {}
             <MobileSearch
                 open={mobileSearchOpen}
                 onOpenChange={onMobileSearchOpenChange}
+                country={country}
+                city={city}
                 checkIn={checkIn}
                 checkOut={checkOut}
                 guests={guests}
@@ -57,8 +62,9 @@ const SearchBar: React.FC<SearchBarProps> = ({
                 onSearch={onSearch}
             />
 
-            {}
             <DesktopSearch
+                country={country}
+                city={city}
                 checkIn={checkIn}
                 checkOut={checkOut}
                 guests={guests}

@@ -8,10 +8,14 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import GuestSelector from "../GuestSelector";
 import type { GuestCounts } from "../GuestSelector";
+import { showWarning } from "../../../../utils/toastMessages";
+import { FiSearch, FiMapPin, FiCalendar, FiUsers, FiX } from "react-icons/fi";
 
 interface MobileSearchProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
+    country?: string;
+    city?: string;
     checkIn: Dayjs | null;
     checkOut: Dayjs | null;
     guests: GuestCounts;
@@ -27,6 +31,8 @@ interface MobileSearchProps {
 const MobileSearch: React.FC<MobileSearchProps> = ({
     open,
     onOpenChange,
+    country = "",
+    city = "",
     checkIn,
     checkOut,
     guests,
@@ -40,7 +46,7 @@ const MobileSearch: React.FC<MobileSearchProps> = ({
 }) => {
     const handleCheckInChange = (date: Dayjs | null) => {
         if (date && checkOut && (date.isAfter(checkOut) || date.isSame(checkOut))) {
-            alert("Check-in date must be before check-out date");
+            showWarning("Check-in date must be before check-out date");
             return;
         }
         onCheckInChange(date);
@@ -48,62 +54,102 @@ const MobileSearch: React.FC<MobileSearchProps> = ({
 
     const handleCheckOutChange = (date: Dayjs | null) => {
         if (date && checkIn && (date.isBefore(checkIn) || date.isSame(checkIn))) {
-            alert("Check-out date must be after check-in date");
+            showWarning("Check-out date must be after check-in date");
             return;
         }
         onCheckOutChange(date);
     };
 
+    const hasActiveFilters = Boolean(
+        country ||
+        city ||
+        checkIn ||
+        checkOut ||
+        guests.adults > 1 ||
+        guests.children > 0 ||
+        guests.infants > 0 ||
+        guests.pets > 0
+    );
+
+    const titleSummary = country && city
+        ? `${city}, ${country}`
+        : city || country || "Where to?";
+
+    const dateSummary = checkIn && checkOut
+        ? `${checkIn.format("MMM D")} – ${checkOut.format("MMM D")}`
+        : checkIn
+            ? `From ${checkIn.format("MMM D")}`
+            : "Any week";
+
+    const totalGuests = guests.adults + guests.children;
+    const guestSummary = totalGuests > 1 ? `${totalGuests} guests` : "Add guests";
+
+    const subtitleSummary = `${dateSummary} · ${guestSummary}`;
+
     return (
         <div className="flex smd:hidden flex-1 justify-center">
             <Dialog.Root open={open} onOpenChange={onOpenChange}>
                 <Dialog.Trigger asChild>
-                    <button className="flex items-center gap-3 w-full max-w-sm px-4 py-2.5 border border-gray-300 bg-white rounded-full shadow-sm hover:shadow-md transition-shadow cursor-pointer">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 32 32"
-                            className="w-5 h-5 text-gray-800"
-                            fill="currentColor"
+                    <button className="flex items-center gap-3 w-full max-w-sm px-4 py-2.5 border border-gray-200 hover:border-gray-300 bg-white rounded-full shadow-sm hover:shadow-md transition-all active:scale-[0.98] cursor-pointer">
+                        <div
+                            className="w-8 h-8 rounded-full flex items-center justify-center text-white shadow-sm shrink-0"
+                            style={{ backgroundColor: "var(--color-brand)" }}
                         >
-                            <path d="M13 0c7.18 0 13 5.82 13 13 0 2.868-.929 5.519-2.502 7.669l7.916 7.917-2.828 2.828-7.917-7.916A12.942 12.942 0 0 1 13 26C5.82 26 0 20.18 0 13S5.82 0 13 0zm0 4a9 9 0 1 0 0 18 9 9 0 0 0 0-18z"></path>
-                        </svg>
-                        <div className="flex-1 text-left">
-                            <div className="text-sm font-bold text-gray-800">Where to?</div>
-                            <div className="text-xs text-gray-500 font-medium">Anywhere · Any week · Add guests</div>
+                            <FiSearch className="w-4 h-4" />
+                        </div>
+                        <div className="flex-1 text-left min-w-0">
+                            <div className="text-sm font-semibold text-gray-900 truncate">
+                                {titleSummary}
+                            </div>
+                            <div className="text-xs text-gray-500 font-normal truncate">
+                                {subtitleSummary}
+                            </div>
                         </div>
                     </button>
                 </Dialog.Trigger>
 
                 <Dialog.Portal>
-                    <Dialog.Overlay className="fixed inset-0 bg-black/40 z-50 pointer-events-none" />
+                    <Dialog.Overlay className="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 animate-in fade-in-0" />
 
-                    <Dialog.Content className="fixed inset-x-4 top-20 z-50 max-w-lg mx-auto bg-white border border-gray-200 rounded-2xl shadow-xl p-6 space-y-5 pointer-events-auto text-gray-800">
-                        <div className="flex items-center justify-between mb-4">
-                            <Dialog.Title className="text-xl font-bold">Search</Dialog.Title>
-                            <Dialog.Close className="p-2 hover:bg-gray-100 rounded-full cursor-pointer transition-colors text-gray-800">
+                    <Dialog.Content className="fixed inset-x-3 top-16 z-50 max-w-lg mx-auto bg-white border border-gray-200 rounded-3xl shadow-2xl p-5 space-y-4 max-h-[85vh] overflow-y-auto text-gray-800 animate-in fade-in-0 zoom-in-95">
+                        <div className="flex items-center justify-between pb-2 border-b border-gray-100">
+                            <Dialog.Title className="text-lg font-bold text-gray-900">
+                                Search filters
+                            </Dialog.Title>
+                            <Dialog.Close className="p-1.5 text-gray-500 hover:text-gray-800 hover:bg-gray-100 rounded-full cursor-pointer transition-colors">
                                 <Cross2Icon className="w-5 h-5" />
                             </Dialog.Close>
                         </div>
 
-                        <div className="space-y-6">
-                            <div>
-                                <label className="block text-xs font-bold text-gray-800 mb-2 uppercase tracking-wider">Where</label>
+                        <div className="space-y-4">
+                            {/* Destination */}
+                            <div className="bg-gray-50/80 border border-gray-200/80 rounded-2xl p-4 space-y-3">
+                                <div className="flex items-center gap-2 text-xs font-bold text-gray-900 uppercase tracking-wider">
+                                    <FiMapPin className="w-3.5 h-3.5 text-brand" />
+                                    <span>Where</span>
+                                </div>
                                 <input
+                                    value={country}
                                     placeholder="Country"
-                                    className="w-full bg-gray-50 border border-gray-200 px-4 py-3 rounded-xl text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all"
+                                    className="w-full bg-white border border-gray-200 px-3.5 py-2.5 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all"
                                     onChange={(e) => onCountryChange(e.target.value)}
                                 />
                                 <input
+                                    value={city}
                                     placeholder="City"
-                                    className="w-full bg-gray-50 border border-gray-200 px-4 py-3 rounded-xl text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all mt-2"
+                                    className="w-full bg-white border border-gray-200 px-3.5 py-2.5 rounded-xl text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all"
                                     onChange={(e) => onCityChange(e.target.value)}
                                 />
                             </div>
 
+                            {/* Dates */}
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                <div>
-                                    <label className="block text-xs font-bold text-gray-800 mb-2 uppercase tracking-wider">When</label>
-                                    <div className="space-y-3">
+                                <div className="bg-gray-50/80 border border-gray-200/80 rounded-2xl p-4 space-y-3">
+                                    <div className="flex items-center gap-2 text-xs font-bold text-gray-900 uppercase tracking-wider">
+                                        <FiCalendar className="w-3.5 h-3.5 text-brand" />
+                                        <span>When</span>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-2">
                                         <DatePicker
                                             label="Check in"
                                             value={checkIn}
@@ -111,37 +157,15 @@ const MobileSearch: React.FC<MobileSearchProps> = ({
                                             minDate={dayjs()}
                                             slotProps={{
                                                 textField: {
-                                                    fullWidth: true,
                                                     size: "small",
                                                     sx: {
                                                         "& .MuiInputBase-root": {
-                                                            backgroundColor: "#f9fafb",
-                                                            borderRadius: "0.75rem",
-                                                            color: "#222",
-                                                            "& fieldset": { borderColor: "#e5e7eb" },
-                                                            "&:hover fieldset": { borderColor: "#d1d5db" },
-                                                            "&.Mui-focused fieldset": { borderColor: "var(--color-brand)" },
-                                                        },
-                                                        "& .MuiInputLabel-root": { color: "#71717a" },
-                                                        "& .MuiIconButton-root": { color: "#222" }
-                                                    }
-                                                },
-                                                popper: {
-                                                    disablePortal: true,
-                                                    sx: {
-                                                        "& .MuiPaper-root": {
                                                             backgroundColor: "#fff",
-                                                            color: "#222",
-                                                            border: "1px solid #e5e7eb",
+                                                            borderRadius: "0.75rem",
+                                                            color: "#111827",
+                                                            "& fieldset": { borderColor: "#e5e7eb" },
                                                         },
-                                                        "& .MuiPickersDay-root": {
-                                                            color: "#222",
-                                                            "&.Mui-selected": { backgroundColor: "var(--color-brand)" },
-                                                            "&:hover": { backgroundColor: "#f3f4f6" },
-                                                        },
-                                                        "& .MuiIconButton-root": { color: "#222" },
-                                                        "& .MuiTypography-root": { color: "#71717a" },
-                                                    }
+                                                    },
                                                 },
                                             }}
                                         />
@@ -152,37 +176,15 @@ const MobileSearch: React.FC<MobileSearchProps> = ({
                                             minDate={checkIn ? checkIn.add(1, "day") : dayjs()}
                                             slotProps={{
                                                 textField: {
-                                                    fullWidth: true,
                                                     size: "small",
                                                     sx: {
                                                         "& .MuiInputBase-root": {
-                                                            backgroundColor: "#f9fafb",
-                                                            borderRadius: "0.75rem",
-                                                            color: "#222",
-                                                            "& fieldset": { borderColor: "#e5e7eb" },
-                                                            "&:hover fieldset": { borderColor: "#d1d5db" },
-                                                            "&.Mui-focused fieldset": { borderColor: "var(--color-brand)" },
-                                                        },
-                                                        "& .MuiInputLabel-root": { color: "#71717a" },
-                                                        "& .MuiIconButton-root": { color: "#222" }
-                                                    }
-                                                },
-                                                popper: {
-                                                    disablePortal: true,
-                                                    sx: {
-                                                        "& .MuiPaper-root": {
                                                             backgroundColor: "#fff",
-                                                            color: "#222",
-                                                            border: "1px solid #e5e7eb",
+                                                            borderRadius: "0.75rem",
+                                                            color: "#111827",
+                                                            "& fieldset": { borderColor: "#e5e7eb" },
                                                         },
-                                                        "& .MuiPickersDay-root": {
-                                                            color: "#222",
-                                                            "&.Mui-selected": { backgroundColor: "var(--color-brand)" },
-                                                            "&:hover": { backgroundColor: "#f3f4f6" },
-                                                        },
-                                                        "& .MuiIconButton-root": { color: "#222" },
-                                                        "& .MuiTypography-root": { color: "#71717a" },
-                                                    }
+                                                    },
                                                 },
                                             }}
                                         />
@@ -190,42 +192,39 @@ const MobileSearch: React.FC<MobileSearchProps> = ({
                                 </div>
                             </LocalizationProvider>
 
-                            <div>
-                                <label className="block text-xs font-bold text-gray-800 mb-2 uppercase tracking-wider">Who</label>
-                                <div className="p-2 border border-gray-200 rounded-xl bg-gray-50 flex items-center h-12">
-                                    <GuestSelector guests={guests} onGuestsChange={onGuestsChange} />
+                            {/* Guests */}
+                            <div className="bg-gray-50/80 border border-gray-200/80 rounded-2xl p-4 space-y-3">
+                                <div className="flex items-center gap-2 text-xs font-bold text-gray-900 uppercase tracking-wider">
+                                    <FiUsers className="w-3.5 h-3.5 text-brand" />
+                                    <span>Who</span>
                                 </div>
+                                <GuestSelector guests={guests} onGuestsChange={onGuestsChange} />
                             </div>
+                        </div>
 
-                            <div className="flex gap-3 pt-2">
+                        {/* Bottom Actions */}
+                        <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                            {hasActiveFilters ? (
                                 <button
-                                    type="button"
                                     onClick={onClearFilters}
-                                    className="flex-1 border border-gray-300 text-gray-700 py-3.5 rounded-xl font-bold hover:bg-gray-100 transition-colors cursor-pointer"
+                                    className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-gray-600 hover:text-gray-900 transition-colors underline cursor-pointer"
                                 >
-                                    Clear filters
+                                    <FiX className="w-3.5 h-3.5" />
+                                    <span>Clear all</span>
                                 </button>
+                            ) : <div />}
 
-                                <Dialog.Close asChild>
-                                    <button
-                                        onClick={onSearch}
-                                        className="flex-1 bg-brand text-white py-3.5 rounded-xl font-bold hover:bg-brand-hover transition-colors cursor-pointer shadow-md"
-                                        style={{ backgroundColor: "var(--color-brand)" }}
-                                    >
-                                        <div className="flex items-center justify-center gap-2">
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                viewBox="0 0 32 32"
-                                                className="w-4 h-4"
-                                                fill="currentColor"
-                                            >
-                                                <path d="M13 0c7.18 0 13 5.82 13 13 0 2.868-.929 5.519-2.502 7.669l7.916 7.917-2.828 2.828-7.917-7.916A12.942 12.942 0 0 1 13 26C5.82 26 0 20.18 0 13S5.82 0 13 0zm0 4a9 9 0 1 0 0 18 9 9 0 0 0 0-18z"></path>
-                                            </svg>
-                                            Search
-                                        </div>
-                                    </button>
-                                </Dialog.Close>
-                            </div>
+                            <button
+                                onClick={() => {
+                                    onSearch();
+                                    onOpenChange(false);
+                                }}
+                                className="flex items-center gap-2 bg-brand text-white px-6 py-2.5 rounded-xl font-semibold text-sm hover:bg-brand-hover shadow-md cursor-pointer transition-all"
+                                style={{ backgroundColor: "var(--color-brand)" }}
+                            >
+                                <FiSearch className="w-4 h-4" />
+                                <span>Search</span>
+                            </button>
                         </div>
                     </Dialog.Content>
                 </Dialog.Portal>

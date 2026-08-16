@@ -1,14 +1,18 @@
 import { useState } from "react";
 import { type Dayjs } from "dayjs";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updateFilters, clearFilters as clearFiltersAction } from "../../../redux/slices/filtersSlice";
+import type { RootState } from "../../../redux/store/store";
 import type { GuestCounts } from "../components/GuestSelector";
 
 export const useSearchFilters = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const { filters } = useSelector((state: RootState) => state.filters);
 
+    const [country, setCountry] = useState<string>(filters.country || "");
+    const [city, setCity] = useState<string>(filters.city || "");
     const [checkIn, setCheckIn] = useState<Dayjs | null>(null);
     const [checkOut, setCheckOut] = useState<Dayjs | null>(null);
     const [guests, setGuests] = useState<GuestCounts>({
@@ -41,19 +45,23 @@ export const useSearchFilters = () => {
         }));
     };
 
-    const handleCountryChange = (country: string) => {
+    const handleCountryChange = (val: string) => {
+        setCountry(val);
         dispatch(updateFilters({
-            country: country || undefined,
+            country: val || undefined,
         }));
     };
 
-    const handleCityChange = (city: string) => {
+    const handleCityChange = (val: string) => {
+        setCity(val);
         dispatch(updateFilters({
-            city: city || undefined,
+            city: val || undefined,
         }));
     };
 
     const clearFilters = () => {
+        setCountry("");
+        setCity("");
         setCheckIn(null);
         setCheckOut(null);
         setGuests({
@@ -70,6 +78,8 @@ export const useSearchFilters = () => {
     };
 
     return {
+        country,
+        city,
         checkIn,
         checkOut,
         guests,
