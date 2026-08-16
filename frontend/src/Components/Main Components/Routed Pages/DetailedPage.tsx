@@ -15,7 +15,7 @@ import { getOrCreateListingRoom } from "../../../services/chatService";
 import { showError } from "../../../utils/toastMessages";
 
 import AmenitiesDisplay from "./DetailedPageComponents/AmenitiesDisplay";
-import Loading from "../../Loading";
+import DetailedPageSkeleton from "../../Skeletons/DetailedPageSkeleton";
 
 import type { DatePickerRef } from "../../../types";
 
@@ -68,7 +68,7 @@ const DetailedPage: React.FC = () => {
   }, [listing?.id, navigate]);
 
   if (loading || !listing) {
-    return <Loading />;
+    return <DetailedPageSkeleton />;
   }
 
   return (

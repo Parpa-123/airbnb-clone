@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axiosInstance from "../../../services/connect";
 import { showError, extractErrorMessage } from "../../../utils/toastMessages";
 
@@ -7,7 +7,7 @@ import { type RootState } from "../../../redux/store/store";
 import type { Listing, PaginatedResponse } from "../../../types";
 import ListingCard from "../Cards/ListingCard";
 import AddToWishlistDialog from "../Dialogs/AddToWishlistDialog";
-import Loading from "../../Loading";
+import { ListingGridSkeleton } from "../../Skeletons/ListingCardSkeleton";
 import { extractResults } from "../../../utils/pagination";
 
 const PublicListings: React.FC = () => {
@@ -15,6 +15,7 @@ const PublicListings: React.FC = () => {
 
   const [nearbyListings, setNearbyListings] = useState<Listing[]>([]);
   const [nearbyCity, setNearbyCity] = useState<string | null>(null);
+  const [nearbyLoading, setNearbyLoading] = useState(true);
 
   const [listings, setListings] = useState<Listing[]>([]);
   const [activeListing, setActiveListing] = useState<Listing | null>(null);
@@ -23,24 +24,45 @@ const PublicListings: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const abortControllerRef = useRef<AbortController | null>(null);
+
   useEffect(() => {
+    let isMounted = true;
     (async () => {
       try {
+        setNearbyLoading(true);
         const ipRes = await fetch("https://ipapi.co/json/");
         const ipData = await ipRes.json();
-        if (ipData && ipData.city) {
+        if (isMounted && ipData && ipData.city) {
           setNearbyCity(ipData.city);
-          const res = await axiosInstance.get<Listing[] | PaginatedResponse<Listing>>(`/listings/public/?city=${ipData.city}`);
-          setNearbyListings(extractResults(res.data));
+          const res = await axiosInstance.get<Listing[] | PaginatedResponse<Listing>>(
+            `/listings/public/?city=${ipData.city}`
+          );
+          if (isMounted) {
+            setNearbyListings(extractResults(res.data));
+          }
         }
       } catch (err) {
         // Silently ignore tracking prevention blocks for IP lookup
         console.warn("Could not fetch nearby listings (IP block or network issue).");
+      } finally {
+        if (isMounted) setNearbyLoading(false);
       }
     })();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   useEffect(() => {
+    // Abort previous in-flight request to prevent race conditions
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
     (async () => {
       setLoading(true);
       setError(null);
@@ -85,15 +107,27 @@ const PublicListings: React.FC = () => {
           ? `/listings/public/?${params.toString()}`
           : "/listings/public/";
 
-        const res = await axiosInstance.get<Listing[] | PaginatedResponse<Listing>>(url);
+        const res = await axiosInstance.get<Listing[] | PaginatedResponse<Listing>>(url, {
+          signal: controller.signal,
+        });
+
         setListings(extractResults(res.data));
-      } catch (err: unknown) {
+      } catch (err: any) {
+        if (err.name === "CanceledError" || err.code === "ERR_CANCELED") {
+          return; // Ignore canceled requests
+        }
         showError(extractErrorMessage(err, "Failed to load listings"));
         setError(extractErrorMessage(err, "Failed to load listings"));
       } finally {
-        setLoading(false);
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       }
     })();
+
+    return () => {
+      controller.abort();
+    };
   }, [filters]);
 
   const openWishlistDialog = (listing: Listing) => {
@@ -105,39 +139,52 @@ const PublicListings: React.FC = () => {
     setDialogOpen(true);
   };
 
-  if (loading) return <Loading />;
-
-  if (error)
-    return <div className="p-6 text-red-600">Error: {error}</div>;
-
   return (
-    <div className="px-6 py-10">
-      
+    <div className="px-6 py-10 max-w-[1600px] mx-auto min-h-[70vh]">
       {/* Near You Section */}
-      {nearbyListings.length > 0 && (
+      {nearbyLoading ? (
         <div className="mb-12">
-          <h3 className="text-2xl font-semibold mb-6 text-gray-800 flex items-center gap-2">
-            <span className="text-green-500">✨</span> Stays near {nearbyCity}
-          </h3>
-          <div className="flex overflow-x-auto gap-6 snap-x snap-mandatory pb-6 custom-scrollbar">
-            {nearbyListings.map((item) => (
-              <div key={`nearby-${item.id}`} className="min-w-[320px] w-80 flex-shrink-0 snap-start">
-                <ListingCard
-                  listing={item}
-                  onHeartClick={openWishlistDialog}
-                  showHost={true}
-                />
-              </div>
+          <div className="h-7 bg-gray-200 rounded-md w-60 mb-6 animate-pulse" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="animate-pulse bg-gray-100 rounded-2xl h-64" />
             ))}
           </div>
-          <div className="w-full h-px bg-gray-200 mt-6" />
+          <div className="w-full h-px bg-gray-200 mt-8" />
         </div>
+      ) : (
+        nearbyListings.length > 0 && (
+          <div className="mb-12">
+            <h3 className="text-2xl font-semibold mb-6 text-gray-800 flex items-center gap-2">
+              <span className="text-green-500">✨</span> Stays near {nearbyCity}
+            </h3>
+            <div className="flex overflow-x-auto gap-6 snap-x snap-mandatory pb-6 custom-scrollbar">
+              {nearbyListings.map((item) => (
+                <div key={`nearby-${item.id}`} className="min-w-[320px] w-80 flex-shrink-0 snap-start">
+                  <ListingCard
+                    listing={item}
+                    onHeartClick={openWishlistDialog}
+                    showHost={true}
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="w-full h-px bg-gray-200 mt-6" />
+          </div>
+        )
       )}
 
       {/* Main Discover Section */}
       <h2 className="text-2xl font-semibold mb-6 text-gray-800">Public Listings</h2>
 
-      {listings.length === 0 ? (
+      {error ? (
+        <div className="p-6 text-red-600 bg-red-50 rounded-2xl border border-red-200">
+          <p className="font-semibold mb-1">Failed to load listings</p>
+          <p className="text-sm">{error}</p>
+        </div>
+      ) : loading ? (
+        <ListingGridSkeleton count={8} />
+      ) : listings.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 px-4 text-center max-w-2xl mx-auto">
           <svg
             className="w-24 h-24 text-gray-300 mb-6"

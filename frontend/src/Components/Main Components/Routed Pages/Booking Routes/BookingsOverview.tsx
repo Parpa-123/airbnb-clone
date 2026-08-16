@@ -4,7 +4,7 @@ import { useSearchParams } from "react-router-dom";
 import axiosInstance from "../../../../services/connect";
 import { showSuccess, showError, showWarning, MESSAGES } from "../../../../utils/toastMessages";
 import BookingCard from "../../Cards/BookingCard";
-import Loading from "../../../Loading";
+import { BookingListSkeleton } from "../../../Skeletons/BookingCardSkeleton";
 import { useGetBookingsQuery } from "../../../../redux/api/apiSlice";
 import type { Booking } from "../../../../types";
 
@@ -99,7 +99,12 @@ const BookingsOverview = () => {
     }, [orderId, refetch, setSearchParams]);
 
     if (isLoading) {
-        return <Loading />;
+        return (
+            <div className="flex-1 overflow-y-auto">
+                <h1 className="text-3xl font-bold mb-8 text-gray-900">All Bookings</h1>
+                <BookingListSkeleton count={3} />
+            </div>
+        );
     }
 
     if (!bookings.length) {

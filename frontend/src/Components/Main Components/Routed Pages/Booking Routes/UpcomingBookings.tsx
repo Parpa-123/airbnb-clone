@@ -1,6 +1,6 @@
 import { useGetBookingsQuery } from "../../../../redux/api/apiSlice";
 import BookingCard from "../../Cards/BookingCard";
-import Loading from "../../../Loading";
+import { BookingListSkeleton } from "../../../Skeletons/BookingCardSkeleton";
 import dayjs from "dayjs";
 import type { Booking } from "../../../../types";
 
@@ -18,7 +18,12 @@ const UpcomingBookings = () => {
     });
 
     if (isLoading) {
-        return <Loading />;
+        return (
+            <div className="flex-1 overflow-y-auto">
+                <h1 className="text-3xl font-bold mb-8 text-gray-900">Upcoming Trips</h1>
+                <BookingListSkeleton count={3} />
+            </div>
+        );
     }
 
     if (!upcomingBookings.length) {

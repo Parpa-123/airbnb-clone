@@ -3,7 +3,7 @@ import axiosInstance from "../../../services/connect";
 import type { Listing, PaginatedResponse } from "../../../types";
 import { showSuccess, showError, MESSAGES } from "../../../utils/toastMessages";
 import { NavLink, useNavigate } from "react-router-dom";
-import Loading from "../../Loading";
+import DashboardSkeleton from "../../Skeletons/DashboardSkeleton";
 import { extractResults } from "../../../utils/pagination";
 
 const ListingsDashboard: React.FC = () => {
@@ -41,7 +41,7 @@ const ListingsDashboard: React.FC = () => {
     }
   };
 
-  if (loading) return <Loading />;
+  if (loading) return <DashboardSkeleton />;
 
   if (listings.length === 0) {
     return (
@@ -53,7 +53,7 @@ const ListingsDashboard: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      {}
+      {/* Title */}
       <div className="mb-6">
         <h1 className="text-2xl font-semibold text-gray-900">
           Your Listings
@@ -64,14 +64,13 @@ const ListingsDashboard: React.FC = () => {
         </p>
       </div>
 
-      {}
+      {/* Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {listings.map((listing) => {
           const coverImage = listing.images?.[0]?.image;
 
           return (
             <div key={listing.id} className="group">
-              {}
               <div className="relative aspect-square rounded-xl overflow-hidden bg-gray-100">
                 {coverImage ? (
                   <img
@@ -85,9 +84,8 @@ const ListingsDashboard: React.FC = () => {
                   </div>
                 )}
 
-                {}
+                {/* Actions */}
                 <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition">
-                  {}
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -108,7 +106,6 @@ const ListingsDashboard: React.FC = () => {
                     Bookings
                   </button>
 
-                  {}
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -121,7 +118,6 @@ const ListingsDashboard: React.FC = () => {
                 </div>
               </div>
 
-              {}
               <NavLink to={`/${listing.title_slug}`}>
                 <div className="mt-3 space-y-1">
                   <h3 className="text-sm font-medium text-gray-900 truncate">

@@ -28,10 +28,10 @@ const Header: React.FC = () => {
   );
 
   useEffect(() => {
-    if (localStorage.getItem("accessToken") && !user) {
+    if (localStorage.getItem("accessToken")) {
       loadProfile();
     }
-  }, [user, loadProfile]);
+  }, [loadProfile]);
 
   useEffect(() => {
     const handleResize = () => {

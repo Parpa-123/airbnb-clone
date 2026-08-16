@@ -1,14 +1,10 @@
 import React, { Suspense, lazy } from "react";
-
 import Header from "./Components/Head Components/Header";
-
 import { ToastContainer } from "react-toastify";
-
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-
 import ProtectedRoute from "./Components/ProtectedRoute";
-
 import Loading from "./Components/Loading";
+import TopProgressBar from "./Components/Skeletons/TopProgressBar";
 
 const AuthView = lazy(() => import("./Components/ProfileComponents/AuthView"));
 const DetailedPage = lazy(() => import("./Components/Main Components/Routed Pages/DetailedPage"));
@@ -32,101 +28,86 @@ const App: React.FC = () => {
   return (
     <>
       <Router>
-          <Suspense fallback={<Loading />}>
-            <Routes>
-              {}
-              <Route path="/" element={<Header />}>
-                {}
-                <Route index element={<PublicListings />} />
-
-                {}
-                <Route path=":slug" element={<DetailedPage />} />
-
-                {}
-                <Route
-                  path="me"
-                  element={
-                    <ProtectedRoute>
-                      <AuthView />
-                    </ProtectedRoute>
-                  }
-                />
-
-                {}
-                <Route
-                  path="me/listings"
-                  element={
-                    <ProtectedRoute>
-                      <ListingsDashboard />
-                    </ProtectedRoute>
-                  }
-                />
-
-                <Route
-                  path="me/host/bookings"
-                  element={
-                    <ProtectedRoute>
-                      <HostBookings />
-                    </ProtectedRoute>
-                  }
-                />
-
-                {}
-                <Route
-                  path="me/listings/:id/edit"
-                  element={
-                    <ProtectedRoute>
-                      <ListingEditPage />
-                    </ProtectedRoute>
-                  }
-                />
-
-                {}
-                <Route
-                  path="me/wishlist"
-                  element={
-                    <ProtectedRoute>
-                      <Wishlist />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route path="/wishlist/:slug" element={<WishlistDetail />} />
-
-                {}
-                <Route path="bookings" element={<Booking />}>
-                  <Route index element={<Navigate to="overview" replace />} />
-                  <Route path="overview" element={<BookingsOverview />} />
-                  <Route path="upcoming" element={<UpcomingBookings />} />
-                  <Route path="past" element={<PastBookings />} />
-                  <Route path="cancelled" element={<CancelledBookings />} />
-                </Route>
-                <Route path="bookings/:id" element={<BookingStatus />} />
-                <Route path="bookings/details/:id" element={<BookingDetails />} />
-                <Route
-                  path="messages"
-                  element={
-                    <ProtectedRoute>
-                      <ChatInbox />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="messages/:roomId"
-                  element={
-                    <ProtectedRoute>
-                      <ChatConversation />
-                    </ProtectedRoute>
-                  }
-                />
+        <TopProgressBar />
+        <Suspense fallback={<Loading />}>
+          <Routes>
+            <Route path="/" element={<Header />}>
+              <Route index element={<PublicListings />} />
+              <Route path=":slug" element={<DetailedPage />} />
+              <Route
+                path="me"
+                element={
+                  <ProtectedRoute>
+                    <AuthView />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="me/listings"
+                element={
+                  <ProtectedRoute>
+                    <ListingsDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="me/host/bookings"
+                element={
+                  <ProtectedRoute>
+                    <HostBookings />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="me/listings/:id/edit"
+                element={
+                  <ProtectedRoute>
+                    <ListingEditPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="me/wishlist"
+                element={
+                  <ProtectedRoute>
+                    <Wishlist />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="/wishlist/:slug" element={<WishlistDetail />} />
+              <Route path="bookings" element={<Booking />}>
+                <Route index element={<Navigate to="overview" replace />} />
+                <Route path="overview" element={<BookingsOverview />} />
+                <Route path="upcoming" element={<UpcomingBookings />} />
+                <Route path="past" element={<PastBookings />} />
+                <Route path="cancelled" element={<CancelledBookings />} />
               </Route>
-            </Routes>
-          </Suspense>
-        </Router>
+              <Route path="bookings/:id" element={<BookingStatus />} />
+              <Route path="bookings/details/:id" element={<BookingDetails />} />
+              <Route
+                path="messages"
+                element={
+                  <ProtectedRoute>
+                    <ChatInbox />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="messages/:roomId"
+                element={
+                  <ProtectedRoute>
+                    <ChatConversation />
+                  </ProtectedRoute>
+                }
+              />
+            </Route>
+          </Routes>
+        </Suspense>
+      </Router>
 
-        {}
-        <ToastContainer position="top-center" />
-      </>
-    );
+      <ToastContainer position="top-center" />
+    </>
+  );
 };
 
 export default App;
