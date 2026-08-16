@@ -1,4 +1,5 @@
-from rest_framework import generics, permissions, views
+import os
+from rest_framework import generics, permissions, views, status
 
 from rest_framework.response import Response
 
@@ -8,9 +9,15 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter, extend_schema
 
 from drf_spectacular.types import OpenApiTypes
 
-from listings.models import Listings, Amenities
+from listings.models import Listings, Amenities, ListingImages
 
-from listings.serializers import ListingSerializer, ListingDetailSerializer, CreateUpdateListSerializer
+from listings.serializers import (
+    ListingSerializer,
+    ListingDetailSerializer,
+    CreateUpdateListSerializer,
+    ListingImageSerializer,
+    ListingImageUploadSerializer,
+)
 
 from listings.filters import ListingFilter
 
@@ -204,3 +211,68 @@ class ListingDeleteView(BaseAuthenticatedView, generics.DestroyAPIView):
     def get_queryset(self):
 
         return Listings.objects.filter(host=self.request.user)
+
+
+class ListingImageUploadView(BaseAuthenticatedView, views.APIView):
+    """
+    Dedicated endpoint to upload one or more images directly to a listing.
+    POST /api/listings/<listing_id>/images/
+    """
+    @extend_schema(
+        request=ListingImageUploadSerializer,
+        responses={201: ListingImageSerializer(many=True)}
+    )
+    def post(self, request, listing_id):
+        try:
+            listing = Listings.objects.get(id=listing_id, host=request.user)
+        except Listings.DoesNotExist:
+            return Response(
+                {"detail": "Listing not found or you are not the host."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        serializer = ListingImageUploadSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        images = serializer.validated_data["images"]
+        current_count = listing.listingimages.count()
+        if current_count + len(images) > 5:
+            return Response(
+                {"images": f"Listing already has {current_count} images. Maximum 5 images allowed per listing."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        created_images = []
+        for img in images:
+            img_name = os.path.splitext(img.name)[0]
+            obj = ListingImages.objects.create(
+                listings=listing,
+                name=img_name,
+                image=img
+            )
+            created_images.append(obj)
+
+        return Response(
+            ListingImageSerializer(created_images, many=True).data,
+            status=status.HTTP_201_CREATED
+        )
+
+
+class ListingImageDeleteView(BaseAuthenticatedView, views.APIView):
+    """
+    Dedicated endpoint to delete a specific image from a listing by image ID.
+    DELETE /api/listings/images/<image_id>/
+    """
+    @extend_schema(responses={204: None})
+    def delete(self, request, image_id):
+        try:
+            image = ListingImages.objects.get(id=image_id, listings__host=request.user)
+        except ListingImages.DoesNotExist:
+            return Response(
+                {"detail": "Image not found or you are not the host of this listing."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        image.delete()  # triggers post_delete signal to destroy Cloudinary asset
+        return Response(status=status.HTTP_204_NO_CONTENT)
+

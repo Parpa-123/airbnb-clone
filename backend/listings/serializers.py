@@ -37,7 +37,7 @@ class ListingImageSerializer(serializers.ModelSerializer):
 
         model = ListingImages
 
-        fields = ["name", "image"]
+        fields = ["id", "name", "image"]
 
     @extend_schema_field(serializers.URLField)
 
@@ -357,6 +357,15 @@ class CreateUpdateListSerializer(serializers.ModelSerializer):
                     images_list.append(img_data)
 
             if images_list:
+                for img_info in images_list:
+                    file_obj = img_info.get('image')
+                    if file_obj:
+                        if hasattr(file_obj, 'size') and file_obj.size > 5 * 1024 * 1024:
+                            raise serializers.ValidationError({"images": f"Image '{img_info.get('name', 'file')}' exceeds the maximum allowed size of 5MB."})
+                        content_type = getattr(file_obj, 'content_type', '')
+                        if content_type and not content_type.startswith('image/'):
+                            raise serializers.ValidationError({"images": f"File '{img_info.get('name', 'file')}' is not a valid image type."})
+
                 if len(images_list) > 5:
                     raise serializers.ValidationError({"images": "Maximum of 5 images allowed per listing."})
 
@@ -415,23 +424,33 @@ class CreateUpdateListSerializer(serializers.ModelSerializer):
                     instance.amenities.add(amenity)
 
             if delete_images:
-                for image_url in delete_images:
-                    if 'cloudinary.com' in image_url:
-                        try:
-                            instance.listingimages.filter(image__icontains=image_url.split('/')[-1].split('.')[0]).delete()
-                        except:
-                            pass
-                    elif '/media/' in image_url:
-                        image_path = image_url.split('/media/')[-1]
-                        instance.listingimages.filter(image=image_path).delete()
-                    else:
-                        try:
-                            filename = image_url.split('/')[-1]
-                            instance.listingimages.filter(name__icontains=filename).delete()
-                        except:
-                            pass
+                for item in delete_images:
+                    if isinstance(item, int) or (isinstance(item, str) and item.isdigit()):
+                        for img in instance.listingimages.filter(id=int(item)):
+                            img.delete()
+                    elif isinstance(item, str):
+                        # Match by Cloudinary filename / URL / name
+                        matched = False
+                        if 'cloudinary.com' in item:
+                            raw_name = item.split('/')[-1].split('.')[0]
+                            for img in instance.listingimages.filter(image__icontains=raw_name):
+                                img.delete()
+                                matched = True
+                        elif '/media/' in item:
+                            image_path = item.split('/media/')[-1]
+                            for img in instance.listingimages.filter(image=image_path):
+                                img.delete()
+                                matched = True
+                        if not matched:
+                            filename = item.split('/')[-1]
+                            for img in instance.listingimages.filter(name__icontains=filename):
+                                img.delete()
 
             if images_data is not None:
+                current_count = instance.listingimages.count()
+                if current_count + len(images_data) > 5:
+                    raise serializers.ValidationError({"images": f"Cannot add {len(images_data)} images. Listing already has {current_count} images (Max 5)."})
+
                 try:
                     for img_data in images_data:
                         image_file = img_data.get('image')
@@ -450,3 +469,24 @@ class CreateUpdateListSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
 
         return ListingDetailSerializer(instance, context=self.context).data
+
+
+class ListingImageUploadSerializer(serializers.Serializer):
+    images = serializers.ListField(
+        child=serializers.ImageField(allow_empty_file=False),
+        allow_empty=False,
+        write_only=True,
+        required=True
+    )
+
+    def validate_images(self, value):
+        if len(value) > 5:
+            raise serializers.ValidationError("Cannot upload more than 5 images at a time.")
+        for img in value:
+            if hasattr(img, 'size') and img.size > 5 * 1024 * 1024:
+                raise serializers.ValidationError(f"Image '{img.name}' exceeds the maximum allowed size of 5MB.")
+            content_type = getattr(img, 'content_type', '')
+            if content_type and not content_type.startswith("image/"):
+                raise serializers.ValidationError(f"File '{img.name}' is not a valid image format.")
+        return value
+

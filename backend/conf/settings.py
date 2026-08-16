@@ -1,7 +1,5 @@
 from pathlib import Path
-
 import os
-
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -13,119 +11,88 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = True
 
 ALLOWED_HOSTS = [
-
     'localhost',
-
     'localhost:5173',
-
     '127.0.0.1',
-
     'genna-granitelike-sherill.ngrok-free.dev',
-
 ]
 
 INSTALLED_APPS = [
-
     'django.contrib.admin',
-
     'django.contrib.auth',
-
     'django.contrib.contenttypes',
-
     'django.contrib.sessions',
-
     'django.contrib.messages',
-
     'django.contrib.staticfiles',
-
     'channels',
-
     'corsheaders',
-
     'rest_framework',
-
     'rest_framework_simplejwt',
-
     'users',
-
     'listings',
-
     'bookings',
-
     'wishlist',
-
     'chat',
-
     'phonenumber_field',
-
     'drf_spectacular',
-
     'django_filters',
-
     'reviews',
-
 ]
+
+if os.getenv("CLOUDINARY_CLOUD_NAME"):
+    import cloudinary
+    INSTALLED_APPS += [
+        'cloudinary',
+        'cloudinary_storage',
+    ]
+    CLOUDINARY_STORAGE = {
+        'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
+        'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
+        'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
+    }
+    cloudinary.config(
+        cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'),
+        api_key=os.getenv('CLOUDINARY_API_KEY'),
+        api_secret=os.getenv('CLOUDINARY_API_SECRET'),
+        secure=True,
+    )
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-
     'django.contrib.sessions.middleware.SessionMiddleware',
-
     'corsheaders.middleware.CorsMiddleware',
-
     'django.middleware.common.CommonMiddleware',
-
     'django.middleware.csrf.CsrfViewMiddleware',
-
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-
     'django.contrib.messages.middleware.MessageMiddleware',
-
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
 ROOT_URLCONF = 'conf.urls'
 
 TEMPLATES = [
-
     {
-
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-
         'DIRS': [],
-
         'APP_DIRS': True,
-
         'OPTIONS': {
-
             'context_processors': [
-
                 'django.template.context_processors.request',
-
                 'django.contrib.auth.context_processors.auth',
-
                 'django.contrib.messages.context_processors.messages',
-
             ],
-
         },
-
     },
-
 ]
 
 ASGI_APPLICATION = 'conf.asgi.application'
 
 DATABASES = {
-
     'default': {
-
         'ENGINE': 'django.db.backends.sqlite3',
-
         'NAME': BASE_DIR / 'db.sqlite3',
-
     }
-
 }
 
 CHANNEL_LAYERS = {
@@ -151,31 +118,18 @@ if os.getenv("REDIS_URL"):
     }
 
 AUTH_PASSWORD_VALIDATORS = [
-
     {
-
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-
     },
-
     {
-
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-
     },
-
     {
-
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-
     },
-
     {
-
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-
     },
-
 ]
 
 LANGUAGE_CODE = 'en-us'
@@ -193,30 +147,19 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.User'
 
 REST_FRAMEWORK = {
-
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
-
     'DEFAULT_PAGINATION_CLASS': 'conf.pagination.DefaultPagePagination',
-
     'PAGE_SIZE': 20,
-
     'DEFAULT_AUTHENTICATION_CLASSES': (
-
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-
     ),
-
     'DEFAULT_FILTER_BACKENDS': (
-
         'django_filters.rest_framework.DjangoFilterBackend',
-
     ),
-
     'DEFAULT_THROTTLE_CLASSES': (
         'rest_framework.throttling.AnonRateThrottle',
         'rest_framework.throttling.UserRateThrottle',
     ),
-
     'DEFAULT_THROTTLE_RATES': {
         'anon': '120/min',
         'user': '300/min',
@@ -235,17 +178,12 @@ REST_FRAMEWORK = {
         'booking_payment_verify': '120/min',
         'webhook_cashfree': '120/min',
     },
-
 }
 
 SPECTACULAR_SETTINGS = {
-
     'TITLE': 'Airbnb Clone API',
-
     'DESCRIPTION': 'API documentation for your project',
-
     'VERSION': '1.0.0',
-
 }
 
 CORS_ALLOW_CREDENTIALS = True
@@ -253,11 +191,8 @@ CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = ["http://localhost:5173"]
 
 CORS_ALLOWED_ORIGINS = [
-
     "http://localhost:5173",
-
     "http://127.0.0.1:5173",
-
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
@@ -297,4 +232,3 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': 45.0, # Every 45 seconds
     },
 }
-

@@ -327,23 +327,34 @@ class ListingGeolocationFilterTest(TestCase):
         listing2 = create_estate(user=self.host, params={"address": "123 Same St"})
         self.assertIsNotNone(listing2.id)
 
-    def test_max_images_validation(self):
-        from rest_framework.test import APIClient
+    def test_dedicated_image_upload_and_delete(self):
+        from django.core.files.uploadedfile import SimpleUploadedFile
+        import io
+        from PIL import Image
+
+        image = Image.new('RGB', (100, 100))
+        buffer = io.BytesIO()
+        image.save(buffer, format='JPEG')
+        buffer.seek(0)
+
+        img_file = SimpleUploadedFile("listing_test.jpg", buffer.read(), content_type="image/jpeg")
+
         client = APIClient()
         client.force_authenticate(user=self.host)
-        payload = {
-            "title": "Max Images Test", "description": "D", "address": "A", "country": "US", "city": "NYC",
-            "property_type": "apartment", "max_guests": 4, "bedrooms": 2, "beds": 3, "bathrooms": 2.0, "price_per_night": 100
-        }
-        for i in range(6):
-            payload[f'images[{i}]name'] = f'image{i}.jpg'
-            # Note: We can simulate this payload, though the validation also works for files.
-        # It's easier to test the serializer directly or the view with mocked files.
-        # But for simple unit tests, ensuring the serializer fails is best.
-        from listings.serializers import CreateUpdateListSerializer
-        serializer = CreateUpdateListSerializer(data={"images": [{"name": f"{i}.jpg"} for i in range(6)]}, context={'request': None})
-        # Mock request in context is None, but the images logic triggers.
-        # Wait, the validation in CreateUpdateListSerializer checks `request.FILES` and `request.data`.
-        # So we can just test if the serializer throws ValidationError on `images_list > 5`.
-        pass
+
+        # Upload image to listing
+        upload_url = reverse("listing:property-images-upload", args=[self.listing_seattle.id])
+        res = client.post(upload_url, {"images": [img_file]}, format="multipart")
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(len(res.data), 1)
+        image_id = res.data[0]["id"]
+
+        self.assertEqual(self.listing_seattle.listingimages.count(), 1)
+
+        # Delete the uploaded image
+        delete_url = reverse("listing:property-images-delete", args=[image_id])
+        del_res = client.delete(delete_url)
+        self.assertEqual(del_res.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(self.listing_seattle.listingimages.count(), 0)
+
 

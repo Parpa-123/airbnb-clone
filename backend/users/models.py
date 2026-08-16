@@ -79,3 +79,14 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
 
         return self.username
+
+
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
+from conf.cloudinary_utils import delete_cloudinary_asset
+
+@receiver(post_delete, sender=User)
+def delete_user_avatar_on_delete(sender, instance, **kwargs):
+    if instance.avatar:
+        delete_cloudinary_asset(instance.avatar)
+

@@ -222,3 +222,14 @@ class ListingImages(TimeStampedModel):
     def __str__(self):
 
         return f"{self.name}"
+
+
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
+from conf.cloudinary_utils import delete_cloudinary_asset
+
+@receiver(post_delete, sender=ListingImages)
+def delete_listing_image_on_delete(sender, instance, **kwargs):
+    if instance.image:
+        delete_cloudinary_asset(instance.image)
+

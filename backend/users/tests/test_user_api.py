@@ -235,3 +235,41 @@ class PrivateUserApiTests(TestCase):
         self.assertEqual(self.testUser.email, 'test@example.com')
 
         self.assertTrue(self.testUser.check_password(payload['password']))
+
+    def test_update_avatar_success(self):
+        from django.core.files.uploadedfile import SimpleUploadedFile
+        import io
+        from PIL import Image
+
+        image = Image.new('RGB', (100, 100))
+        buffer = io.BytesIO()
+        image.save(buffer, format='JPEG')
+        buffer.seek(0)
+
+        avatar_file = SimpleUploadedFile("avatar.jpg", buffer.read(), content_type="image/jpeg")
+
+        res = self.client.patch(
+            USER_SELF_URL,
+            {'avatar': avatar_file},
+            format='multipart'
+        )
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.testUser.refresh_from_db()
+        self.assertTrue(bool(self.testUser.avatar))
+        self.assertIsNotNone(res.data['avatar'])
+
+    def test_invalid_avatar_format(self):
+        from django.core.files.uploadedfile import SimpleUploadedFile
+
+        bad_file = SimpleUploadedFile("script.py", b"print('bad')", content_type="text/plain")
+
+        res = self.client.patch(
+            USER_SELF_URL,
+            {'avatar': bad_file},
+            format='multipart'
+        )
+
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('avatar', res.data)
+
