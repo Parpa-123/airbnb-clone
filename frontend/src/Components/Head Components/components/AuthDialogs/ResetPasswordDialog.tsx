@@ -46,6 +46,7 @@ const ResetPasswordDialog: React.FC<ResetPasswordDialogProps> = ({
                 <Dialog.Content className="fixed top-20 left-1/2 -translate-x-1/2 z-50 w-96 bg-white rounded-2xl shadow-2xl p-6 pointer-events-auto">
                     <div className="flex items-center justify-between mb-4">
                         <Dialog.Title className="text-xl font-semibold">Reset Password</Dialog.Title>
+                        <Dialog.Description className="sr-only">Reset your account password</Dialog.Description>
                         <Dialog.Close className="p-2 hover:bg-gray-100 rounded-full cursor-pointer">
                             <Cross2Icon className="w-5 h-5" />
                         </Dialog.Close>

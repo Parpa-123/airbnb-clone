@@ -7,6 +7,8 @@ type ReusableDialogProps = {
   onOpenChange: (open: boolean) => void;
   children: React.ReactNode;
   maxWidth?: string;
+  title?: string;
+  description?: string;
 };
 
 const ReusableDialog: React.FC<ReusableDialogProps> = ({
@@ -14,11 +16,13 @@ const ReusableDialog: React.FC<ReusableDialogProps> = ({
   onOpenChange,
   children,
   maxWidth = "max-w-sm",
+  title = "Dialog",
+  description = "Dialog modal content",
 }) => {
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
-        {}
+        {/* Background Overlay */}
         <Dialog.Overlay
           className="
             fixed inset-0
@@ -27,8 +31,9 @@ const ReusableDialog: React.FC<ReusableDialogProps> = ({
           "
         />
 
-        {}
+        {/* Dialog Content */}
         <Dialog.Content
+          aria-describedby={description ? undefined : undefined}
           className={`
             fixed left-1/2 top-1/2
             -translate-x-1/2 -translate-y-1/2
@@ -39,6 +44,8 @@ const ReusableDialog: React.FC<ReusableDialogProps> = ({
             focus:outline-none
           `}
         >
+          <Dialog.Title className="sr-only">{title}</Dialog.Title>
+          <Dialog.Description className="sr-only">{description}</Dialog.Description>
           {children}
 
           <Dialog.Close asChild>

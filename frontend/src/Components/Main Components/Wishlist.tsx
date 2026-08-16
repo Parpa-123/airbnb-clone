@@ -90,9 +90,12 @@ const Wishlist: React.FC = () => {
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 bg-black/50" />
           <Dialog.Content className="fixed top-1/2 left-1/2 w-[90vw] max-w-md -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl p-6 shadow-lg">
-            <Dialog.Title className="text-xl font-semibold mb-2">
+            <Dialog.Title className="text-xl font-semibold mb-1">
               Create Wishlist
             </Dialog.Title>
+            <Dialog.Description className="text-xs text-gray-500 mb-4">
+              Enter a name for your new wishlist collection.
+            </Dialog.Description>
 
             <input
               value={wishlistName}

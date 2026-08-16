@@ -13,12 +13,8 @@ export function useBackendKeepAlive() {
     const performPing = async (reason = "scheduled") => {
       try {
         lastPingTimeRef.current = Date.now();
-        // Ping the health endpoint silently
-        await axiosInstance.get("/health/", {
-          headers: {
-            "X-Keep-Alive-Ping": "true",
-          },
-        });
+        // Ping the health endpoint silently without custom headers to avoid CORS preflight errors
+        await axiosInstance.get("/health/");
         if (import.meta.env.DEV) {
           console.debug(`[KeepAlive] Backend pinged successfully (${reason}) at`, new Date().toLocaleTimeString());
         }

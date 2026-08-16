@@ -80,6 +80,9 @@ const PhotoGalleryDialog = React.memo(({
                                     <Dialog.Title className="text-2xl font-semibold text-white">
                                         {title}
                                     </Dialog.Title>
+                                    <Dialog.Description className="sr-only">
+                                        Photo gallery images for {title}
+                                    </Dialog.Description>
                                     <Dialog.Close className="text-white hover:text-gray-300 transition cursor-pointer">
                                         <Cross2Icon className="w-6 h-6" />
                                     </Dialog.Close>

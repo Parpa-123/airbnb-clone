@@ -1,9 +1,12 @@
 import type { PaginatedResponse } from "../types";
 
-
-export function extractResults<T>(data: T[] | PaginatedResponse<T>): T[] {
+export function extractResults<T>(data: T[] | PaginatedResponse<T> | any): T[] {
+    if (!data) return [];
     if (Array.isArray(data)) {
         return data;
     }
-    return data.results ?? [];
+    if (data && typeof data === "object" && Array.isArray(data.results)) {
+        return data.results;
+    }
+    return [];
 }

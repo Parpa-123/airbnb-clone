@@ -43,7 +43,7 @@ const PublicListings: React.FC = () => {
           }
         }
       } catch (err) {
-        // Silently ignore tracking prevention blocks for IP lookup
+        if (isMounted) setNearbyListings([]);
         console.warn("Could not fetch nearby listings (IP block or network issue).");
       } finally {
         if (isMounted) setNearbyLoading(false);
@@ -116,6 +116,7 @@ const PublicListings: React.FC = () => {
         if (err.name === "CanceledError" || err.code === "ERR_CANCELED") {
           return; // Ignore canceled requests
         }
+        setListings([]);
         showError(extractErrorMessage(err, "Failed to load listings"));
         setError(extractErrorMessage(err, "Failed to load listings"));
       } finally {
@@ -139,6 +140,9 @@ const PublicListings: React.FC = () => {
     setDialogOpen(true);
   };
 
+  const safeListings = Array.isArray(listings) ? listings : [];
+  const safeNearby = Array.isArray(nearbyListings) ? nearbyListings : [];
+
   return (
     <div className="px-6 py-10 max-w-[1600px] mx-auto min-h-[70vh]">
       {/* Near You Section */}
@@ -153,13 +157,13 @@ const PublicListings: React.FC = () => {
           <div className="w-full h-px bg-gray-200 mt-8" />
         </div>
       ) : (
-        nearbyListings.length > 0 && (
+        safeNearby.length > 0 && (
           <div className="mb-12">
             <h3 className="text-2xl font-semibold mb-6 text-gray-800 flex items-center gap-2">
               <span className="text-green-500">✨</span> Stays near {nearbyCity}
             </h3>
             <div className="flex overflow-x-auto gap-6 snap-x snap-mandatory pb-6 custom-scrollbar">
-              {nearbyListings.map((item) => (
+              {safeNearby.map((item) => (
                 <div key={`nearby-${item.id}`} className="min-w-[320px] w-80 flex-shrink-0 snap-start">
                   <ListingCard
                     listing={item}
@@ -184,7 +188,7 @@ const PublicListings: React.FC = () => {
         </div>
       ) : loading ? (
         <ListingGridSkeleton count={8} />
-      ) : listings.length === 0 ? (
+      ) : safeListings.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 px-4 text-center max-w-2xl mx-auto">
           <svg
             className="w-24 h-24 text-gray-300 mb-6"
@@ -210,7 +214,7 @@ const PublicListings: React.FC = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          {listings.map((item) => (
+          {safeListings.map((item) => (
             <ListingCard
               key={item.id}
               listing={item}
