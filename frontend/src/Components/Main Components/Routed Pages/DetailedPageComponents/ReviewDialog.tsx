@@ -61,40 +61,42 @@ const ReviewDialog: React.FC<ReviewDialogProps> = ({ open, onOpenChange, onSubmi
     return (
         <Dialog.Root open={open} onOpenChange={onOpenChange}>
             <Dialog.Content asChild>
-                <div className="fixed inset-0 z-9999 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-                    <div className="bg-white w-full max-w-lg rounded-2xl p-6 relative">
-                        <Dialog.Close className="absolute top-4 right-4 cursor-pointer">
-                            <Cross2Icon />
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+                    <div className="bg-white w-full max-w-lg rounded-2xl p-6 relative shadow-2xl">
+                        <Dialog.Close className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 transition cursor-pointer p-1 rounded-full hover:bg-gray-100">
+                            <Cross2Icon className="w-5 h-5" />
                         </Dialog.Close>
 
-                        <Dialog.Title className="text-xl font-semibold mb-1">
+                        <Dialog.Title className="text-xl font-semibold text-gray-900 mb-1">
                             Write a review
                         </Dialog.Title>
-                        <Dialog.Description className="text-gray-500 mb-4">
+                        <Dialog.Description className="text-sm text-gray-500 mb-4">
                             Share your experience with future guests.
                         </Dialog.Description>
 
-                        <form onSubmit={handleSubmit} className="space-y-5">
+                        <form onSubmit={handleSubmit} className="space-y-4">
                             <textarea
                                 name="review"
                                 required
                                 placeholder="What did you like? Anything to improve?"
-                                className="w-full border rounded-xl p-3 h-28 focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand"
+                                className="w-full border border-gray-300 text-gray-900 placeholder:text-gray-400 rounded-xl p-3 h-28 focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand text-sm resize-none"
                             />
 
-                            {RATING_LABELS.map(([key, label]) => (
-                                <div key={key} className="flex items-center justify-between">
-                                    <span className="font-medium">{label}</span>
-                                    <StarRating
-                                        value={ratings[key]}
-                                        onChange={(v) => setRatings((r) => ({ ...r, [key]: v }))}
-                                    />
-                                </div>
-                            ))}
+                            <div className="space-y-2.5 pt-1">
+                                {RATING_LABELS.map(([key, label]) => (
+                                    <div key={key} className="flex items-center justify-between">
+                                        <span className="font-medium text-sm text-gray-800">{label}</span>
+                                        <StarRating
+                                            value={ratings[key]}
+                                            onChange={(v) => setRatings((r) => ({ ...r, [key]: v }))}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
 
                             <button
                                 type="submit"
-                                className="w-full bg-brand text-white py-3 rounded-xl font-semibold hover:bg-brand-hover transition cursor-pointer"
+                                className="w-full bg-brand text-white py-3 rounded-xl font-semibold hover:bg-brand-hover transition cursor-pointer shadow-sm mt-2"
                             >
                                 Submit review
                             </button>

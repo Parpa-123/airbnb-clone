@@ -32,8 +32,8 @@ interface ReviewSliderProps {
 const ReviewSlider = React.memo(({ reviews }: ReviewSliderProps) => {
     if (!reviews?.length) {
         return (
-            <p className="text-gray-500 mt-4">
-                No reviews yet.
+            <p className="text-gray-500 mt-4 text-sm">
+                No reviews yet. Be the first to review this place!
             </p>
         );
     }
@@ -49,22 +49,19 @@ const ReviewSlider = React.memo(({ reviews }: ReviewSliderProps) => {
         >
             {reviews.map((r) => (
                 <SwiperSlide key={r.id}>
-                    <div className="border rounded-2xl p-5 h-full bg-white">
-                        { }
+                    <div className="border border-gray-200 rounded-2xl p-5 h-full bg-white shadow-sm">
                         <div className="flex items-center justify-between mb-2">
-                            <span className="font-semibold">
+                            <span className="font-semibold text-sm text-gray-900">
                                 {r.user.username}
                             </span>
-                            <span className="text-sm text-gray-400">
+                            <span className="text-xs text-gray-500">
                                 {dayjs(r.created_at).format('MMM D, YYYY')}
                             </span>
                         </div>
 
-                        { }
                         <StarRating value={Number(r.avg_rating)} readonly />
 
-                        { }
-                        <p className="mt-3 text-gray-700 line-clamp-4">
+                        <p className="mt-3 text-gray-700 text-sm leading-relaxed line-clamp-4">
                             {r.review}
                         </p>
                     </div>

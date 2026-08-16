@@ -76,12 +76,11 @@ const DetailedPage: React.FC = () => {
       {/* Back Button */}
       <NavLink
         to=".."
-        className="inline-flex items-center gap-2 text-gray-600 hover:text-brand transition-colors mb-4 group"
-        style={{ '--tw-text-opacity': 1, '&:hover': { color: 'var(--color-brand)' } } as React.CSSProperties}
+        className="inline-flex items-center gap-2 text-gray-600 hover:text-brand transition-colors mb-4 group font-medium text-sm"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="h-5 w-5 group-hover:-translate-x-1 transition-transform"
+          className="h-4 w-4 group-hover:-translate-x-1 transition-transform text-gray-600 group-hover:text-brand"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -93,14 +92,18 @@ const DetailedPage: React.FC = () => {
             d="M10 19l-7-7m0 0l7-7m-7 7h18"
           />
         </svg>
-        <span className="font-medium">Back to discovery</span>
+        <span>Back to discovery</span>
       </NavLink>
 
       {/* Header Info */}
-      <h1 className="text-2xl font-semibold text-gray-900">{listing.title}</h1>
-      <p className="text-gray-600 underline">
-        {listing.city}, {listing.country}
-      </p>
+      <div className="space-y-1 mb-4">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-tight">
+          {listing.title}
+        </h1>
+        <p className="text-sm text-gray-600 underline font-medium">
+          {listing.city}, {listing.country}
+        </p>
+      </div>
 
       {/* Hero Image / Gallery */}
       <PhotoGalleryDialog
@@ -111,17 +114,17 @@ const DetailedPage: React.FC = () => {
       />
 
       {/* Main Layout */}
-      <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-12 relative">
+      <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-12 relative">
         {/* Left Column */}
         <div className="md:col-span-2">
           {/* Host Info */}
-          <div className="border-b pb-6">
+          <div className="border-b border-gray-200 pb-6">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
-                <p className="text-lg font-semibold">
+                <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
                   Hosted by {listing.host.username}
-                </p>
-                <p className="text-gray-600 mt-1">
+                </h2>
+                <p className="text-sm text-gray-600 mt-1">
                   {listing.max_guests} guests · {listing.beds} beds ·{" "}
                   {listing.bedrooms} bedrooms · {listing.bathrooms} baths
                 </p>
@@ -129,7 +132,7 @@ const DetailedPage: React.FC = () => {
               <button
                 type="button"
                 onClick={handleContactHost}
-                className="px-5 py-3 rounded-lg text-white font-semibold transition-opacity hover:opacity-90 cursor-pointer"
+                className="px-5 py-2.5 rounded-lg text-white text-sm font-semibold transition-opacity hover:opacity-90 cursor-pointer shadow-sm"
                 style={{ backgroundColor: "var(--color-brand)" }}
               >
                 Contact host
@@ -138,9 +141,11 @@ const DetailedPage: React.FC = () => {
           </div>
 
           {/* Description */}
-          <div className="py-6 border-b">
-            <h2 className="text-xl font-semibold mb-3">About this place</h2>
-            <p className="text-gray-700 whitespace-pre-line">
+          <div className="py-6 border-b border-gray-200">
+            <h2 className="text-xl font-semibold text-gray-900 mb-3">
+              About this place
+            </h2>
+            <p className="text-gray-700 leading-relaxed whitespace-pre-line text-base">
               {listing.description}
             </p>
           </div>
@@ -149,15 +154,20 @@ const DetailedPage: React.FC = () => {
           <AmenitiesDisplay amenities={listing.amenities} />
 
           {/* Location */}
-          <div id="location" className="py-6 border-b">
-            <h2 className="text-xl font-semibold mb-4">Location</h2>
+          <div id="location" className="py-6 border-b border-gray-200">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+              Where you’ll be
+            </h2>
+            <p className="text-sm text-gray-600 mb-3 font-medium">
+              {listing.city}, {listing.country}
+            </p>
             <ListMap city={listing.city} country={listing.country} />
           </div>
 
           {/* Reviews */}
-          <div id="reviews" className="py-10 border-t mt-10 relative">
+          <div id="reviews" className="py-8 border-t border-gray-200 mt-8 relative">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-semibold">Reviews</h2>
+              <h2 className="text-2xl font-semibold text-gray-900">Reviews</h2>
               <button
                 onClick={() => {
                   if (!localStorage.getItem("accessToken")) {
@@ -166,7 +176,7 @@ const DetailedPage: React.FC = () => {
                   }
                   setOpenReviewDialog(true);
                 }}
-                className="px-4 py-2 border border-black rounded-lg font-medium hover:bg-gray-50 cursor-pointer"
+                className="px-4 py-2 border border-gray-900 text-gray-900 rounded-lg text-sm font-medium hover:bg-gray-100 transition cursor-pointer"
               >
                 Write a review
               </button>
@@ -184,15 +194,15 @@ const DetailedPage: React.FC = () => {
 
         {/* Right Column: Booking Card Sticky */}
         <div className="relative">
-            <div className="sticky top-32">
-                <BookingCard
-                pricePerNight={listing.price_per_night}
-                listingId={listing.id}
-                datePickerRef={datePickerRef}
-                selectedDates={selectedDates}
-                onDatesChange={setSelectedDates}
-                />
-            </div>
+          <div className="sticky top-28">
+            <BookingCard
+              pricePerNight={listing.price_per_night}
+              listingId={listing.id}
+              datePickerRef={datePickerRef}
+              selectedDates={selectedDates}
+              onDatesChange={setSelectedDates}
+            />
+          </div>
         </div>
       </div>
     </div>

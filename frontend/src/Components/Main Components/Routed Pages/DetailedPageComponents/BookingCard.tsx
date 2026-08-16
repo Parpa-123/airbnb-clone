@@ -110,23 +110,23 @@ const BookingCard: React.FC<BookingCardProps> = ({
         const totalPrice = price * nights;
 
         return (
-            <div className="mt-4 pt-4 border-t space-y-2 text-sm">
+            <div className="mt-4 pt-4 border-t border-gray-200 space-y-2 text-sm text-gray-600">
                 <div className="flex justify-between">
                     <span>Check-in:</span>
-                    <span>{dayjs(checkIn).format("MMM D, YYYY")}</span>
+                    <span className="text-gray-900 font-medium">{dayjs(checkIn).format("MMM D, YYYY")}</span>
                 </div>
                 <div className="flex justify-between">
                     <span>Check-out:</span>
-                    <span>{dayjs(checkOut).format("MMM D, YYYY")}</span>
+                    <span className="text-gray-900 font-medium">{dayjs(checkOut).format("MMM D, YYYY")}</span>
                 </div>
-                <div className="flex justify-between pt-2 border-t">
+                <div className="flex justify-between pt-2 border-t border-gray-100">
                     <span>
                         ${price.toFixed(2)} × {nights} nights
                     </span>
-                    <span>${totalPrice.toFixed(2)}</span>
+                    <span className="text-gray-900 font-medium">${totalPrice.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between font-semibold pt-2 border-t">
-                    <span>Total</span>
+                <div className="flex justify-between font-semibold text-gray-900 pt-2 border-t border-gray-200">
+                    <span>Total before taxes</span>
                     <span>${totalPrice.toFixed(2)}</span>
                 </div>
             </div>
@@ -135,13 +135,13 @@ const BookingCard: React.FC<BookingCardProps> = ({
 
     return (
         <div className="sticky top-24 h-fit">
-            <div className="border rounded-xl shadow-lg p-6 bg-white">
-                <h2 className="text-xl font-semibold">
+            <div className="border border-gray-200 rounded-2xl shadow-lg p-6 bg-white">
+                <h2 className="text-2xl font-semibold text-gray-900 flex items-baseline gap-1">
                     ${price}
-                    <span className="text-base font-normal text-gray-600"> / night</span>
+                    <span className="text-sm font-normal text-gray-500"> / night</span>
                 </h2>
 
-                <div className="mt-5 border rounded-lg overflow-hidden">
+                <div className="mt-5 border border-gray-200 rounded-xl overflow-hidden">
                     <DatePickerValue ref={datePickerRef} onChange={onDatesChange} />
                 </div>
 
@@ -149,7 +149,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
                     <button
                         onClick={handleReserve}
                         disabled={bookingLoading}
-                        className="w-full text-white py-3.5 rounded-lg font-semibold transition-opacity disabled:opacity-60 hover:opacity-90 cursor-pointer"
+                        className="w-full text-white py-3.5 rounded-xl font-semibold transition-opacity disabled:opacity-60 hover:opacity-90 cursor-pointer shadow-sm"
                         style={{ backgroundColor: "var(--color-brand)" }}
                     >
                         {bookingLoading
@@ -162,20 +162,20 @@ const BookingCard: React.FC<BookingCardProps> = ({
 
                 {holdExpiresAt && secondsLeft > 0 ? (
                     <div className="mt-4 rounded-xl border border-amber-500/30 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-                        <p className="font-semibold flex items-center gap-2">
+                        <p className="font-semibold flex items-center gap-2 text-amber-900">
                             <span className="relative flex h-3 w-3">
                               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
                               <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
                             </span>
                             Hold active: {formatCountdown(secondsLeft)} remaining
                         </p>
-                        <p className="text-xs mt-1.5 text-amber-700/80">
+                        <p className="text-xs mt-1.5 text-amber-700">
                             Complete payment before this timer ends to keep these dates.
                         </p>
                     </div>
                 ) : null}
 
-                <p className="text-center text-sm text-gray-600 mt-3">
+                <p className="text-center text-xs text-gray-500 mt-3">
                     You won't be charged yet
                 </p>
 
