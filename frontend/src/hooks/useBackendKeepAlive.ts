@@ -1,8 +1,8 @@
 import { useEffect, useRef } from "react";
 import axiosInstance from "../services/connect";
 
-// 14 minutes in milliseconds (Render spins down at 15 minutes of inactivity)
-const PING_INTERVAL_MS = 14 * 60 * 1000;
+// 10 minutes in milliseconds (Render spins down at 15 minutes of inactivity)
+const PING_INTERVAL_MS = 10 * 60 * 1000;
 
 export function useBackendKeepAlive() {
   const lastPingTimeRef = useRef<number>(Date.now());
@@ -29,7 +29,7 @@ export function useBackendKeepAlive() {
     // 1. Initial warm-up ping on mount
     performPing("initial");
 
-    // 2. Scheduled 14-minute interval
+    // 2. Scheduled 10-minute interval
     timerId = window.setInterval(() => {
       performPing("interval");
     }, PING_INTERVAL_MS);
